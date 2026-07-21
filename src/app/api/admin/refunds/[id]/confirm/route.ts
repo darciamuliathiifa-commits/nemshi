@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAdminUserId, logAdminActivity } from "@/lib/admin";
-import { approveListingOrder } from "@/lib/orders";
+import { confirmRefund } from "@/lib/orders";
 
 export async function POST(
   _request: NextRequest,
@@ -14,17 +14,17 @@ export async function POST(
   const { id } = await params;
 
   try {
-    const listing = await approveListingOrder(id);
+    const order = await confirmRefund(id);
     await logAdminActivity({
       adminUserId,
-      action: "approve_listing",
-      targetType: "listing",
+      action: "confirm_refund",
+      targetType: "order",
       targetId: id,
     });
-    return NextResponse.json(listing);
+    return NextResponse.json(order);
   } catch (error) {
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Gagal menyetujui iklan" },
+      { error: error instanceof Error ? error.message : "Gagal memproses refund" },
       { status: 400 }
     );
   }

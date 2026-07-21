@@ -1,32 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAdminUserId, logAdminActivity } from "@/lib/admin";
-import { deleteTestimonial, setTestimonialHidden } from "@/lib/admin-testimonials";
+import { deleteListing, getAdminListingDetail } from "@/lib/admin-listings";
 
-export async function PATCH(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  const adminUserId = await getAdminUserId();
-  if (!adminUserId) {
-    return NextResponse.json({ error: "Tidak diizinkan" }, { status: 403 });
-  }
-
-  const { id } = await params;
-  const body = await request.json();
-  const isHidden = body.isHidden === true;
-  const updated = await setTestimonialHidden(id, isHidden);
-
-  await logAdminActivity({
-    adminUserId,
-    action: isHidden ? "hide_testimonial" : "unhide_testimonial",
-    targetType: "testimonial",
-    targetId: id,
-  });
-
-  return NextResponse.json(updated);
-}
-
-export async function DELETE(
+export async function GET(
   _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
@@ -36,13 +12,34 @@ export async function DELETE(
   }
 
   const { id } = await params;
-  await deleteTestimonial(id);
+  const listing = await getAdminListingDetail(id);
+  if (!listing) {
+    return NextResponse.json({ error: "Iklan tidak ditemukan" }, { status: 404 });
+  }
 
+  return NextResponse.json(listing);
+}
+
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const adminUserId = await getAdminUserId();
+  if (!adminUserId) {
+    return NextResponse.json({ error: "Tidak diizinkan" }, { status: 403 });
+  }
+
+  const { id } = await params;
+  const body = await request.json().catch(() => ({}));
+  const reason = typeof body.reason === "string" ? body.reason : undefined;
+
+  await deleteListing(id);
   await logAdminActivity({
     adminUserId,
-    action: "delete_testimonial",
-    targetType: "testimonial",
+    action: "delete_listing",
+    targetType: "listing",
     targetId: id,
+    reason,
   });
 
   return NextResponse.json({ ok: true });

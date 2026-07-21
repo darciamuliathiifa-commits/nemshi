@@ -40,11 +40,10 @@ export default function AdminTestimoniPage() {
   }
 
   return (
-    <main className="mx-auto max-w-3xl px-4 py-8 sm:px-6 lg:px-8">
+    <div>
       <h1 className="mb-2 text-2xl font-bold text-text">Kelola Testimoni</h1>
       <p className="mb-6 text-sm text-text-secondary">
-        Halaman moderasi sementara — akan dipindahkan ke Dasbor Admin (fitur 08) begitu autentikasi
-        admin tersedia.
+        Sembunyikan atau hapus testimoni yang melanggar dari profil publik pengiklan.
       </p>
 
       {!items ? (
@@ -90,6 +89,6 @@ export default function AdminTestimoniPage() {
           ))}
         </ul>
       )}
-    </main>
+    </div>
   );
 }

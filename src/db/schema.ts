@@ -32,6 +32,7 @@ export const listingStatusEnum = pgEnum("listing_status", [
   "Active",
   "Expired",
   "Rejected",
+  "Suspended",
 ]);
 
 // LISTINGS.type
@@ -82,6 +83,7 @@ export const users = pgTable("users", {
   verificationStatus: verificationStatusEnum("verification_status")
     .notNull()
     .default("Unverified"),
+  isAdmin: boolean("is_admin").notNull().default(false),
   createdAt: timestamp("created_at", { withTimezone: true })
     .notNull()
     .defaultNow(),
@@ -92,6 +94,7 @@ export const categories = pgTable("categories", {
   name: text("name").notNull(),
   slug: text("slug").notNull().unique(),
   icon: text("icon").notNull(),
+  isActive: boolean("is_active").notNull().default(true),
 });
 
 export const areas = pgTable("areas", {
@@ -120,10 +123,13 @@ export const listings = pgTable("listings", {
   priceMax: integer("price_max"),
   status: listingStatusEnum("status").notNull().default("Pending_Moderation"),
   type: listingTypeEnum("type").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   publishedAt: timestamp("published_at", { withTimezone: true }),
   // Tawarkan Jasa: 30 hari / Cari Jasa Prioritas: 3 hari / Cari Jasa Gratis: 24 jam
   expiresAt: timestamp("expires_at", { withTimezone: true }),
   isPriority: boolean("is_priority").notNull().default(false),
+  // alasan admin menolak (moderasi) atau menangguhkan (pelanggaran) iklan ini
+  moderationReason: text("moderation_reason"),
 });
 
 export const listingPhotos = pgTable("listing_photos", {
@@ -179,6 +185,18 @@ export const orders = pgTable("orders", {
   paidAt: timestamp("paid_at", { withTimezone: true }),
 });
 
+export const adminActivityLogs = pgTable("admin_activity_logs", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  adminUserId: uuid("admin_user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  action: text("action").notNull(),
+  targetType: text("target_type").notNull(),
+  targetId: text("target_id").notNull(),
+  reason: text("reason"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
 export const clickAnalytics = pgTable("click_analytics", {
   id: uuid("id").primaryKey().defaultRandom(),
   listingId: uuid("listing_id")
@@ -195,6 +213,14 @@ export const usersRelations = relations(users, ({ many }) => ({
   quotas: many(userQuotas),
   testimonials: many(testimonials),
   orders: many(orders),
+  adminActivityLogs: many(adminActivityLogs),
+}));
+
+export const adminActivityLogsRelations = relations(adminActivityLogs, ({ one }) => ({
+  adminUser: one(users, {
+    fields: [adminActivityLogs.adminUserId],
+    references: [users.id],
+  }),
 }));
 
 export const ordersRelations = relations(orders, ({ one }) => ({

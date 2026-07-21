@@ -154,7 +154,11 @@ export async function getListingById(id: string): Promise<ListingDetail | null> 
 }
 
 export async function getCategories() {
-  return db.select().from(categories).orderBy(categories.name);
+  return db
+    .select()
+    .from(categories)
+    .where(eq(categories.isActive, true))
+    .orderBy(categories.name);
 }
 
 export async function getAreas() {

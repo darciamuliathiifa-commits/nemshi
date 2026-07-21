@@ -1,6 +1,6 @@
-import { desc, eq } from "drizzle-orm";
+import { and, desc, eq } from "drizzle-orm";
 import { db } from "@/db";
-import { listings, orders, userQuotas } from "@/db/schema";
+import { listings, orders, userQuotas, users } from "@/db/schema";
 import { type OrderProductType, PRODUCT_PRICES, requiresModeration } from "@/lib/pricing";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
@@ -131,28 +131,51 @@ export async function approveListingOrder(listingId: string) {
 }
 
 /**
- * Dipakai oleh antrean moderasi admin (fitur 08) untuk menolak iklan:
- * menandai iklan ditolak dan mengembalikan dana yang ditahan (refund).
+ * Dipakai oleh antrean moderasi admin (fitur 08) untuk menolak iklan.
+ * Dana yang sudah ditahan TIDAK langsung dikembalikan di sini — tetap
+ * berstatus "Ditahan" sampai admin mengonfirmasi refund secara manual
+ * lewat confirmRefund() di halaman Kategori & Refund.
  */
-export async function rejectListingOrder(listingId: string) {
+export async function rejectListingOrder(listingId: string, reason?: string) {
   const [updatedListing] = await db
     .update(listings)
-    .set({ status: "Rejected" })
+    .set({ status: "Rejected", moderationReason: reason ?? null })
     .where(eq(listings.id, listingId))
     .returning();
 
   if (!updatedListing) throw new Error("Iklan tidak ditemukan.");
 
-  const [order] = await db
-    .select()
-    .from(orders)
-    .where(eq(orders.listingId, listingId))
-    .orderBy(desc(orders.createdAt))
-    .limit(1);
-
-  if (order) {
-    await db.update(orders).set({ fundStatus: "Dikembalikan" }).where(eq(orders.id, order.id));
-  }
-
   return updatedListing;
+}
+
+/** Order yang menunggu konfirmasi refund: iklan ditolak, dana masih ditahan. */
+export async function getPendingRefunds() {
+  const rows = await db
+    .select({
+      orderId: orders.id,
+      amount: orders.amount,
+      paidAt: orders.paidAt,
+      listingId: listings.id,
+      listingTitle: listings.title,
+      moderationReason: listings.moderationReason,
+      userFullName: users.fullName,
+    })
+    .from(orders)
+    .innerJoin(listings, eq(orders.listingId, listings.id))
+    .innerJoin(users, eq(orders.userId, users.id))
+    .where(and(eq(orders.fundStatus, "Ditahan"), eq(listings.status, "Rejected")));
+
+  return rows;
+}
+
+export async function confirmRefund(orderId: string) {
+  const [updated] = await db
+    .update(orders)
+    .set({ fundStatus: "Dikembalikan" })
+    .where(and(eq(orders.id, orderId), eq(orders.fundStatus, "Ditahan")))
+    .returning();
+
+  if (!updated) throw new Error("Order tidak ditemukan atau sudah diproses.");
+
+  return updated;
 }

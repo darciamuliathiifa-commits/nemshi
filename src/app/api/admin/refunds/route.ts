@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getAdminUserId } from "@/lib/admin";
-import { getAllTestimonialsForAdmin } from "@/lib/admin-testimonials";
+import { getPendingRefunds } from "@/lib/orders";
 
 export async function GET() {
   const adminUserId = await getAdminUserId();
@@ -8,6 +8,6 @@ export async function GET() {
     return NextResponse.json({ error: "Tidak diizinkan" }, { status: 403 });
   }
 
-  const testimonials = await getAllTestimonialsForAdmin();
-  return NextResponse.json(testimonials);
+  const refunds = await getPendingRefunds();
+  return NextResponse.json(refunds);
 }
