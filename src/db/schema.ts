@@ -42,6 +42,9 @@ export const quotaTypeEnum = pgEnum("quota_type", [
   "Priority_Slot",
 ]);
 
+// LISTINGS.price_type
+export const priceTypeEnum = pgEnum("price_type", ["Range", "Contact"]);
+
 export const users = pgTable("users", {
   id: uuid("id").primaryKey().defaultRandom(),
   fullName: text("full_name").notNull(),
@@ -54,19 +57,53 @@ export const users = pgTable("users", {
     .defaultNow(),
 });
 
+export const categories = pgTable("categories", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  name: text("name").notNull(),
+  slug: text("slug").notNull().unique(),
+  icon: text("icon").notNull(),
+});
+
+export const areas = pgTable("areas", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  name: text("name").notNull(),
+  slug: text("slug").notNull().unique(),
+});
+
 export const listings = pgTable("listings", {
   id: uuid("id").primaryKey().defaultRandom(),
   userId: uuid("user_id")
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),
+  categoryId: uuid("category_id")
+    .notNull()
+    .references(() => categories.id, { onDelete: "restrict" }),
+  areaId: uuid("area_id")
+    .notNull()
+    .references(() => areas.id, { onDelete: "restrict" }),
   title: text("title").notNull(),
+  description: text("description").notNull(),
   whatsappLink: text("whatsapp_link").notNull(),
+  priceType: priceTypeEnum("price_type").notNull().default("Contact"),
+  // dalam EGP, hanya relevan ketika priceType = 'Range'
+  priceMin: integer("price_min"),
+  priceMax: integer("price_max"),
   status: listingStatusEnum("status").notNull().default("Pending_Moderation"),
   type: listingTypeEnum("type").notNull(),
   publishedAt: timestamp("published_at", { withTimezone: true }),
   // Tawarkan Jasa: 30 hari / Cari Jasa Prioritas: 3 hari / Cari Jasa Gratis: 24 jam
   expiresAt: timestamp("expires_at", { withTimezone: true }),
   isPriority: boolean("is_priority").notNull().default(false),
+});
+
+export const listingPhotos = pgTable("listing_photos", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  listingId: uuid("listing_id")
+    .notNull()
+    .references(() => listings.id, { onDelete: "cascade" }),
+  url: text("url").notNull(),
+  // urutan tampil, 0-4 (maksimal 5 foto portofolio per iklan)
+  sortOrder: integer("sort_order").notNull().default(0),
 });
 
 export const userQuotas = pgTable("user_quotas", {
@@ -96,12 +133,36 @@ export const usersRelations = relations(users, ({ many }) => ({
   quotas: many(userQuotas),
 }));
 
+export const categoriesRelations = relations(categories, ({ many }) => ({
+  listings: many(listings),
+}));
+
+export const areasRelations = relations(areas, ({ many }) => ({
+  listings: many(listings),
+}));
+
 export const listingsRelations = relations(listings, ({ one, many }) => ({
   user: one(users, {
     fields: [listings.userId],
     references: [users.id],
   }),
+  category: one(categories, {
+    fields: [listings.categoryId],
+    references: [categories.id],
+  }),
+  area: one(areas, {
+    fields: [listings.areaId],
+    references: [areas.id],
+  }),
+  photos: many(listingPhotos),
   clicks: many(clickAnalytics),
+}));
+
+export const listingPhotosRelations = relations(listingPhotos, ({ one }) => ({
+  listing: one(listings, {
+    fields: [listingPhotos.listingId],
+    references: [listings.id],
+  }),
 }));
 
 export const userQuotasRelations = relations(userQuotas, ({ one }) => ({
