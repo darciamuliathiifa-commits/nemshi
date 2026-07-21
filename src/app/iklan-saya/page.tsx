@@ -28,12 +28,20 @@ export default async function IklanSayaPage() {
 
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-2xl font-bold text-text">Iklan Saya</h1>
-        <Link
-          href="/pasang-iklan"
-          className="rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-white"
-        >
-          Pasang Iklan
-        </Link>
+        <div className="flex gap-2">
+          <Link
+            href="/analitik"
+            className="rounded-xl border border-black/10 px-4 py-2 text-sm font-semibold text-text-secondary hover:bg-black/5"
+          >
+            Analitik Exposure
+          </Link>
+          <Link
+            href="/pasang-iklan"
+            className="rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-white"
+          >
+            Pasang Iklan
+          </Link>
+        </div>
       </div>
 
       <section className="mb-6 rounded-xl border border-black/5 bg-white p-4">

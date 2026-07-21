@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { ListingDetail } from "@/lib/listings";
 import { formatPriceLabel } from "@/lib/format";
 import { VerificationBadge } from "@/components/verification-badge";
@@ -10,6 +10,11 @@ import { VerificationBadge } from "@/components/verification-badge";
 export function ListingDetailClient({ listing }: { listing: ListingDetail }) {
   const [activePhoto, setActivePhoto] = useState(0);
   const photos = listing.photos.length > 0 ? listing.photos : [];
+
+  useEffect(() => {
+    fetch(`/api/listings/${listing.id}/impression`, { method: "POST" });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [listing.id]);
 
   async function handleContactClick() {
     try {

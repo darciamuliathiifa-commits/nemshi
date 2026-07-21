@@ -210,6 +210,15 @@ export const clickAnalytics = pgTable("click_analytics", {
   userAgent: text("user_agent"),
 });
 
+// Tayangan (impressions) — dicatat setiap kali halaman detail iklan dibuka.
+export const listingImpressions = pgTable("listing_impressions", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  listingId: uuid("listing_id")
+    .notNull()
+    .references(() => listings.id, { onDelete: "cascade" }),
+  viewedAt: timestamp("viewed_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
 export const usersRelations = relations(users, ({ many }) => ({
   listings: many(listings),
   quotas: many(userQuotas),
@@ -266,6 +275,7 @@ export const listingsRelations = relations(listings, ({ one, many }) => ({
   }),
   photos: many(listingPhotos),
   clicks: many(clickAnalytics),
+  impressions: many(listingImpressions),
   orders: many(orders),
 }));
 
@@ -286,6 +296,13 @@ export const userQuotasRelations = relations(userQuotas, ({ one }) => ({
 export const clickAnalyticsRelations = relations(clickAnalytics, ({ one }) => ({
   listing: one(listings, {
     fields: [clickAnalytics.listingId],
+    references: [listings.id],
+  }),
+}));
+
+export const listingImpressionsRelations = relations(listingImpressions, ({ one }) => ({
+  listing: one(listings, {
+    fields: [listingImpressions.listingId],
     references: [listings.id],
   }),
 }));
