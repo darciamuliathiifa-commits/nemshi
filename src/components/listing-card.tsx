@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { ListingSummary, OwnListingCard } from "@/lib/listings";
-import { formatPriceLabel } from "@/lib/format";
+import { formatPriceLabel, formatRemainingLabel } from "@/lib/format";
 import { VerificationBadge } from "@/components/verification-badge";
 import { ListingStatusBadge } from "@/components/listing-status-badge";
 
@@ -61,6 +61,12 @@ export function ListingCard({ listing }: { listing: ListingSummary | OwnListingC
         </p>
         {own?.status === "Rejected" && own.moderationReason && (
           <p className="text-xs text-red-600">Alasan: {own.moderationReason}</p>
+        )}
+        {own?.status === "Active" && own.expiresAt && (
+          <p className="text-xs text-text-secondary">
+            {own.isPriority ? "Prioritas · " : ""}
+            {formatRemainingLabel(own.expiresAt)}
+          </p>
         )}
         <div className="mt-auto flex items-center justify-between pt-2">
           <div className="flex items-center gap-2">

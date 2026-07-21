@@ -19,6 +19,7 @@ export type OwnListingCard = ListingSummary & {
   status: string;
   moderationReason: string | null;
   isExpired: boolean;
+  expiresAt: Date | null;
 };
 
 export type ListingDetail = ListingSummary & {
@@ -325,6 +326,7 @@ export async function getOwnListingCards(
     status: row.status,
     moderationReason: row.moderationReason,
     isExpired: row.status === "Expired" || (row.status === "Active" && !!row.expiresAt && row.expiresAt < now),
+    expiresAt: row.expiresAt,
   }));
 }
 

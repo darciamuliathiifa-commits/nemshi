@@ -33,6 +33,23 @@ export function formatRelativeTime(date: Date | string): string {
   return target.toLocaleString("id-ID");
 }
 
+/** Hitung mundur untuk iklan/permintaan Aktif, mis. "Sisa 2 hari". */
+export function formatRemainingLabel(expiresAt: Date | string): string {
+  const target = typeof expiresAt === "string" ? new Date(expiresAt) : expiresAt;
+  const diffMs = target.getTime() - Date.now();
+
+  if (diffMs <= 0) return "Segera berakhir";
+
+  const diffMinutes = Math.floor(diffMs / (60 * 1000));
+  if (diffMinutes < 60) return `Sisa ${diffMinutes} menit`;
+
+  const diffHours = Math.floor(diffMinutes / 60);
+  if (diffHours < 24) return `Sisa ${diffHours} jam`;
+
+  const diffDays = Math.ceil(diffHours / 24);
+  return `Sisa ${diffDays} hari`;
+}
+
 export function verificationLabel(status: string): string | null {
   if (status === "Identity_Verified") return "Identitas Terverifikasi";
   if (status === "Skill_Verified") return "Keahlian Terverifikasi";
