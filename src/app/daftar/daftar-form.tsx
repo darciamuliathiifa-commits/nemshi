@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { EmergencyContactFields, type EmergencyContact } from "@/components/emergency-contact-fields";
 
 export function DaftarForm() {
   const router = useRouter();
@@ -14,6 +15,9 @@ export function DaftarForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState<"Pelanggan" | "Penyedia_Jasa">("Pelanggan");
+  const [emergencyContacts, setEmergencyContacts] = useState<EmergencyContact[]>([
+    { fullName: "", phoneNumber: "" },
+  ]);
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
@@ -35,13 +39,14 @@ export function DaftarForm() {
     const bootstrapResponse = await fetch("/api/auth/bootstrap-profile", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ fullName, role }),
+      body: JSON.stringify({ fullName, role, emergencyContacts }),
     });
 
     setSubmitting(false);
 
     if (!bootstrapResponse.ok) {
-      setError("Akun dibuat, tetapi profil gagal disiapkan. Coba masuk secara manual.");
+      const data = await bootstrapResponse.json().catch(() => null);
+      setError(data?.error ?? "Akun dibuat, tetapi profil gagal disiapkan. Coba masuk secara manual.");
       return;
     }
 
@@ -109,6 +114,8 @@ export function DaftarForm() {
             </label>
           </div>
         </div>
+
+        <EmergencyContactFields contacts={emergencyContacts} onChange={setEmergencyContacts} />
 
         {error && <p className="text-sm text-red-600">{error}</p>}
 

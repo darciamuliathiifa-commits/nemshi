@@ -97,6 +97,9 @@ export default function AkunSayaPage() {
           <Link href="/akun/transaksi" className="hover:underline">
             Riwayat Transaksi
           </Link>
+          <Link href="/akun/kontak-darurat" className="hover:underline">
+            Kontak Darurat
+          </Link>
           <Link href={`/profil/${profile.id}`} className="hover:underline">
             Lihat profil publik →
           </Link>

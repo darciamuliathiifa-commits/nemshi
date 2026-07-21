@@ -78,6 +78,13 @@
       "when": 1784642480348,
       "tag": "0010_needy_daredevil",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1784643470439,
+      "tag": "0011_brave_sunfire",
+      "breakpoints": true
     }
   ]
 }

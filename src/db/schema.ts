@@ -88,6 +88,18 @@ export const reportStatusEnum = pgEnum("report_status", [
   "Ditinjau",
 ]);
 
+// Kontak darurat pengguna — hanya untuk verifikasi identitas dan
+// keperluan keamanan oleh admin, tidak pernah ditampilkan ke publik.
+export const emergencyContacts = pgTable("emergency_contacts", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: uuid("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  fullName: text("full_name").notNull(),
+  phoneNumber: text("phone_number").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
 export const users = pgTable("users", {
   id: uuid("id").primaryKey().defaultRandom(),
   fullName: text("full_name").notNull(),
@@ -261,6 +273,7 @@ export const usersRelations = relations(users, ({ many }) => ({
   orders: many(orders),
   adminActivityLogs: many(adminActivityLogs),
   reports: many(reports),
+  emergencyContacts: many(emergencyContacts),
 }));
 
 export const reportsRelations = relations(reports, ({ one }) => ({
@@ -270,6 +283,13 @@ export const reportsRelations = relations(reports, ({ one }) => ({
   }),
   reporter: one(users, {
     fields: [reports.reporterUserId],
+    references: [users.id],
+  }),
+}));
+
+export const emergencyContactsRelations = relations(emergencyContacts, ({ one }) => ({
+  user: one(users, {
+    fields: [emergencyContacts.userId],
     references: [users.id],
   }),
 }));
