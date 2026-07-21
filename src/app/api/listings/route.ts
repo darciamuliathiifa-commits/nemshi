@@ -3,6 +3,7 @@ import { getCurrentUserId } from "@/lib/current-user";
 import { addListingPhotos, createListing, getActiveListings } from "@/lib/listings";
 import { createOrder } from "@/lib/orders";
 import { consumeQuota } from "@/lib/quotas";
+import { isUserSuspended } from "@/lib/users";
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
@@ -20,6 +21,13 @@ export async function POST(request: NextRequest) {
   const userId = await getCurrentUserId();
   if (!userId) {
     return NextResponse.json({ error: "Belum masuk" }, { status: 401 });
+  }
+
+  if (await isUserSuspended(userId)) {
+    return NextResponse.json(
+      { error: "Akun Anda telah ditangguhkan permanen dan tidak dapat memasang iklan baru." },
+      { status: 403 }
+    );
   }
 
   const body = await request.json();

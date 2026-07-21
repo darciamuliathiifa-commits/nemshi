@@ -73,6 +73,21 @@ export const fundStatusEnum = pgEnum("fund_status", [
   "Dikembalikan",
 ]);
 
+// REPORTS.reason
+export const reportReasonEnum = pgEnum("report_reason", [
+  "Penipuan",
+  "Informasi_Palsu",
+  "Spam",
+  "Konten_Tidak_Pantas",
+  "Lainnya",
+]);
+
+// REPORTS.status
+export const reportStatusEnum = pgEnum("report_status", [
+  "Belum_Ditinjau",
+  "Ditinjau",
+]);
+
 export const users = pgTable("users", {
   id: uuid("id").primaryKey().defaultRandom(),
   fullName: text("full_name").notNull(),
@@ -84,6 +99,10 @@ export const users = pgTable("users", {
     .notNull()
     .default("Unverified"),
   isAdmin: boolean("is_admin").notNull().default(false),
+  // Penangguhan permanen akibat pelanggaran berat (lihat fitur Keamanan
+  // Komunitas) — akun tidak bisa memasang iklan/permintaan baru lagi.
+  isSuspended: boolean("is_suspended").notNull().default(false),
+  suspendedReason: text("suspended_reason"),
   createdAt: timestamp("created_at", { withTimezone: true })
     .notNull()
     .defaultNow(),
@@ -219,12 +238,40 @@ export const listingImpressions = pgTable("listing_impressions", {
   viewedAt: timestamp("viewed_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
+// Laporan pengguna atas iklan yang mencurigakan/tidak pantas.
+export const reports = pgTable("reports", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  listingId: uuid("listing_id")
+    .notNull()
+    .references(() => listings.id, { onDelete: "cascade" }),
+  reporterUserId: uuid("reporter_user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  reason: reportReasonEnum("reason").notNull(),
+  description: text("description"),
+  status: reportStatusEnum("status").notNull().default("Belum_Ditinjau"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  reviewedAt: timestamp("reviewed_at", { withTimezone: true }),
+});
+
 export const usersRelations = relations(users, ({ many }) => ({
   listings: many(listings),
   quotas: many(userQuotas),
   testimonials: many(testimonials),
   orders: many(orders),
   adminActivityLogs: many(adminActivityLogs),
+  reports: many(reports),
+}));
+
+export const reportsRelations = relations(reports, ({ one }) => ({
+  listing: one(listings, {
+    fields: [reports.listingId],
+    references: [listings.id],
+  }),
+  reporter: one(users, {
+    fields: [reports.reporterUserId],
+    references: [users.id],
+  }),
 }));
 
 export const adminActivityLogsRelations = relations(adminActivityLogs, ({ one }) => ({
@@ -277,6 +324,7 @@ export const listingsRelations = relations(listings, ({ one, many }) => ({
   clicks: many(clickAnalytics),
   impressions: many(listingImpressions),
   orders: many(orders),
+  reports: many(reports),
 }));
 
 export const listingPhotosRelations = relations(listingPhotos, ({ one }) => ({

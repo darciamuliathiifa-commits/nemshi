@@ -4,6 +4,7 @@ import { requireAdminForPage } from "@/lib/admin";
 const NAV_ITEMS = [
   { href: "/admin", label: "Dashboard" },
   { href: "/admin/moderasi", label: "Antrean Moderasi" },
+  { href: "/admin/laporan", label: "Laporan Komunitas" },
   { href: "/admin/jasa", label: "Kelola Jasa" },
   { href: "/admin/pengguna", label: "Kelola Pengguna" },
   { href: "/admin/testimoni", label: "Testimoni" },

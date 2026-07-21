@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import type { ListingDetail } from "@/lib/listings";
 import { formatPriceLabel } from "@/lib/format";
 import { VerificationBadge } from "@/components/verification-badge";
+import { ReportListingButton } from "@/components/report-listing-button";
 
 export function ListingDetailClient({ listing }: { listing: ListingDetail }) {
   const router = useRouter();
@@ -146,6 +147,10 @@ export function ListingDetailClient({ listing }: { listing: ListingDetail }) {
           </button>
         </div>
       )}
+
+      <div className="border-t border-black/5 pt-4">
+        <ReportListingButton listingId={listing.id} />
+      </div>
     </article>
   );
 }

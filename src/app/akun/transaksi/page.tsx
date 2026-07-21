@@ -1,6 +1,5 @@
 import Link from "next/link";
-import { redirect } from "next/navigation";
-import { getCurrentUserId } from "@/lib/current-user";
+import { requireActiveUser } from "@/lib/current-user";
 import { getUserOrders } from "@/lib/orders";
 import { PRODUCT_LABELS, type OrderProductType } from "@/lib/pricing";
 import { formatRupiah } from "@/lib/format";
@@ -9,10 +8,7 @@ import { PaymentStatusBadge, FundStatusBadge } from "@/components/order-status-b
 export const dynamic = "force-dynamic";
 
 export default async function RiwayatTransaksiPage() {
-  const userId = await getCurrentUserId();
-  if (!userId) {
-    redirect("/masuk?redirectTo=/akun/transaksi");
-  }
+  const userId = await requireActiveUser("/akun/transaksi");
 
   const ordersList = await getUserOrders(userId);
 

@@ -46,6 +46,16 @@ export async function getPublicProfile(userId: string): Promise<PublicProfile | 
   return user ?? null;
 }
 
+export async function isUserSuspended(userId: string): Promise<boolean> {
+  const [user] = await db
+    .select({ isSuspended: users.isSuspended })
+    .from(users)
+    .where(eq(users.id, userId))
+    .limit(1);
+
+  return user?.isSuspended ?? false;
+}
+
 export async function getUserActiveListings(userId: string) {
   const rows = await db
     .select({

@@ -8,6 +8,7 @@ type AdminUser = {
   email: string;
   verificationStatus: string;
   isAdmin: boolean;
+  isSuspended: boolean;
   createdAt: string;
 };
 
@@ -70,6 +71,11 @@ export default function KelolaPenggunaPage() {
                     {user.isAdmin && (
                       <span className="ml-2 rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
                         Admin
+                      </span>
+                    )}
+                    {user.isSuspended && (
+                      <span className="ml-2 rounded-full bg-red-100 px-2 py-0.5 text-xs font-medium text-red-700">
+                        Ditangguhkan
                       </span>
                     )}
                   </td>

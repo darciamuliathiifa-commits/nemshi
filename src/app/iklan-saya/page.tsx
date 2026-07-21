@@ -1,6 +1,5 @@
 import Link from "next/link";
-import { redirect } from "next/navigation";
-import { getCurrentUserId } from "@/lib/current-user";
+import { requireActiveUser } from "@/lib/current-user";
 import { getOwnListingCards } from "@/lib/listings";
 import { getUserActivitySummary } from "@/lib/users";
 import { ListingCard } from "@/components/listing-card";
@@ -8,10 +7,7 @@ import { ListingCard } from "@/components/listing-card";
 export const dynamic = "force-dynamic";
 
 export default async function IklanSayaPage() {
-  const userId = await getCurrentUserId();
-  if (!userId) {
-    redirect("/masuk?redirectTo=/iklan-saya");
-  }
+  const userId = await requireActiveUser("/iklan-saya");
 
   const [listingsList, activity] = await Promise.all([
     getOwnListingCards(userId, "Offers_Service"),
