@@ -2,7 +2,7 @@ import { and, desc, eq } from "drizzle-orm";
 import { db } from "@/db";
 import { listings, orders, userQuotas, users } from "@/db/schema";
 import { type OrderProductType, PRODUCT_PRICES, requiresModeration } from "@/lib/pricing";
-import { refundListingSlotQuota } from "@/lib/quotas";
+import { refundQuota } from "@/lib/quotas";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
@@ -148,7 +148,8 @@ export async function rejectListingOrder(listingId: string, reason?: string) {
   if (!updatedListing) throw new Error("Iklan tidak ditemukan.");
 
   if (updatedListing.paidWithQuota) {
-    await refundListingSlotQuota(updatedListing.userId);
+    const quotaType = updatedListing.type === "Offers_Service" ? "Listing_Slot" : "Priority_Slot";
+    await refundQuota(updatedListing.userId, quotaType);
   }
 
   return updatedListing;

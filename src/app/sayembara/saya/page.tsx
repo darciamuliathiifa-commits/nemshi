@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getCurrentUserId } from "@/lib/current-user";
 import { getUserNeedsServiceListings } from "@/lib/listings";
+import { getUserActivitySummary } from "@/lib/users";
 import { ListingStatusBadge } from "@/components/listing-status-badge";
 
 export const dynamic = "force-dynamic";
@@ -12,7 +13,12 @@ export default async function SayembaraSayaPage() {
     redirect("/masuk?redirectTo=/sayembara/saya");
   }
 
-  const listingsList = await getUserNeedsServiceListings(userId);
+  const [listingsList, activity] = await Promise.all([
+    getUserNeedsServiceListings(userId),
+    getUserActivitySummary(userId),
+  ]);
+
+  const prioritySlotQuota = activity.quotas.find((q) => q.quotaType === "Priority_Slot");
 
   return (
     <main className="mx-auto max-w-2xl px-4 py-8 sm:px-6 lg:px-8">
@@ -29,6 +35,20 @@ export default async function SayembaraSayaPage() {
           Buat Sayembara
         </Link>
       </div>
+
+      <section className="mb-6 rounded-xl border border-black/5 bg-white p-4">
+        <p className="text-sm text-text-secondary">
+          Sisa Kuota Cari Jasa Prioritas:{" "}
+          <span className="font-semibold text-primary">
+            {prioritySlotQuota?.remainingAmount ?? 0}
+          </span>
+          {prioritySlotQuota && (
+            <span className="ml-1">
+              (berlaku hingga {new Date(prioritySlotQuota.validityEnd).toLocaleDateString("id-ID")})
+            </span>
+          )}
+        </p>
+      </section>
 
       {listingsList.length === 0 ? (
         <p className="text-text-secondary">Kamu belum pernah membuat sayembara.</p>

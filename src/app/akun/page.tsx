@@ -159,7 +159,12 @@ export default function AkunSayaPage() {
                 key={quota.id}
                 className="flex items-center justify-between rounded-xl bg-[#f0f4f6] px-4 py-3 text-sm"
               >
-                <span>{QUOTA_LABELS[quota.quotaType] ?? quota.quotaType}</span>
+                <span>
+                  {QUOTA_LABELS[quota.quotaType] ?? quota.quotaType}
+                  <span className="block text-xs text-text-secondary">
+                    Berlaku hingga {new Date(quota.validityEnd).toLocaleDateString("id-ID")}
+                  </span>
+                </span>
                 <span className="font-semibold text-primary">{quota.remainingAmount} tersisa</span>
               </li>
             ))}

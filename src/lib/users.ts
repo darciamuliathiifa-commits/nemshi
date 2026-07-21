@@ -1,4 +1,4 @@
-import { and, avg, count, desc, eq } from "drizzle-orm";
+import { and, avg, count, desc, eq, gt } from "drizzle-orm";
 import { db } from "@/db";
 import { listings, testimonials, userQuotas, users } from "@/db/schema";
 
@@ -112,10 +112,12 @@ export async function createTestimonial(
 }
 
 export async function getUserActivitySummary(userId: string) {
+  // Kuota yang validity_end-nya sudah lewat dianggap hangus — tidak
+  // ditampilkan sebagai "sisa kuota" meskipun remaining_amount > 0.
   const quotas = await db
     .select()
     .from(userQuotas)
-    .where(eq(userQuotas.userId, userId))
+    .where(and(eq(userQuotas.userId, userId), gt(userQuotas.validityEnd, new Date())))
     .orderBy(desc(userQuotas.validityEnd));
 
   const activityListings = await db

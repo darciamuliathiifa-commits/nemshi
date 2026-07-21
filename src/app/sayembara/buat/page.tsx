@@ -20,6 +20,8 @@ export default function BuatSayembaraPage() {
   const [priceMin, setPriceMin] = useState("");
   const [priceMax, setPriceMax] = useState("");
   const [tier, setTier] = useState<"Gratis" | "Prioritas">("Gratis");
+  const [paymentMethod, setPaymentMethod] = useState<"Bayar" | "Kuota">("Bayar");
+  const [prioritySlotQuota, setPrioritySlotQuota] = useState(0);
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
@@ -27,11 +29,16 @@ export default function BuatSayembaraPage() {
     Promise.all([
       fetch("/api/categories").then((r) => r.json()),
       fetch("/api/areas").then((r) => r.json()),
-    ]).then(([categoriesData, areasData]) => {
+      fetch("/api/me/activity").then((r) => (r.ok ? r.json() : { quotas: [] })),
+    ]).then(([categoriesData, areasData, activity]) => {
       setCategories(categoriesData);
       setAreas(areasData);
       if (categoriesData[0]) setCategoryId(categoriesData[0].id);
       if (areasData[0]) setAreaId(areasData[0].id);
+      const slot = activity.quotas?.find(
+        (q: { quotaType: string; remainingAmount: number }) => q.quotaType === "Priority_Slot"
+      );
+      setPrioritySlotQuota(slot?.remainingAmount ?? 0);
     });
   }, []);
 
@@ -53,6 +60,7 @@ export default function BuatSayembaraPage() {
         priceMin,
         priceMax,
         tier,
+        paymentMethod: tier === "Prioritas" ? paymentMethod : undefined,
       }),
     });
 
@@ -219,6 +227,29 @@ export default function BuatSayembaraPage() {
           </label>
         </div>
 
+        {tier === "Prioritas" && (
+          <div className="flex flex-col gap-2 text-sm text-text-secondary">
+            Cara Bayar
+            <label className="flex items-center gap-2 rounded-xl border border-black/10 p-3">
+              <input
+                type="radio"
+                checked={paymentMethod === "Bayar"}
+                onChange={() => setPaymentMethod("Bayar")}
+              />
+              Bayar Rp12.000
+            </label>
+            <label className="flex items-center gap-2 rounded-xl border border-black/10 p-3">
+              <input
+                type="radio"
+                checked={paymentMethod === "Kuota"}
+                onChange={() => setPaymentMethod("Kuota")}
+                disabled={prioritySlotQuota <= 0}
+              />
+              Pakai Kuota Paket Plus ({prioritySlotQuota} tersisa)
+            </label>
+          </div>
+        )}
+
         {error && <p className="text-sm text-red-600">{error}</p>}
 
         <button
@@ -226,7 +257,13 @@ export default function BuatSayembaraPage() {
           disabled={submitting}
           className="mt-2 rounded-xl bg-primary px-5 py-3 font-semibold text-white disabled:opacity-60"
         >
-          {submitting ? "Memproses..." : tier === "Prioritas" ? "Lanjut ke Pembayaran" : "Pasang Gratis"}
+          {submitting
+            ? "Memproses..."
+            : tier === "Prioritas"
+              ? paymentMethod === "Kuota"
+                ? "Pasang dengan Kuota"
+                : "Lanjut ke Pembayaran"
+              : "Pasang Gratis"}
         </button>
       </form>
     </main>

@@ -6,6 +6,7 @@ import {
   getActiveListings,
 } from "@/lib/listings";
 import { createOrder } from "@/lib/orders";
+import { consumeQuota } from "@/lib/quotas";
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
@@ -33,6 +34,7 @@ export async function POST(request: NextRequest) {
   const areaId = typeof body.areaId === "string" ? body.areaId : "";
   const priceType = body.priceType === "Range" ? "Range" : "Contact";
   const tier = body.tier === "Prioritas" ? "Prioritas" : "Gratis";
+  const paymentMethod = body.paymentMethod === "Kuota" ? "Kuota" : "Bayar";
 
   if (!title || !description || !whatsappLink || !categoryId || !areaId) {
     return NextResponse.json({ error: "Semua kolom wajib diisi" }, { status: 400 });
@@ -50,6 +52,19 @@ export async function POST(request: NextRequest) {
     }
   }
 
+  let paidWithQuota = false;
+
+  if (isPriority && paymentMethod === "Kuota") {
+    const consumed = await consumeQuota(userId, "Priority_Slot");
+    if (!consumed) {
+      return NextResponse.json(
+        { error: "Kuota Cari Jasa Prioritas tidak tersedia. Silakan bayar Rp12.000." },
+        { status: 400 }
+      );
+    }
+    paidWithQuota = true;
+  }
+
   const listing = await createListing(userId, {
     type: "Needs_Service",
     categoryId,
@@ -61,9 +76,10 @@ export async function POST(request: NextRequest) {
     priceMin: priceType === "Range" ? Number(body.priceMin) || null : null,
     priceMax: priceType === "Range" ? Number(body.priceMax) || null : null,
     isPriority,
+    paidWithQuota,
   });
 
-  if (!isPriority) {
+  if (!isPriority || paidWithQuota) {
     return NextResponse.json({ listing, order: null }, { status: 201 });
   }
 

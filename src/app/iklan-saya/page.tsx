@@ -42,6 +42,11 @@ export default async function IklanSayaPage() {
           <span className="font-semibold text-primary">
             {listingSlotQuota?.remainingAmount ?? 0}
           </span>
+          {listingSlotQuota && (
+            <span className="ml-1">
+              (berlaku hingga {new Date(listingSlotQuota.validityEnd).toLocaleDateString("id-ID")})
+            </span>
+          )}
         </p>
       </section>
 

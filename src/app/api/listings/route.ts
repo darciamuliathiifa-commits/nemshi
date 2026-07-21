@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getCurrentUserId } from "@/lib/current-user";
 import { addListingPhotos, createListing, getActiveListings } from "@/lib/listings";
 import { createOrder } from "@/lib/orders";
-import { consumeListingSlotQuota } from "@/lib/quotas";
+import { consumeQuota } from "@/lib/quotas";
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
   let paidWithQuota = false;
 
   if (paymentMethod === "Kuota") {
-    const consumed = await consumeListingSlotQuota(userId);
+    const consumed = await consumeQuota(userId, "Listing_Slot");
     if (!consumed) {
       return NextResponse.json(
         { error: "Kuota Tawarkan Jasa tidak tersedia. Silakan bayar Rp50.000." },

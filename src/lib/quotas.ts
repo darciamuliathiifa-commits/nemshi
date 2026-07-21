@@ -2,18 +2,20 @@ import { and, desc, eq, gt } from "drizzle-orm";
 import { db } from "@/db";
 import { userQuotas } from "@/db/schema";
 
+type QuotaType = "Listing_Slot" | "Priority_Slot";
+
 /**
- * Memakai 1 kuota Listing_Slot (dari Paket Plus) yang masih berlaku.
+ * Memakai 1 kuota (dari Paket Plus) yang masih berlaku.
  * Mengembalikan false jika tidak ada kuota tersedia.
  */
-export async function consumeListingSlotQuota(userId: string): Promise<boolean> {
+export async function consumeQuota(userId: string, quotaType: QuotaType): Promise<boolean> {
   const [quota] = await db
     .select()
     .from(userQuotas)
     .where(
       and(
         eq(userQuotas.userId, userId),
-        eq(userQuotas.quotaType, "Listing_Slot"),
+        eq(userQuotas.quotaType, quotaType),
         gt(userQuotas.remainingAmount, 0),
         gt(userQuotas.validityEnd, new Date())
       )
@@ -32,14 +34,14 @@ export async function consumeListingSlotQuota(userId: string): Promise<boolean> 
 }
 
 /**
- * Mengembalikan 1 kuota Listing_Slot ke pengguna, dipakai saat iklan yang
+ * Mengembalikan 1 kuota ke pengguna, dipakai saat iklan/sayembara yang
  * dibayar pakai kuota ditolak moderasi.
  */
-export async function refundListingSlotQuota(userId: string): Promise<void> {
+export async function refundQuota(userId: string, quotaType: QuotaType): Promise<void> {
   const [quota] = await db
     .select()
     .from(userQuotas)
-    .where(and(eq(userQuotas.userId, userId), eq(userQuotas.quotaType, "Listing_Slot")))
+    .where(and(eq(userQuotas.userId, userId), eq(userQuotas.quotaType, quotaType)))
     .orderBy(desc(userQuotas.validityEnd))
     .limit(1);
 
