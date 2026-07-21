@@ -11,6 +11,15 @@ export async function getTotalRevenue(): Promise<number> {
   return Number(row?.total ?? 0);
 }
 
+export async function getTraktirTotal(): Promise<number> {
+  const [row] = await db
+    .select({ total: sum(orders.amount) })
+    .from(orders)
+    .where(and(eq(orders.productType, "Traktir_Platform"), eq(orders.paymentStatus, "Sukses")));
+
+  return Number(row?.total ?? 0);
+}
+
 export async function getAvgClicksPerCategory() {
   const listingCounts = await db
     .select({

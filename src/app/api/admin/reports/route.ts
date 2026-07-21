@@ -5,6 +5,7 @@ import {
   getMonthlyRevenue,
   getRenewalRatio,
   getTotalRevenue,
+  getTraktirTotal,
 } from "@/lib/admin-reports";
 
 export async function GET() {
@@ -13,12 +14,20 @@ export async function GET() {
     return NextResponse.json({ error: "Tidak diizinkan" }, { status: 403 });
   }
 
-  const [totalRevenue, avgClicksPerCategory, renewalRatio, monthlyRevenue] = await Promise.all([
-    getTotalRevenue(),
-    getAvgClicksPerCategory(),
-    getRenewalRatio(),
-    getMonthlyRevenue(3),
-  ]);
+  const [totalRevenue, avgClicksPerCategory, renewalRatio, monthlyRevenue, traktirTotal] =
+    await Promise.all([
+      getTotalRevenue(),
+      getAvgClicksPerCategory(),
+      getRenewalRatio(),
+      getMonthlyRevenue(3),
+      getTraktirTotal(),
+    ]);
 
-  return NextResponse.json({ totalRevenue, avgClicksPerCategory, renewalRatio, monthlyRevenue });
+  return NextResponse.json({
+    totalRevenue,
+    avgClicksPerCategory,
+    renewalRatio,
+    monthlyRevenue,
+    traktirTotal,
+  });
 }

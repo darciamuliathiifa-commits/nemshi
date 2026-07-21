@@ -123,7 +123,17 @@ export default function RingkasanPesananPage() {
         </section>
       )}
 
-      {order.paymentStatus === "Sukses" && (
+      {order.paymentStatus === "Sukses" && order.productType === "Traktir_Platform" && (
+        <div className="rounded-xl border border-primary/20 bg-primary/5 p-6 text-center">
+          <p className="mb-1 text-lg font-semibold text-text">Terima kasih atas apresiasimu!</p>
+          <p className="text-sm text-text-secondary">
+            Donasi {formatRupiah(order.amount)} sudah kami terima dan digunakan untuk mendukung
+            pengembangan Nemshi.
+          </p>
+        </div>
+      )}
+
+      {order.paymentStatus === "Sukses" && order.productType !== "Traktir_Platform" && (
         <p className="text-sm text-text-secondary">
           Pembayaran berhasil.{" "}
           {order.fundStatus === "Ditahan"

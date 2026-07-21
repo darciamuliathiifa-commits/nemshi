@@ -8,6 +8,7 @@ type Report = {
   avgClicksPerCategory: { categoryName: string; averageClicks: number }[];
   renewalRatio: number;
   monthlyRevenue: { month: string; total: number }[];
+  traktirTotal: number;
 };
 
 export default function AdminDashboardPage() {
@@ -38,7 +39,7 @@ export default function AdminDashboardPage() {
         </a>
       </div>
 
-      <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
+      <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <div className="rounded-xl border border-black/5 bg-white p-5">
           <p className="text-sm text-text-secondary">Total Pendapatan</p>
           <p className="mt-1 text-2xl font-bold text-primary">
@@ -58,6 +59,12 @@ export default function AdminDashboardPage() {
           <p className="text-sm text-text-secondary">Kategori Terpantau</p>
           <p className="mt-1 text-2xl font-bold text-primary">
             {report.avgClicksPerCategory.length}
+          </p>
+        </div>
+        <div className="rounded-xl border border-black/5 bg-white p-5">
+          <p className="text-sm text-text-secondary">Donasi Traktir Platform</p>
+          <p className="mt-1 text-2xl font-bold text-primary">
+            {formatRupiah(report.traktirTotal)}
           </p>
         </div>
       </div>

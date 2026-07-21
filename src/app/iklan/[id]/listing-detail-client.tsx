@@ -3,12 +3,16 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import type { ListingDetail } from "@/lib/listings";
 import { formatPriceLabel } from "@/lib/format";
 import { VerificationBadge } from "@/components/verification-badge";
 
 export function ListingDetailClient({ listing }: { listing: ListingDetail }) {
+  const router = useRouter();
   const [activePhoto, setActivePhoto] = useState(0);
+  const [contacted, setContacted] = useState(false);
+  const [creatingTraktir, setCreatingTraktir] = useState(false);
   const photos = listing.photos.length > 0 ? listing.photos : [];
 
   useEffect(() => {
@@ -21,7 +25,23 @@ export function ListingDetailClient({ listing }: { listing: ListingDetail }) {
       await fetch(`/api/listings/${listing.id}/click`, { method: "POST" });
     } finally {
       window.open(listing.whatsappLink, "_blank", "noopener,noreferrer");
+      setContacted(true);
     }
+  }
+
+  async function handleTraktir() {
+    setCreatingTraktir(true);
+    const response = await fetch("/api/orders", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ productType: "Traktir_Platform", listingId: listing.id }),
+    });
+    if (response.status === 401) {
+      router.push(`/masuk?redirectTo=/iklan/${listing.id}`);
+      return;
+    }
+    const order = await response.json();
+    router.push(`/bayar/${order.id}`);
   }
 
   return (
@@ -110,6 +130,22 @@ export function ListingDetailClient({ listing }: { listing: ListingDetail }) {
         Nemshi menjamin exposure (tampilan dan klik), bukan kepastian kesepakatan kerja. Seluruh
         negosiasi dan transaksi dilakukan mandiri di WhatsApp.
       </p>
+
+      {contacted && (
+        <div className="rounded-xl border border-black/5 bg-[#f0f4f6] p-4">
+          <p className="mb-3 text-sm text-text-secondary">
+            Berhasil terhubung dengan penyedia jasa? Dukung pengembangan Nemshi lewat apresiasi
+            sukarela.
+          </p>
+          <button
+            onClick={handleTraktir}
+            disabled={creatingTraktir}
+            className="rounded-xl border border-primary px-5 py-2.5 text-sm font-semibold text-primary hover:bg-primary/5 disabled:opacity-60"
+          >
+            {creatingTraktir ? "Memproses..." : "Traktir Platform (Rp5.000)"}
+          </button>
+        </div>
+      )}
     </article>
   );
 }
