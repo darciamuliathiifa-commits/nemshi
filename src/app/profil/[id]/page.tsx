@@ -2,8 +2,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { VerificationBadge } from "@/components/verification-badge";
-import { StarRating } from "@/components/star-rating";
 import { getPublicProfile, getUserActiveListings, getUserTestimonials } from "@/lib/users";
+import { TestimonialsSection } from "./testimonials-section";
+
+export const dynamic = "force-dynamic";
 
 export default async function PublicProfilePage({
   params,
@@ -41,14 +43,6 @@ export default async function PublicProfilePage({
         <div className="flex flex-col gap-1">
           <h1 className="text-xl font-bold text-text">{profile.fullName}</h1>
           <VerificationBadge status={profile.verificationStatus} />
-          {testimonials.totalCount > 0 && (
-            <div className="flex items-center gap-1 text-sm text-text-secondary">
-              <StarRating rating={testimonials.averageRating ?? 0} />
-              <span>
-                {testimonials.averageRating?.toFixed(1)} ({testimonials.totalCount} testimoni)
-              </span>
-            </div>
-          )}
         </div>
         {profile.whatsappLink && (
           <a
@@ -98,24 +92,7 @@ export default async function PublicProfilePage({
         </section>
       )}
 
-      <section className="mt-6">
-        <h2 className="mb-3 font-semibold text-text">Testimoni</h2>
-        {testimonials.items.length === 0 ? (
-          <p className="text-sm text-text-secondary">Belum ada testimoni.</p>
-        ) : (
-          <ul className="flex flex-col gap-3">
-            {testimonials.items.map((testimonial) => (
-              <li key={testimonial.id} className="rounded-xl border border-black/5 bg-white p-4">
-                <div className="mb-1 flex items-center justify-between">
-                  <span className="font-medium text-text">{testimonial.reviewerName}</span>
-                  <StarRating rating={testimonial.rating} size="text-sm" />
-                </div>
-                <p className="text-sm text-text-secondary">{testimonial.comment}</p>
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
+      <TestimonialsSection userId={id} initialData={testimonials} />
     </main>
   );
 }

@@ -150,6 +150,8 @@ export const testimonials = pgTable("testimonials", {
   reviewerName: text("reviewer_name").notNull(),
   rating: integer("rating").notNull(),
   comment: text("comment").notNull(),
+  // disembunyikan dari profil publik oleh admin, tanpa menghapus datanya
+  isHidden: boolean("is_hidden").notNull().default(false),
   createdAt: timestamp("created_at", { withTimezone: true })
     .notNull()
     .defaultNow(),

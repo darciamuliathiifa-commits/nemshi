@@ -45,6 +45,8 @@ export async function getUserActiveListings(userId: string) {
 }
 
 export async function getUserTestimonials(userId: string) {
+  const visible = and(eq(testimonials.revieweeUserId, userId), eq(testimonials.isHidden, false));
+
   const rows = await db
     .select({
       id: testimonials.id,
@@ -54,7 +56,7 @@ export async function getUserTestimonials(userId: string) {
       createdAt: testimonials.createdAt,
     })
     .from(testimonials)
-    .where(eq(testimonials.revieweeUserId, userId))
+    .where(visible)
     .orderBy(desc(testimonials.createdAt));
 
   const [summary] = await db
@@ -63,13 +65,30 @@ export async function getUserTestimonials(userId: string) {
       totalCount: count(testimonials.id),
     })
     .from(testimonials)
-    .where(eq(testimonials.revieweeUserId, userId));
+    .where(visible);
 
   return {
     items: rows,
     averageRating: summary?.averageRating ? Number(summary.averageRating) : null,
     totalCount: summary?.totalCount ?? 0,
   };
+}
+
+export async function createTestimonial(
+  revieweeUserId: string,
+  data: { reviewerName: string; rating: number; comment: string }
+) {
+  const [testimonial] = await db
+    .insert(testimonials)
+    .values({
+      revieweeUserId,
+      reviewerName: data.reviewerName,
+      rating: data.rating,
+      comment: data.comment,
+    })
+    .returning();
+
+  return testimonial;
 }
 
 export async function getUserActivitySummary(userId: string) {
