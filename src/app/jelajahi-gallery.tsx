@@ -50,7 +50,12 @@ export function JelajahiGallery() {
   return (
     <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
       <header className="mb-8 flex flex-col gap-2">
-        <h1 className="text-3xl font-extrabold text-text">Nemshi</h1>
+        <div className="flex items-start justify-between gap-4">
+          <h1 className="text-3xl font-extrabold text-text">Nemshi</h1>
+          <Link href="/akun" className="shrink-0 text-sm font-medium text-primary hover:underline">
+            Akun Saya
+          </Link>
+        </div>
         <p className="text-text-secondary">
           Direktori iklan jasa untuk Masisir — temukan penyedia jasa dan hubungi langsung via
           WhatsApp.

@@ -12,7 +12,7 @@ export type ListingSummary = {
   coverPhotoUrl: string | null;
   category: { id: string; name: string; slug: string };
   area: { id: string; name: string; slug: string };
-  provider: { fullName: string; verificationStatus: string };
+  provider: { id: string; fullName: string; verificationStatus: string };
 };
 
 export type ListingDetail = ListingSummary & {
@@ -59,6 +59,7 @@ export async function getActiveListings(
       areaId: areas.id,
       areaName: areas.name,
       areaSlug: areas.slug,
+      providerId: users.id,
       providerFullName: users.fullName,
       providerVerificationStatus: users.verificationStatus,
     })
@@ -87,6 +88,7 @@ export async function getActiveListings(
     category: { id: row.categoryId, name: row.categoryName, slug: row.categorySlug },
     area: { id: row.areaId, name: row.areaName, slug: row.areaSlug },
     provider: {
+      id: row.providerId,
       fullName: row.providerFullName,
       verificationStatus: row.providerVerificationStatus,
     },
@@ -111,6 +113,7 @@ export async function getListingById(id: string): Promise<ListingDetail | null> 
       areaId: areas.id,
       areaName: areas.name,
       areaSlug: areas.slug,
+      providerId: users.id,
       providerFullName: users.fullName,
       providerVerificationStatus: users.verificationStatus,
     })
@@ -142,6 +145,7 @@ export async function getListingById(id: string): Promise<ListingDetail | null> 
     category: { id: row.categoryId, name: row.categoryName, slug: row.categorySlug },
     area: { id: row.areaId, name: row.areaName, slug: row.areaSlug },
     provider: {
+      id: row.providerId,
       fullName: row.providerFullName,
       verificationStatus: row.providerVerificationStatus,
     },

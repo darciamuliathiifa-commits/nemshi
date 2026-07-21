@@ -49,6 +49,8 @@ export const users = pgTable("users", {
   id: uuid("id").primaryKey().defaultRandom(),
   fullName: text("full_name").notNull(),
   email: text("email").notNull().unique(),
+  avatarUrl: text("avatar_url"),
+  whatsappLink: text("whatsapp_link"),
   verificationStatus: verificationStatusEnum("verification_status")
     .notNull()
     .default("Unverified"),
@@ -117,6 +119,19 @@ export const userQuotas = pgTable("user_quotas", {
   validityEnd: timestamp("validity_end", { withTimezone: true }).notNull(),
 });
 
+export const testimonials = pgTable("testimonials", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  revieweeUserId: uuid("reviewee_user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  reviewerName: text("reviewer_name").notNull(),
+  rating: integer("rating").notNull(),
+  comment: text("comment").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+});
+
 export const clickAnalytics = pgTable("click_analytics", {
   id: uuid("id").primaryKey().defaultRandom(),
   listingId: uuid("listing_id")
@@ -131,6 +146,14 @@ export const clickAnalytics = pgTable("click_analytics", {
 export const usersRelations = relations(users, ({ many }) => ({
   listings: many(listings),
   quotas: many(userQuotas),
+  testimonials: many(testimonials),
+}));
+
+export const testimonialsRelations = relations(testimonials, ({ one }) => ({
+  reviewee: one(users, {
+    fields: [testimonials.revieweeUserId],
+    references: [users.id],
+  }),
 }));
 
 export const categoriesRelations = relations(categories, ({ many }) => ({

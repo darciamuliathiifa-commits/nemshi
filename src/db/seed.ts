@@ -1,6 +1,6 @@
 import "dotenv/config";
 import { db } from "./index";
-import { areas, categories, listingPhotos, listings, users } from "./schema";
+import { areas, categories, listingPhotos, listings, testimonials, userQuotas, users } from "./schema";
 
 async function seed() {
   const [titipAntar, pindahan, akademik] = await db
@@ -25,10 +25,33 @@ async function seed() {
   const [amina, budi, citra, dedi] = await db
     .insert(users)
     .values([
-      { fullName: "Amina Zahra", email: "amina@example.com", verificationStatus: "Skill_Verified" },
-      { fullName: "Budi Santoso", email: "budi@example.com", verificationStatus: "Identity_Verified" },
-      { fullName: "Citra Dewi", email: "citra@example.com", verificationStatus: "Unverified" },
-      { fullName: "Dedi Kurniawan", email: "dedi@example.com", verificationStatus: "Skill_Verified" },
+      {
+        fullName: "Amina Zahra",
+        email: "amina@example.com",
+        verificationStatus: "Skill_Verified",
+        avatarUrl: "/seed/photo-4.png",
+        whatsappLink: "https://wa.me/201111111111",
+      },
+      {
+        fullName: "Budi Santoso",
+        email: "budi@example.com",
+        verificationStatus: "Identity_Verified",
+        avatarUrl: "/seed/photo-5.png",
+        whatsappLink: "https://wa.me/201222222222",
+      },
+      {
+        fullName: "Citra Dewi",
+        email: "citra@example.com",
+        verificationStatus: "Unverified",
+        whatsappLink: "https://wa.me/201333333333",
+      },
+      {
+        fullName: "Dedi Kurniawan",
+        email: "dedi@example.com",
+        verificationStatus: "Skill_Verified",
+        avatarUrl: "/seed/photo-6.png",
+        whatsappLink: "https://wa.me/201444444444",
+      },
     ])
     .returning();
 
@@ -123,6 +146,23 @@ async function seed() {
         expiresAt: in30Days,
         isPriority: true,
       },
+      {
+        userId: citra.id,
+        categoryId: akademik.id,
+        areaId: alexandria.id,
+        title: "Dicari: Tutor Bahasa Inggris untuk Persiapan IELTS",
+        description:
+          "Mencari tutor Bahasa Inggris berpengalaman untuk membantu persiapan IELTS selama 1 bulan. Lebih disukai yang berpengalaman mengajar mahasiswa.",
+        whatsappLink: "https://wa.me/201333333333",
+        priceType: "Contact",
+        priceMin: null,
+        priceMax: null,
+        status: "Active",
+        type: "Needs_Service",
+        publishedAt: now,
+        expiresAt: new Date(now.getTime() + 24 * 60 * 60 * 1000),
+        isPriority: false,
+      },
     ])
     .returning();
 
@@ -130,6 +170,7 @@ async function seed() {
   let photoSeedIndex = 0;
 
   for (const listing of seededListings) {
+    if (listing.type === "Needs_Service") continue;
     const count = 2 + (photoSeedIndex % 3);
     for (let i = 0; i < count; i++) {
       const seedId = photoSeedIndex % photoCount;
@@ -141,6 +182,42 @@ async function seed() {
       });
     }
   }
+
+  await db.insert(userQuotas).values([
+    {
+      userId: amina.id,
+      quotaType: "Listing_Slot",
+      remainingAmount: 2,
+      validityEnd: new Date(now.getTime() + 90 * 24 * 60 * 60 * 1000),
+    },
+    {
+      userId: amina.id,
+      quotaType: "Priority_Slot",
+      remainingAmount: 1,
+      validityEnd: new Date(now.getTime() + 90 * 24 * 60 * 60 * 1000),
+    },
+  ]);
+
+  await db.insert(testimonials).values([
+    {
+      revieweeUserId: amina.id,
+      reviewerName: "Fajar Ramadhan",
+      rating: 5,
+      comment: "Titipan sampai cepat dan aman, terpercaya banget. Recommended!",
+    },
+    {
+      revieweeUserId: amina.id,
+      reviewerName: "Siti Nurhaliza",
+      rating: 4,
+      comment: "Pelayanan ramah, barang dikemas rapi. Cuma agak lama responnya.",
+    },
+    {
+      revieweeUserId: dedi.id,
+      reviewerName: "Rangga Pratama",
+      rating: 5,
+      comment: "Penjelasannya mudah dipahami, jadi lebih siap ujian Nahwu-Shorof.",
+    },
+  ]);
 
   console.log(`Seeded ${seededListings.length} listings.`);
 }

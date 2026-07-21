@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 import type { ListingDetail } from "@/lib/listings";
 import { formatPriceLabel } from "@/lib/format";
@@ -79,7 +80,9 @@ export function ListingDetailClient({ listing }: { listing: ListingDetail }) {
         </span>
         <h1 className="text-2xl font-bold text-text">{listing.title}</h1>
         <div className="flex items-center gap-2">
-          <span className="font-medium text-text">{listing.provider.fullName}</span>
+          <Link href={`/profil/${listing.provider.id}`} className="font-medium text-text hover:underline">
+            {listing.provider.fullName}
+          </Link>
           <VerificationBadge status={listing.provider.verificationStatus} />
         </div>
         <p className="text-lg font-semibold text-primary">

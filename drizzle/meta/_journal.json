@@ -15,6 +15,13 @@
       "when": 1784627295329,
       "tag": "0001_low_madripoor",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1784628190143,
+      "tag": "0002_colossal_kulan_gath",
+      "breakpoints": true
     }
   ]
 }
