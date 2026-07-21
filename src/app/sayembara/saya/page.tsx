@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getCurrentUserId } from "@/lib/current-user";
-import { getUserNeedsServiceListings } from "@/lib/listings";
+import { getOwnListingCards } from "@/lib/listings";
 import { getUserActivitySummary } from "@/lib/users";
-import { ListingStatusBadge } from "@/components/listing-status-badge";
+import { ListingCard } from "@/components/listing-card";
 
 export const dynamic = "force-dynamic";
 
@@ -14,14 +14,14 @@ export default async function SayembaraSayaPage() {
   }
 
   const [listingsList, activity] = await Promise.all([
-    getUserNeedsServiceListings(userId),
+    getOwnListingCards(userId, "Needs_Service"),
     getUserActivitySummary(userId),
   ]);
 
   const prioritySlotQuota = activity.quotas.find((q) => q.quotaType === "Priority_Slot");
 
   return (
-    <main className="mx-auto max-w-2xl px-4 py-8 sm:px-6 lg:px-8">
+    <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
       <Link href="/sayembara" className="mb-6 inline-block text-sm font-medium text-primary hover:underline">
         ← Kembali ke Cari Jasa
       </Link>
@@ -53,26 +53,11 @@ export default async function SayembaraSayaPage() {
       {listingsList.length === 0 ? (
         <p className="text-text-secondary">Kamu belum pernah membuat sayembara.</p>
       ) : (
-        <ul className="flex flex-col gap-3">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {listingsList.map((listing) => (
-            <li key={listing.id} className="rounded-xl border border-black/5 bg-white p-4">
-              <div className="mb-1 flex items-center justify-between">
-                <Link
-                  href={`/iklan/${listing.id}`}
-                  className="font-medium text-text hover:underline"
-                >
-                  {listing.title}
-                </Link>
-                <ListingStatusBadge status={listing.status} />
-              </div>
-              <p className="text-sm text-text-secondary">
-                {listing.isPriority ? "Prioritas (3 hari)" : "Gratis (24 jam)"}
-                {listing.expiresAt &&
-                  ` · Berakhir ${new Date(listing.expiresAt).toLocaleString("id-ID")}`}
-              </p>
-            </li>
+            <ListingCard key={listing.id} listing={listing} />
           ))}
-        </ul>
+        </div>
       )}
     </main>
   );

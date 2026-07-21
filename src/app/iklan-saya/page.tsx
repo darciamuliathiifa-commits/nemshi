@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getCurrentUserId } from "@/lib/current-user";
-import { getUserOffersServiceListings } from "@/lib/listings";
+import { getOwnListingCards } from "@/lib/listings";
 import { getUserActivitySummary } from "@/lib/users";
-import { ListingStatusBadge } from "@/components/listing-status-badge";
+import { ListingCard } from "@/components/listing-card";
 
 export const dynamic = "force-dynamic";
 
@@ -14,14 +14,14 @@ export default async function IklanSayaPage() {
   }
 
   const [listingsList, activity] = await Promise.all([
-    getUserOffersServiceListings(userId),
+    getOwnListingCards(userId, "Offers_Service"),
     getUserActivitySummary(userId),
   ]);
 
   const listingSlotQuota = activity.quotas.find((q) => q.quotaType === "Listing_Slot");
 
   return (
-    <main className="mx-auto max-w-2xl px-4 py-8 sm:px-6 lg:px-8">
+    <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
       <Link href="/" className="mb-6 inline-block text-sm font-medium text-primary hover:underline">
         ← Kembali ke Jelajahi Iklan Jasa
       </Link>
@@ -61,29 +61,11 @@ export default async function IklanSayaPage() {
       {listingsList.length === 0 ? (
         <p className="text-text-secondary">Kamu belum pernah memasang iklan.</p>
       ) : (
-        <ul className="flex flex-col gap-3">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {listingsList.map((listing) => (
-            <li key={listing.id} className="rounded-xl border border-black/5 bg-white p-4">
-              <div className="mb-1 flex items-center justify-between">
-                <Link
-                  href={`/iklan/${listing.id}`}
-                  className="font-medium text-text hover:underline"
-                >
-                  {listing.title}
-                </Link>
-                <ListingStatusBadge status={listing.status} />
-              </div>
-              {listing.status === "Rejected" && listing.moderationReason && (
-                <p className="text-sm text-red-600">Alasan: {listing.moderationReason}</p>
-              )}
-              {listing.expiresAt && listing.status === "Active" && (
-                <p className="text-sm text-text-secondary">
-                  Tayang sampai {new Date(listing.expiresAt).toLocaleString("id-ID")}
-                </p>
-              )}
-            </li>
+            <ListingCard key={listing.id} listing={listing} />
           ))}
-        </ul>
+        </div>
       )}
     </main>
   );

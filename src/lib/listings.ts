@@ -12,7 +12,13 @@ export type ListingSummary = {
   coverPhotoUrl: string | null;
   category: { id: string; name: string; slug: string };
   area: { id: string; name: string; slug: string };
-  provider: { id: string; fullName: string; verificationStatus: string };
+  provider: { id: string; fullName: string; verificationStatus: string; avatarUrl: string | null };
+};
+
+export type OwnListingCard = ListingSummary & {
+  status: string;
+  moderationReason: string | null;
+  isExpired: boolean;
 };
 
 export type ListingDetail = ListingSummary & {
@@ -74,6 +80,7 @@ export async function getActiveListings(
       providerId: users.id,
       providerFullName: users.fullName,
       providerVerificationStatus: users.verificationStatus,
+      providerAvatarUrl: users.avatarUrl,
     })
     .from(listings)
     .innerJoin(categories, eq(listings.categoryId, categories.id))
@@ -103,6 +110,7 @@ export async function getActiveListings(
       id: row.providerId,
       fullName: row.providerFullName,
       verificationStatus: row.providerVerificationStatus,
+      avatarUrl: row.providerAvatarUrl,
     },
   }));
 }
@@ -128,6 +136,7 @@ export async function getListingById(id: string): Promise<ListingDetail | null> 
       providerId: users.id,
       providerFullName: users.fullName,
       providerVerificationStatus: users.verificationStatus,
+      providerAvatarUrl: users.avatarUrl,
     })
     .from(listings)
     .innerJoin(categories, eq(listings.categoryId, categories.id))
@@ -160,6 +169,7 @@ export async function getListingById(id: string): Promise<ListingDetail | null> 
       id: row.providerId,
       fullName: row.providerFullName,
       verificationStatus: row.providerVerificationStatus,
+      avatarUrl: row.providerAvatarUrl,
     },
     photos: photos.map((p) => p.url),
   };
@@ -252,6 +262,70 @@ export async function getUserOffersServiceListings(userId: string) {
     .from(listings)
     .where(and(eq(listings.userId, userId), eq(listings.type, "Offers_Service")))
     .orderBy(desc(listings.createdAt));
+}
+
+/** Kartu galeri untuk dasbor "Iklan Saya" / "Sayembara Saya" — semua status. */
+export async function getOwnListingCards(
+  userId: string,
+  type: "Offers_Service" | "Needs_Service"
+): Promise<OwnListingCard[]> {
+  const rows = await db
+    .select({
+      id: listings.id,
+      title: listings.title,
+      priceType: listings.priceType,
+      priceMin: listings.priceMin,
+      priceMax: listings.priceMax,
+      isPriority: listings.isPriority,
+      status: listings.status,
+      moderationReason: listings.moderationReason,
+      expiresAt: listings.expiresAt,
+      categoryId: categories.id,
+      categoryName: categories.name,
+      categorySlug: categories.slug,
+      areaId: areas.id,
+      areaName: areas.name,
+      areaSlug: areas.slug,
+      providerId: users.id,
+      providerFullName: users.fullName,
+      providerVerificationStatus: users.verificationStatus,
+      providerAvatarUrl: users.avatarUrl,
+    })
+    .from(listings)
+    .innerJoin(categories, eq(listings.categoryId, categories.id))
+    .innerJoin(areas, eq(listings.areaId, areas.id))
+    .innerJoin(users, eq(listings.userId, users.id))
+    .where(and(eq(listings.userId, userId), eq(listings.type, type)))
+    .orderBy(desc(listings.createdAt));
+
+  const coverPhotos = await db
+    .select({ listingId: listingPhotos.listingId, url: listingPhotos.url })
+    .from(listingPhotos)
+    .where(eq(listingPhotos.sortOrder, 0));
+  const coverByListingId = new Map(coverPhotos.map((p) => [p.listingId, p.url]));
+
+  const now = new Date();
+
+  return rows.map((row) => ({
+    id: row.id,
+    title: row.title,
+    priceType: row.priceType,
+    priceMin: row.priceMin,
+    priceMax: row.priceMax,
+    isPriority: row.isPriority,
+    coverPhotoUrl: coverByListingId.get(row.id) ?? null,
+    category: { id: row.categoryId, name: row.categoryName, slug: row.categorySlug },
+    area: { id: row.areaId, name: row.areaName, slug: row.areaSlug },
+    provider: {
+      id: row.providerId,
+      fullName: row.providerFullName,
+      verificationStatus: row.providerVerificationStatus,
+      avatarUrl: row.providerAvatarUrl,
+    },
+    status: row.status,
+    moderationReason: row.moderationReason,
+    isExpired: row.status === "Expired" || (row.status === "Active" && !!row.expiresAt && row.expiresAt < now),
+  }));
 }
 
 export async function addListingPhotos(listingId: string, urls: string[]) {
