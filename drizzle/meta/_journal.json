@@ -36,6 +36,13 @@
       "when": 1784630195751,
       "tag": "0004_nervous_wallop",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1784631489546,
+      "tag": "0005_chemical_wiccan",
+      "breakpoints": true
     }
   ]
 }

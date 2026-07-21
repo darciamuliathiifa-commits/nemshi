@@ -22,6 +22,10 @@ export const verificationStatusEnum = pgEnum("verification_status", [
   "Skill_Verified",
 ]);
 
+// USERS.role — dipilih saat daftar akun, informasional (tidak membatasi
+// fitur; siapa pun tetap bisa memasang iklan maupun membuat permintaan jasa).
+export const userRoleEnum = pgEnum("user_role", ["Pelanggan", "Penyedia_Jasa"]);
+
 // LISTINGS.status
 export const listingStatusEnum = pgEnum("listing_status", [
   "Pending_Moderation",
@@ -74,6 +78,7 @@ export const users = pgTable("users", {
   email: text("email").notNull().unique(),
   avatarUrl: text("avatar_url"),
   whatsappLink: text("whatsapp_link"),
+  role: userRoleEnum("role").notNull().default("Pelanggan"),
   verificationStatus: verificationStatusEnum("verification_status")
     .notNull()
     .default("Unverified"),

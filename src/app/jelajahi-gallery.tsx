@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { ListingCard } from "@/components/listing-card";
+import { AuthNav } from "@/components/auth-nav";
 import type { ListingSummary } from "@/lib/listings";
 
 type Category = { id: string; name: string; slug: string; icon: string };
@@ -52,14 +53,7 @@ export function JelajahiGallery() {
       <header className="mb-8 flex flex-col gap-2">
         <div className="flex items-start justify-between gap-4">
           <h1 className="text-3xl font-extrabold text-text">Nemshi</h1>
-          <div className="flex shrink-0 gap-4 text-sm font-medium text-primary">
-            <Link href="/bayar" className="hover:underline">
-              Pasang Iklan
-            </Link>
-            <Link href="/akun" className="hover:underline">
-              Akun Saya
-            </Link>
-          </div>
+          <AuthNav />
         </div>
         <p className="text-text-secondary">
           Direktori iklan jasa untuk Masisir — temukan penyedia jasa dan hubungi langsung via

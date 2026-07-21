@@ -8,6 +8,10 @@ export async function GET(
 ) {
   const { id } = await params;
   const userId = await getCurrentUserId();
+  if (!userId) {
+    return NextResponse.json({ error: "Belum masuk" }, { status: 401 });
+  }
+
   const order = await getOrderById(id);
 
   if (!order || order.userId !== userId) {

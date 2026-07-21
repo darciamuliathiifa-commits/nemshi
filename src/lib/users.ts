@@ -10,6 +10,26 @@ export type PublicProfile = {
   verificationStatus: string;
 };
 
+/**
+ * Membuat baris profil di public.users setelah supabase.auth.signUp()
+ * berhasil, dengan id yang sama persis dengan auth.users.id. Idempoten
+ * (aman dipanggil ulang) karena memakai id yang sama sebagai primary key.
+ */
+export async function bootstrapUserProfile(data: {
+  id: string;
+  email: string;
+  fullName: string;
+  role: "Pelanggan" | "Penyedia_Jasa";
+}) {
+  const [user] = await db
+    .insert(users)
+    .values(data)
+    .onConflictDoNothing({ target: users.id })
+    .returning();
+
+  return user;
+}
+
 export async function getPublicProfile(userId: string): Promise<PublicProfile | null> {
   const [user] = await db
     .select({

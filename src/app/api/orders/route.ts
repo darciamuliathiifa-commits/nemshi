@@ -12,6 +12,10 @@ export async function POST(request: NextRequest) {
   }
 
   const userId = await getCurrentUserId();
+  if (!userId) {
+    return NextResponse.json({ error: "Belum masuk" }, { status: 401 });
+  }
+
   const order = await createOrder(
     userId,
     productType,

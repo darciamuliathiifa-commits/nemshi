@@ -23,6 +23,12 @@ export default function BayarPage() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ productType }),
     });
+
+    if (response.status === 401) {
+      router.push("/masuk?redirectTo=/bayar");
+      return;
+    }
+
     const order = await response.json();
     router.push(`/bayar/${order.id}`);
   }

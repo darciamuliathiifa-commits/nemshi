@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ListingStatusBadge } from "@/components/listing-status-badge";
 
@@ -35,6 +36,7 @@ const QUOTA_LABELS: Record<string, string> = {
 };
 
 export default function AkunSayaPage() {
+  const router = useRouter();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [activity, setActivity] = useState<Activity | null>(null);
   const [form, setForm] = useState({ fullName: "", avatarUrl: "", whatsappLink: "" });
@@ -42,10 +44,16 @@ export default function AkunSayaPage() {
   const [savedMessage, setSavedMessage] = useState("");
 
   useEffect(() => {
-    Promise.all([
-      fetch("/api/me").then((r) => r.json()),
-      fetch("/api/me/activity").then((r) => r.json()),
-    ]).then(([profileData, activityData]) => {
+    fetch("/api/me").then(async (meResponse) => {
+      if (meResponse.status === 401) {
+        router.replace("/masuk?redirectTo=/akun");
+        return;
+      }
+
+      const [profileData, activityData] = await Promise.all([
+        meResponse.json(),
+        fetch("/api/me/activity").then((r) => r.json()),
+      ]);
       setProfile(profileData);
       setActivity(activityData);
       setForm({
@@ -54,7 +62,7 @@ export default function AkunSayaPage() {
         whatsappLink: profileData.whatsappLink ?? "",
       });
     });
-  }, []);
+  }, [router]);
 
   async function handleSave() {
     setSaving(true);

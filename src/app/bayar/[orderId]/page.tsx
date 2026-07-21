@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { PaymentStatusBadge, FundStatusBadge } from "@/components/order-status-badges";
 import { PRODUCT_LABELS, type OrderProductType } from "@/lib/pricing";
 import { formatRupiah } from "@/lib/format";
@@ -21,16 +21,21 @@ const PAYMENT_METHODS = ["QRIS", "Virtual Account BCA", "Virtual Account Mandiri
 
 export default function RingkasanPesananPage() {
   const { orderId } = useParams<{ orderId: string }>();
+  const router = useRouter();
   const [order, setOrder] = useState<Order | null>(null);
   const [method, setMethod] = useState(PAYMENT_METHODS[0]);
   const [simulateFailure, setSimulateFailure] = useState(false);
   const [paying, setPaying] = useState(false);
 
   useEffect(() => {
-    fetch(`/api/orders/${orderId}`)
-      .then((r) => r.json())
-      .then(setOrder);
-  }, [orderId]);
+    fetch(`/api/orders/${orderId}`).then(async (response) => {
+      if (response.status === 401) {
+        router.replace(`/masuk?redirectTo=/bayar/${orderId}`);
+        return;
+      }
+      setOrder(await response.json());
+    });
+  }, [orderId, router]);
 
   async function handleBayar() {
     setPaying(true);

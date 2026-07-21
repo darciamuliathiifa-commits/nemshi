@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { getCurrentUserId } from "@/lib/current-user";
 import { getPublicProfile } from "@/lib/users";
 import { verificationLabel } from "@/lib/format";
@@ -9,6 +10,10 @@ const ADMIN_WHATSAPP_LINK = "https://wa.me/201000000000";
 
 export default async function StatusVerifikasiPage() {
   const userId = await getCurrentUserId();
+  if (!userId) {
+    redirect("/masuk?redirectTo=/akun/verifikasi");
+  }
+
   const profile = await getPublicProfile(userId);
 
   if (!profile) {

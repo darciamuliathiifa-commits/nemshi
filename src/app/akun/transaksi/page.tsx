@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { getCurrentUserId } from "@/lib/current-user";
 import { getUserOrders } from "@/lib/orders";
 import { PRODUCT_LABELS, type OrderProductType } from "@/lib/pricing";
@@ -9,6 +10,10 @@ export const dynamic = "force-dynamic";
 
 export default async function RiwayatTransaksiPage() {
   const userId = await getCurrentUserId();
+  if (!userId) {
+    redirect("/masuk?redirectTo=/akun/transaksi");
+  }
+
   const ordersList = await getUserOrders(userId);
 
   return (

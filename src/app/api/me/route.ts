@@ -4,12 +4,20 @@ import { getPublicProfile, updateUserProfile } from "@/lib/users";
 
 export async function GET() {
   const userId = await getCurrentUserId();
+  if (!userId) {
+    return NextResponse.json({ error: "Belum masuk" }, { status: 401 });
+  }
+
   const profile = await getPublicProfile(userId);
   return NextResponse.json(profile);
 }
 
 export async function PATCH(request: NextRequest) {
   const userId = await getCurrentUserId();
+  if (!userId) {
+    return NextResponse.json({ error: "Belum masuk" }, { status: 401 });
+  }
+
   const body = await request.json();
 
   const updated = await updateUserProfile(userId, {
