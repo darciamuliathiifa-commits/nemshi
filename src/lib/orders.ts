@@ -102,17 +102,16 @@ export async function approveListingOrder(listingId: string) {
   if (!listing) throw new Error("Iklan tidak ditemukan.");
 
   const publishedAt = new Date();
-  const durationMs = listing.type === "Needs_Service" ? 3 * DAY_MS : 30 * DAY_MS;
+  // Iklan Tawarkan Jasa: 30 hari. Cari Jasa: 3 hari jika Prioritas (berbayar),
+  // 24 jam jika Gratis — isPriority sudah ditentukan pengguna saat membuat
+  // sayembara, bukan di sini.
+  const durationMs =
+    listing.type === "Offers_Service" ? 30 * DAY_MS : listing.isPriority ? 3 * DAY_MS : DAY_MS;
   const expiresAt = new Date(publishedAt.getTime() + durationMs);
 
   const [updatedListing] = await db
     .update(listings)
-    .set({
-      status: "Active",
-      publishedAt,
-      expiresAt,
-      isPriority: listing.type === "Needs_Service" ? true : listing.isPriority,
-    })
+    .set({ status: "Active", publishedAt, expiresAt })
     .where(eq(listings.id, listingId))
     .returning();
 

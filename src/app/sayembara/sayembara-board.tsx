@@ -4,13 +4,12 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { ListingCard } from "@/components/listing-card";
-import { AuthNav } from "@/components/auth-nav";
 import type { ListingSummary } from "@/lib/listings";
 
 type Category = { id: string; name: string; slug: string; icon: string };
 type Area = { id: string; name: string; slug: string };
 
-export function JelajahiGallery() {
+export function SayembaraBoard() {
   const searchParams = useSearchParams();
 
   const [listings, setListings] = useState<ListingSummary[]>([]);
@@ -24,7 +23,7 @@ export function JelajahiGallery() {
 
   useEffect(() => {
     Promise.all([
-      fetch("/api/listings").then((r) => r.json()),
+      fetch("/api/sayembara").then((r) => r.json()),
       fetch("/api/categories").then((r) => r.json()),
       fetch("/api/areas").then((r) => r.json()),
     ]).then(([listingsData, categoriesData, areasData]) => {
@@ -35,7 +34,7 @@ export function JelajahiGallery() {
     });
   }, []);
 
-  const filteredListings = useMemo(() => {
+  const filtered = useMemo(() => {
     const normalizedKeyword = keyword.trim().toLowerCase();
     return listings.filter((listing) => {
       const matchesKeyword =
@@ -52,19 +51,24 @@ export function JelajahiGallery() {
     <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
       <header className="mb-8 flex flex-col gap-2">
         <div className="flex items-start justify-between gap-4">
-          <h1 className="text-3xl font-extrabold text-text">Nemshi</h1>
-          <AuthNav />
+          <h1 className="text-3xl font-extrabold text-text">Cari Jasa</h1>
+          <Link
+            href="/sayembara/buat"
+            className="shrink-0 rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-white"
+          >
+            Buat Sayembara
+          </Link>
         </div>
         <p className="text-text-secondary">
-          Direktori iklan jasa untuk Masisir — temukan penyedia jasa dan hubungi langsung via
-          WhatsApp.
+          Papan permintaan jasa dari sesama Masisir — penyedia yang relevan akan menghubungimu
+          langsung lewat WhatsApp.
         </p>
-        <div className="flex gap-4">
-          <Link href="/kategori" className="text-sm font-medium text-primary hover:underline">
-            Lihat semua kategori jasa →
+        <div className="flex gap-4 text-sm font-medium text-primary">
+          <Link href="/" className="hover:underline">
+            ← Jelajahi Iklan Jasa
           </Link>
-          <Link href="/sayembara" className="text-sm font-medium text-primary hover:underline">
-            Cari Jasa (papan permintaan) →
+          <Link href="/sayembara/saya" className="hover:underline">
+            Sayembara Saya
           </Link>
         </div>
       </header>
@@ -74,7 +78,7 @@ export function JelajahiGallery() {
           type="text"
           value={keyword}
           onChange={(e) => setKeyword(e.target.value)}
-          placeholder="Cari jasa berdasarkan kata kunci..."
+          placeholder="Cari kebutuhan jasa..."
           className="flex-1 rounded-xl border border-black/10 px-4 py-2 text-sm outline-none focus:border-primary"
         />
         <select
@@ -116,12 +120,12 @@ export function JelajahiGallery() {
       </section>
 
       {loading ? (
-        <p className="text-text-secondary">Memuat iklan...</p>
-      ) : filteredListings.length === 0 ? (
-        <p className="text-text-secondary">Tidak ada iklan yang sesuai dengan pencarian Anda.</p>
+        <p className="text-text-secondary">Memuat sayembara...</p>
+      ) : filtered.length === 0 ? (
+        <p className="text-text-secondary">Belum ada sayembara yang sesuai.</p>
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {filteredListings.map((listing) => (
+          {filtered.map((listing) => (
             <ListingCard key={listing.id} listing={listing} />
           ))}
         </div>

@@ -1,4 +1,4 @@
-import { and, desc, eq, ilike, or } from "drizzle-orm";
+import { and, desc, eq, gte, ilike, or } from "drizzle-orm";
 import { db } from "@/db";
 import { areas, categories, listingPhotos, listings, users } from "@/db/schema";
 
@@ -25,6 +25,7 @@ type ListingFilters = {
   q?: string;
   categorySlug?: string;
   areaSlug?: string;
+  type?: "Offers_Service" | "Needs_Service";
 };
 
 export async function getActiveListings(
@@ -43,6 +44,9 @@ export async function getActiveListings(
   }
   if (filters.areaSlug) {
     conditions.push(eq(areas.slug, filters.areaSlug));
+  }
+  if (filters.type) {
+    conditions.push(eq(listings.type, filters.type));
   }
 
   const rows = await db
@@ -163,4 +167,64 @@ export async function getCategories() {
 
 export async function getAreas() {
   return db.select().from(areas).orderBy(areas.name);
+}
+
+export async function createListing(
+  userId: string,
+  data: {
+    type: "Offers_Service" | "Needs_Service";
+    categoryId: string;
+    areaId: string;
+    title: string;
+    description: string;
+    whatsappLink: string;
+    priceType: "Range" | "Contact";
+    priceMin?: number | null;
+    priceMax?: number | null;
+    isPriority: boolean;
+  }
+) {
+  const [listing] = await db
+    .insert(listings)
+    .values({ userId, ...data })
+    .returning();
+
+  return listing;
+}
+
+const THIRTY_DAYS_MS = 30 * 24 * 60 * 60 * 1000;
+
+/** Untuk validasi kuota "Cari Jasa Gratis": maksimal 1x per 30 hari. */
+export async function countRecentFreeNeedsServiceListings(userId: string) {
+  const since = new Date(Date.now() - THIRTY_DAYS_MS);
+
+  const rows = await db
+    .select({ id: listings.id })
+    .from(listings)
+    .where(
+      and(
+        eq(listings.userId, userId),
+        eq(listings.type, "Needs_Service"),
+        eq(listings.isPriority, false),
+        gte(listings.createdAt, since)
+      )
+    );
+
+  return rows.length;
+}
+
+export async function getUserNeedsServiceListings(userId: string) {
+  return db
+    .select({
+      id: listings.id,
+      title: listings.title,
+      status: listings.status,
+      isPriority: listings.isPriority,
+      createdAt: listings.createdAt,
+      publishedAt: listings.publishedAt,
+      expiresAt: listings.expiresAt,
+    })
+    .from(listings)
+    .where(and(eq(listings.userId, userId), eq(listings.type, "Needs_Service")))
+    .orderBy(desc(listings.createdAt));
 }
