@@ -82,12 +82,17 @@ export default function AkunSayaPage() {
     <main className="mx-auto max-w-3xl px-4 py-8 sm:px-6 lg:px-8">
       <header className="mb-6 flex items-center justify-between">
         <h1 className="text-2xl font-bold text-text">Akun Saya</h1>
-        <Link
-          href={`/profil/${profile.id}`}
-          className="text-sm font-medium text-primary hover:underline"
-        >
-          Lihat profil publik →
-        </Link>
+        <div className="flex gap-4 text-sm font-medium text-primary">
+          <Link href="/akun/verifikasi" className="hover:underline">
+            Status Verifikasi
+          </Link>
+          <Link href="/akun/transaksi" className="hover:underline">
+            Riwayat Transaksi
+          </Link>
+          <Link href={`/profil/${profile.id}`} className="hover:underline">
+            Lihat profil publik →
+          </Link>
+        </div>
       </header>
 
       <section className="mb-6 rounded-xl border border-black/5 bg-white p-6">

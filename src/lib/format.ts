@@ -11,6 +11,10 @@ export function formatPriceLabel(
   return `${format(priceMin)} - ${format(priceMax)}`;
 }
 
+export function formatRupiah(amount: number): string {
+  return `Rp${amount.toLocaleString("id-ID")}`;
+}
+
 export function verificationLabel(status: string): string | null {
   if (status === "Identity_Verified") return "Identitas Terverifikasi";
   if (status === "Skill_Verified") return "Keahlian Terverifikasi";

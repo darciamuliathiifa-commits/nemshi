@@ -45,6 +45,29 @@ export const quotaTypeEnum = pgEnum("quota_type", [
 // LISTINGS.price_type
 export const priceTypeEnum = pgEnum("price_type", ["Range", "Contact"]);
 
+// ORDERS.product_type — produk promosi berbayar, sesuai model bisnis PRD
+// (biaya publikasi tetap, bukan komisi transaksi antar pengguna).
+export const orderProductTypeEnum = pgEnum("order_product_type", [
+  "Iklan_Tawarkan_Jasa",
+  "Cari_Jasa_Prioritas",
+  "Paket_Plus",
+  "Traktir_Platform",
+]);
+
+// ORDERS.payment_status
+export const paymentStatusEnum = pgEnum("payment_status", [
+  "Menunggu_Pembayaran",
+  "Sukses",
+  "Gagal",
+]);
+
+// ORDERS.fund_status — status penahanan dana untuk produk yang memerlukan moderasi
+export const fundStatusEnum = pgEnum("fund_status", [
+  "Ditahan",
+  "Dirilis",
+  "Dikembalikan",
+]);
+
 export const users = pgTable("users", {
   id: uuid("id").primaryKey().defaultRandom(),
   fullName: text("full_name").notNull(),
@@ -132,6 +155,23 @@ export const testimonials = pgTable("testimonials", {
     .defaultNow(),
 });
 
+export const orders = pgTable("orders", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: uuid("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  listingId: uuid("listing_id").references(() => listings.id, { onDelete: "set null" }),
+  productType: orderProductTypeEnum("product_type").notNull(),
+  // dalam Rupiah (biaya publikasi/paket), terpisah dari harga jasa dalam EGP
+  amount: integer("amount").notNull(),
+  paymentStatus: paymentStatusEnum("payment_status").notNull().default("Menunggu_Pembayaran"),
+  paymentMethod: text("payment_method"),
+  // null selama menunggu pembayaran; terisi begitu pembayaran sukses
+  fundStatus: fundStatusEnum("fund_status"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  paidAt: timestamp("paid_at", { withTimezone: true }),
+});
+
 export const clickAnalytics = pgTable("click_analytics", {
   id: uuid("id").primaryKey().defaultRandom(),
   listingId: uuid("listing_id")
@@ -147,6 +187,18 @@ export const usersRelations = relations(users, ({ many }) => ({
   listings: many(listings),
   quotas: many(userQuotas),
   testimonials: many(testimonials),
+  orders: many(orders),
+}));
+
+export const ordersRelations = relations(orders, ({ one }) => ({
+  user: one(users, {
+    fields: [orders.userId],
+    references: [users.id],
+  }),
+  listing: one(listings, {
+    fields: [orders.listingId],
+    references: [listings.id],
+  }),
 }));
 
 export const testimonialsRelations = relations(testimonials, ({ one }) => ({
@@ -179,6 +231,7 @@ export const listingsRelations = relations(listings, ({ one, many }) => ({
   }),
   photos: many(listingPhotos),
   clicks: many(clickAnalytics),
+  orders: many(orders),
 }));
 
 export const listingPhotosRelations = relations(listingPhotos, ({ one }) => ({
