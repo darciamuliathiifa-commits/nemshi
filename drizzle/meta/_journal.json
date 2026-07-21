@@ -57,6 +57,13 @@
       "when": 1784633401999,
       "tag": "0007_gray_serpent_society",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1784635330901,
+      "tag": "0008_exotic_pixie",
+      "breakpoints": true
     }
   ]
 }

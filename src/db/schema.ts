@@ -130,6 +130,8 @@ export const listings = pgTable("listings", {
   isPriority: boolean("is_priority").notNull().default(false),
   // alasan admin menolak (moderasi) atau menangguhkan (pelanggaran) iklan ini
   moderationReason: text("moderation_reason"),
+  // true jika dibayar pakai 1 kuota Listing_Slot dari Paket Plus, bukan Rp50.000
+  paidWithQuota: boolean("paid_with_quota").notNull().default(false),
 });
 
 export const listingPhotos = pgTable("listing_photos", {

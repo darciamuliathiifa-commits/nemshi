@@ -1,4 +1,4 @@
-import { and, desc, eq, gte, ilike, or } from "drizzle-orm";
+import { and, desc, eq, gt, gte, ilike, isNull, lt, or } from "drizzle-orm";
 import { db } from "@/db";
 import { areas, categories, listingPhotos, listings, users } from "@/db/schema";
 
@@ -28,10 +28,18 @@ type ListingFilters = {
   type?: "Offers_Service" | "Needs_Service";
 };
 
+// Iklan dianggap benar-benar tayang hanya jika status Active DAN belum
+// lewat masa tayangnya — sweep berkala (expireOldListings) menjaga kolom
+// status tetap akurat, tapi query publik tidak bergantung padanya.
+const isCurrentlyLive = and(
+  eq(listings.status, "Active"),
+  or(isNull(listings.expiresAt), gt(listings.expiresAt, new Date()))
+);
+
 export async function getActiveListings(
   filters: ListingFilters = {}
 ): Promise<ListingSummary[]> {
-  const conditions = [eq(listings.status, "Active")];
+  const conditions = [isCurrentlyLive];
 
   if (filters.q) {
     const keyword = `%${filters.q}%`;
@@ -125,7 +133,7 @@ export async function getListingById(id: string): Promise<ListingDetail | null> 
     .innerJoin(categories, eq(listings.categoryId, categories.id))
     .innerJoin(areas, eq(listings.areaId, areas.id))
     .innerJoin(users, eq(listings.userId, users.id))
-    .where(and(eq(listings.id, id), eq(listings.status, "Active")))
+    .where(and(eq(listings.id, id), isCurrentlyLive))
     .limit(1);
 
   if (!row) return null;
@@ -182,6 +190,7 @@ export async function createListing(
     priceMin?: number | null;
     priceMax?: number | null;
     isPriority: boolean;
+    paidWithQuota?: boolean;
   }
 ) {
   const [listing] = await db
@@ -227,4 +236,39 @@ export async function getUserNeedsServiceListings(userId: string) {
     .from(listings)
     .where(and(eq(listings.userId, userId), eq(listings.type, "Needs_Service")))
     .orderBy(desc(listings.createdAt));
+}
+
+export async function getUserOffersServiceListings(userId: string) {
+  return db
+    .select({
+      id: listings.id,
+      title: listings.title,
+      status: listings.status,
+      moderationReason: listings.moderationReason,
+      createdAt: listings.createdAt,
+      publishedAt: listings.publishedAt,
+      expiresAt: listings.expiresAt,
+    })
+    .from(listings)
+    .where(and(eq(listings.userId, userId), eq(listings.type, "Offers_Service")))
+    .orderBy(desc(listings.createdAt));
+}
+
+export async function addListingPhotos(listingId: string, urls: string[]) {
+  if (urls.length === 0) return;
+
+  await db.insert(listingPhotos).values(
+    urls.slice(0, 5).map((url, index) => ({ listingId, url, sortOrder: index }))
+  );
+}
+
+/** Sweep berkala (lihat /api/cron/expire-listings) agar status di DB akurat. */
+export async function expireOldListings() {
+  const rows = await db
+    .update(listings)
+    .set({ status: "Expired" })
+    .where(and(eq(listings.status, "Active"), lt(listings.expiresAt, new Date())))
+    .returning({ id: listings.id });
+
+  return rows.length;
 }

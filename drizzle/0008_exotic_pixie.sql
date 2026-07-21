@@ -1,0 +1,1 @@
+ALTER TABLE "listings" ADD COLUMN "paid_with_quota" boolean DEFAULT false NOT NULL;

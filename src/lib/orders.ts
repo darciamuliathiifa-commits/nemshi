@@ -2,6 +2,7 @@ import { and, desc, eq } from "drizzle-orm";
 import { db } from "@/db";
 import { listings, orders, userQuotas, users } from "@/db/schema";
 import { type OrderProductType, PRODUCT_PRICES, requiresModeration } from "@/lib/pricing";
+import { refundListingSlotQuota } from "@/lib/quotas";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
@@ -133,7 +134,9 @@ export async function approveListingOrder(listingId: string) {
  * Dipakai oleh antrean moderasi admin (fitur 08) untuk menolak iklan.
  * Dana yang sudah ditahan TIDAK langsung dikembalikan di sini — tetap
  * berstatus "Ditahan" sampai admin mengonfirmasi refund secara manual
- * lewat confirmRefund() di halaman Kategori & Refund.
+ * lewat confirmRefund() di halaman Kategori & Refund. Untuk iklan yang
+ * dibayar pakai kuota Paket Plus, kuotanya dikembalikan otomatis di sini
+ * karena tidak melibatkan uang yang perlu dikonfirmasi terpisah.
  */
 export async function rejectListingOrder(listingId: string, reason?: string) {
   const [updatedListing] = await db
@@ -143,6 +146,10 @@ export async function rejectListingOrder(listingId: string, reason?: string) {
     .returning();
 
   if (!updatedListing) throw new Error("Iklan tidak ditemukan.");
+
+  if (updatedListing.paidWithQuota) {
+    await refundListingSlotQuota(updatedListing.userId);
+  }
 
   return updatedListing;
 }

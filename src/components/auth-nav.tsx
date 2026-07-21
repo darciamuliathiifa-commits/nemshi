@@ -40,8 +40,11 @@ export function AuthNav() {
 
   return (
     <div className="flex shrink-0 gap-4 text-sm font-medium text-primary">
-      <Link href="/bayar" className="hover:underline">
+      <Link href="/pasang-iklan" className="hover:underline">
         Pasang Iklan
+      </Link>
+      <Link href="/iklan-saya" className="hover:underline">
+        Iklan Saya
       </Link>
       <Link href="/akun" className="hover:underline">
         Akun Saya
