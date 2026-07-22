@@ -55,7 +55,7 @@ export default function KelolaPenggunaPage() {
   }
 
   return (
-    <div>
+    <div className="rounded-3xl bg-white p-6 shadow-sm shadow-black/5 sm:p-8">
       <h1 className="mb-2 text-2xl font-bold text-text">Kelola Pengguna</h1>
       <p className="mb-6 text-sm text-text-secondary">
         Lihat semua pengguna terdaftar dan verifikasi akun secara manual.
@@ -72,9 +72,9 @@ export default function KelolaPenggunaPage() {
       {!users ? (
         <p className="text-text-secondary">Memuat pengguna...</p>
       ) : (
-        <div className="overflow-x-auto rounded-xl border border-black/5 bg-white">
+        <div className="overflow-x-auto rounded-2xl bg-surface">
           <table className="w-full text-left text-sm">
-            <thead className="border-b border-black/5 text-text-secondary">
+            <thead className="border-b border-black/10 text-text-secondary">
               <tr>
                 <th className="px-4 py-3 font-medium">Nama</th>
                 <th className="px-4 py-3 font-medium">Email</th>
@@ -86,7 +86,7 @@ export default function KelolaPenggunaPage() {
             <tbody>
               {users.map((user) => (
                 <Fragment key={user.id}>
-                  <tr className="border-b border-black/5 last:border-0">
+                  <tr className="border-b border-black/10 last:border-0">
                     <td className="px-4 py-3 text-text">
                       {user.fullName}
                       {user.isAdmin && (
@@ -127,7 +127,7 @@ export default function KelolaPenggunaPage() {
                     </td>
                   </tr>
                   {expandedUserId === user.id && (
-                    <tr className="border-b border-black/5 bg-[#f8fafb] last:border-0">
+                    <tr className="border-b border-black/10 bg-white last:border-0">
                       <td colSpan={5} className="px-4 py-3">
                         {!contactsByUser[user.id] ? (
                           <p className="text-sm text-text-secondary">Memuat kontak darurat...</p>

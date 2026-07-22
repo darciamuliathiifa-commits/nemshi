@@ -32,12 +32,12 @@ export default function PantauTransaksiPage() {
   }, [productType, paymentStatus]);
 
   return (
-    <div>
-      <div className="mb-6 flex items-center justify-between">
+    <div className="rounded-3xl bg-white p-6 shadow-sm shadow-black/5 sm:p-8">
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-2xl font-bold text-text">Pantau Transaksi</h1>
         <a
           href="/api/admin/reports/export"
-          className="rounded-xl border border-black/10 px-4 py-2 text-sm font-medium text-text-secondary hover:bg-black/5"
+          className="rounded-full border border-black/10 px-4 py-2 text-sm font-medium text-text-secondary hover:bg-surface"
         >
           Unduh CSV
         </a>
@@ -71,9 +71,9 @@ export default function PantauTransaksiPage() {
       {!orders ? (
         <p className="text-text-secondary">Memuat...</p>
       ) : (
-        <div className="overflow-x-auto rounded-xl border border-black/5 bg-white">
+        <div className="overflow-x-auto rounded-2xl bg-surface">
           <table className="w-full text-left text-sm">
-            <thead className="border-b border-black/5 text-text-secondary">
+            <thead className="border-b border-black/10 text-text-secondary">
               <tr>
                 <th className="px-4 py-3 font-medium">ID</th>
                 <th className="px-4 py-3 font-medium">Pengguna</th>
@@ -88,7 +88,7 @@ export default function PantauTransaksiPage() {
                 <Fragment key={order.id}>
                   <tr
                     onClick={() => setExpandedId(expandedId === order.id ? null : order.id)}
-                    className="cursor-pointer border-b border-black/5 last:border-0 hover:bg-black/[0.02]"
+                    className="cursor-pointer border-b border-black/10 last:border-0 hover:bg-white"
                   >
                     <td className="px-4 py-3 font-mono text-xs text-text-secondary">
                       {order.id.slice(0, 8)}
@@ -111,7 +111,7 @@ export default function PantauTransaksiPage() {
                     </td>
                   </tr>
                   {expandedId === order.id && (
-                    <tr className="border-b border-black/5 bg-black/[0.02]">
+                    <tr className="border-b border-black/10 bg-white">
                       <td colSpan={6} className="px-4 py-3 text-sm text-text-secondary">
                         ID Lengkap: {order.id}
                         {order.listingTitle && <> · Jasa Terkait: {order.listingTitle}</>}

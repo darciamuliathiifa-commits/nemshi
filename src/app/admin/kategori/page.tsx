@@ -65,7 +65,7 @@ export default function KategoriRefundPage() {
   }
 
   return (
-    <div>
+    <div className="rounded-3xl bg-white p-6 shadow-sm shadow-black/5 sm:p-8">
       <h1 className="mb-6 text-2xl font-bold text-text">Manajemen Kategori & Refund</h1>
 
       <section className="mb-8">
@@ -101,7 +101,7 @@ export default function KategoriRefundPage() {
             {categories.map((category) => (
               <li
                 key={category.id}
-                className="flex items-center justify-between rounded-xl border border-black/5 bg-white px-4 py-3"
+                className="flex items-center justify-between rounded-2xl bg-surface px-4 py-3"
               >
                 <span>
                   {category.icon} {category.name}
@@ -140,7 +140,7 @@ export default function KategoriRefundPage() {
             {refunds.map((refund) => (
               <li
                 key={refund.orderId}
-                className="rounded-xl border border-black/5 bg-white p-4"
+                className="rounded-2xl bg-surface p-4"
               >
                 <div className="mb-1 flex items-center justify-between">
                   <span className="font-medium text-text">{refund.listingTitle}</span>

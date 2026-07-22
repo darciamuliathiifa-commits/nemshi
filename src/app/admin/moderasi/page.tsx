@@ -51,29 +51,29 @@ export default function AntreanModerasiPage() {
   }
 
   return (
-    <div>
+    <div className="rounded-3xl bg-white p-6 shadow-sm shadow-black/5 sm:p-8">
       <h1 className="mb-2 text-2xl font-bold text-text">Antrean Moderasi</h1>
       <p className="mb-6 text-sm text-text-secondary">
         Tinjau iklan dan permintaan jasa sebelum tayang ke publik.
       </p>
 
-      <div className="mb-4 flex gap-2 border-b border-black/5">
+      <div className="mb-4 flex gap-2">
         <button
           onClick={() => setTab("Offers_Service")}
-          className={`px-4 py-2 text-sm font-medium ${
+          className={`rounded-full px-4 py-2 text-sm font-medium transition-colors ${
             tab === "Offers_Service"
-              ? "border-b-2 border-primary text-primary"
-              : "text-text-secondary"
+              ? "bg-primary text-white"
+              : "text-text-secondary hover:bg-surface"
           }`}
         >
           Iklan Menunggu
         </button>
         <button
           onClick={() => setTab("Needs_Service")}
-          className={`px-4 py-2 text-sm font-medium ${
+          className={`rounded-full px-4 py-2 text-sm font-medium transition-colors ${
             tab === "Needs_Service"
-              ? "border-b-2 border-primary text-primary"
-              : "text-text-secondary"
+              ? "bg-primary text-white"
+              : "text-text-secondary hover:bg-surface"
           }`}
         >
           Cari Jasa Menunggu
@@ -89,7 +89,7 @@ export default function AntreanModerasiPage() {
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           {items.map((item) => (
-            <div key={item.id} className="rounded-xl border border-black/5 bg-white p-4">
+            <div key={item.id} className="rounded-2xl bg-surface p-4">
               <div className="mb-2 flex gap-3">
                 {item.coverPhotoUrl && (
                   // eslint-disable-next-line @next/next/no-img-element

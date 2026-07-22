@@ -89,7 +89,7 @@ export default function KelolaJasaPage() {
   }
 
   return (
-    <div>
+    <div className="rounded-3xl bg-white p-6 shadow-sm shadow-black/5 sm:p-8">
       <h1 className="mb-2 text-2xl font-bold text-text">Kelola Jasa</h1>
       <p className="mb-6 text-sm text-text-secondary">
         Tinjau semua iklan dan permintaan jasa; tangguhkan atau hapus yang melanggar.
@@ -120,9 +120,9 @@ export default function KelolaJasaPage() {
       {!listings ? (
         <p className="text-text-secondary">Memuat...</p>
       ) : (
-        <div className="overflow-x-auto rounded-xl border border-black/5 bg-white">
+        <div className="overflow-x-auto rounded-2xl bg-surface">
           <table className="w-full text-left text-sm">
-            <thead className="border-b border-black/5 text-text-secondary">
+            <thead className="border-b border-black/10 text-text-secondary">
               <tr>
                 <th className="px-4 py-3 font-medium">Judul</th>
                 <th className="px-4 py-3 font-medium">Pengunggah</th>
@@ -133,7 +133,7 @@ export default function KelolaJasaPage() {
             </thead>
             <tbody>
               {listings.map((listing) => (
-                <tr key={listing.id} className="border-b border-black/5 last:border-0">
+                <tr key={listing.id} className="border-b border-black/10 last:border-0">
                   <td className="px-4 py-3 text-text">{listing.title}</td>
                   <td className="px-4 py-3 text-text-secondary">{listing.ownerName}</td>
                   <td className="px-4 py-3 text-text-secondary">

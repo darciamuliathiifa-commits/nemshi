@@ -66,7 +66,7 @@ export default function LaporanKomunitasPage() {
   }
 
   return (
-    <div>
+    <div className="rounded-3xl bg-white p-6 shadow-sm shadow-black/5 sm:p-8">
       <h1 className="mb-2 text-2xl font-bold text-text">Laporan Komunitas</h1>
       <p className="mb-6 text-sm text-text-secondary">
         Tinjau laporan iklan mencurigakan dan tindak lanjuti dengan menandai selesai atau
@@ -82,7 +82,7 @@ export default function LaporanKomunitasPage() {
       ) : (
         <div className="flex flex-col gap-3">
           {reports.map((report) => (
-            <div key={report.id} className="rounded-xl border border-black/5 bg-white p-4">
+            <div key={report.id} className="rounded-2xl bg-surface p-4">
               <div className="mb-2 flex items-start justify-between gap-4">
                 <div>
                   <Link
@@ -142,7 +142,7 @@ export default function LaporanKomunitasPage() {
               )}
 
               {suspendingId === report.id && (
-                <div className="mt-3 rounded-xl bg-[#f0f4f6] p-3">
+                <div className="mt-3 rounded-xl bg-white p-3">
                   <textarea
                     value={suspendReason}
                     onChange={(e) => setSuspendReason(e.target.value)}
