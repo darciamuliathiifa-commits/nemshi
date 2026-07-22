@@ -127,6 +127,25 @@ export async function getUserTestimonials(userId: string) {
   };
 }
 
+export async function getFeaturedTestimonials(limit = 6) {
+  const rows = await db
+    .select({
+      id: testimonials.id,
+      reviewerName: testimonials.reviewerName,
+      rating: testimonials.rating,
+      comment: testimonials.comment,
+      revieweeName: users.fullName,
+      revieweeId: users.id,
+    })
+    .from(testimonials)
+    .innerJoin(users, eq(users.id, testimonials.revieweeUserId))
+    .where(eq(testimonials.isHidden, false))
+    .orderBy(desc(testimonials.createdAt))
+    .limit(limit);
+
+  return rows;
+}
+
 export async function createTestimonial(
   revieweeUserId: string,
   data: { reviewerName: string; rating: number; comment: string }

@@ -4,11 +4,25 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import { motion } from "framer-motion";
 import { ListingCard } from "@/components/listing-card";
 import type { ListingSummary } from "@/lib/listings";
 
 type Category = { id: string; name: string; slug: string; icon: string };
 type Area = { id: string; name: string; slug: string };
+type Testimonial = {
+  id: string;
+  reviewerName: string;
+  rating: number;
+  comment: string;
+  revieweeName: string;
+  revieweeId: string;
+};
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 18 },
+  show: { opacity: 1, y: 0 },
+};
 
 export function JelajahiGallery() {
   const searchParams = useSearchParams();
@@ -16,6 +30,7 @@ export function JelajahiGallery() {
   const [listings, setListings] = useState<ListingSummary[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [areas, setAreas] = useState<Area[]>([]);
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [loading, setLoading] = useState(true);
 
   const [keyword, setKeyword] = useState("");
@@ -27,10 +42,12 @@ export function JelajahiGallery() {
       fetch("/api/listings").then((r) => r.json()),
       fetch("/api/categories").then((r) => r.json()),
       fetch("/api/areas").then((r) => r.json()),
-    ]).then(([listingsData, categoriesData, areasData]) => {
+      fetch("/api/testimonials/featured").then((r) => (r.ok ? r.json() : [])),
+    ]).then(([listingsData, categoriesData, areasData, testimonialsData]) => {
       setListings(listingsData);
       setCategories(categoriesData);
       setAreas(areasData);
+      setTestimonials(testimonialsData);
       setLoading(false);
     });
   }, []);
@@ -48,98 +65,143 @@ export function JelajahiGallery() {
 
   const hasActiveFilters = keyword || categorySlug || areaSlug;
 
+  const stats = [
+    { label: "Iklan aktif", value: listings.length },
+    { label: "Kategori jasa", value: categories.length },
+    { label: "Area di Mesir", value: areas.length },
+  ];
+
   return (
     <div className="bg-surface-tint">
       <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-8">
         {/* Hero panel */}
         <section className="overflow-hidden rounded-3xl bg-white shadow-sm shadow-black/5">
           <div className="grid gap-6 p-8 sm:p-10 lg:grid-cols-2 lg:items-center lg:gap-10 lg:p-14">
-            <div>
-              <span className="inline-block rounded-full bg-surface-tint px-3 py-1 text-xs font-semibold tracking-wide text-primary">
+            <motion.div
+              initial="hidden"
+              animate="show"
+              variants={{ show: { transition: { staggerChildren: 0.08 } } }}
+            >
+              <motion.span
+                variants={fadeUp}
+                className="inline-block rounded-full bg-surface-tint px-3 py-1 text-xs font-semibold tracking-wide text-primary"
+              >
                 Direktori Jasa Masisir
-              </span>
-              <h1 className="mt-4 text-4xl font-extrabold leading-[1.05] tracking-tight text-text sm:text-5xl">
-                Kami hubungkan
-                <br />
-                kamu dengan{" "}
-                <span className="bg-gradient-to-r from-primary to-primary-dark bg-clip-text text-transparent">
-                  jasa terpercaya
-                </span>
-              </h1>
-              <p className="mt-4 max-w-md text-text-secondary">
+              </motion.span>
+              <motion.h1
+                variants={fadeUp}
+                className="mt-4 font-display text-4xl font-semibold leading-[1.08] tracking-tight text-text sm:text-5xl"
+              >
+                Kami hubungkan kamu dengan{" "}
+                <span className="italic text-accent">jasa terpercaya</span>
+              </motion.h1>
+              <motion.p variants={fadeUp} className="mt-4 max-w-md text-text-secondary">
                 Direktori iklan jasa untuk Mahasiswa Indonesia di Mesir — temukan penyedia jasa dan
                 hubungi langsung via WhatsApp, tanpa perantara.
-              </p>
-              <div className="mt-6 flex flex-wrap items-center gap-4">
-                <Link
-                  href="/kategori"
-                  className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-white shadow-sm transition-transform hover:scale-[1.02]"
-                >
-                  <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white/20">
-                    →
-                  </span>
-                  Jelajahi Semua Kategori
+              </motion.p>
+              <motion.div variants={fadeUp} className="mt-6 flex flex-wrap items-center gap-4">
+                <Link href="/kategori" className="group">
+                  <motion.span
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.97 }}
+                    className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-white shadow-sm"
+                  >
+                    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white/20 transition-transform group-hover:translate-x-0.5">
+                      →
+                    </span>
+                    Jelajahi Semua Kategori
+                  </motion.span>
                 </Link>
                 <Link
                   href="/sayembara"
-                  className="text-sm font-semibold text-text underline decoration-black/20 underline-offset-4 hover:text-primary"
+                  className="text-sm font-semibold text-text underline decoration-accent/50 decoration-2 underline-offset-4 hover:text-accent"
                 >
                   Cari Jasa (Papan Permintaan)
                 </Link>
-              </div>
-            </div>
+              </motion.div>
 
-            <div className="relative mx-auto w-full max-w-md">
-              <Image
-                src="/hero-illustration.png"
-                alt="Ilustrasi direktori jasa Nemshi"
-                width={900}
-                height={680}
-                priority
-                className="w-full rounded-2xl"
-              />
-            </div>
+              <motion.div variants={fadeUp} className="mt-8 flex gap-6 border-t border-black/5 pt-6">
+                {stats.map((stat) => (
+                  <div key={stat.label}>
+                    <p className="font-display text-2xl font-semibold text-text">{stat.value}</p>
+                    <p className="text-xs text-text-secondary">{stat.label}</p>
+                  </div>
+                ))}
+              </motion.div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, scale: 0.94 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+              className="relative mx-auto w-full max-w-md"
+            >
+              <motion.div
+                animate={{ y: [0, -10, 0] }}
+                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+              >
+                <Image
+                  src="/hero-illustration.png"
+                  alt="Ilustrasi direktori jasa Nemshi"
+                  width={900}
+                  height={680}
+                  priority
+                  className="w-full rounded-2xl"
+                />
+              </motion.div>
+            </motion.div>
           </div>
         </section>
 
         {/* Quick actions */}
-        <section className="mt-6 grid gap-4 sm:grid-cols-3">
-          <Link
-            href="/pasang-iklan"
-            className="group rounded-2xl bg-primary p-5 text-white shadow-sm transition-transform hover:-translate-y-0.5 hover:shadow-lg"
-          >
-            <span className="text-2xl">📢</span>
-            <p className="mt-3 font-semibold">Pasang Iklan Gratis</p>
-            <p className="mt-1 text-sm text-white/80">
-              Tawarkan jasamu dan tampil di direktori Nemshi.
-            </p>
-          </Link>
-          <Link
-            href="/sayembara"
-            className="group rounded-2xl bg-text p-5 text-white shadow-sm transition-transform hover:-translate-y-0.5 hover:shadow-lg"
-          >
-            <span className="text-2xl">🔍</span>
-            <p className="mt-3 font-semibold">Papan Permintaan</p>
-            <p className="mt-1 text-sm text-white/80">
-              Belum nemu penyedianya? Pasang permintaanmu di sini.
-            </p>
-          </Link>
-          <Link
-            href="/kategori"
-            className="group rounded-2xl border border-black/5 bg-white p-5 shadow-sm transition-transform hover:-translate-y-0.5 hover:shadow-lg"
-          >
-            <span className="text-2xl">📍</span>
-            <p className="mt-3 font-semibold text-text">Jelajahi per Kategori</p>
-            <p className="mt-1 text-sm text-text-secondary">
-              Cari berdasarkan kategori dan area di Mesir.
-            </p>
-          </Link>
-        </section>
+        <motion.section
+          initial="hidden"
+          animate="show"
+          variants={{ show: { transition: { staggerChildren: 0.08, delayChildren: 0.3 } } }}
+          className="mt-6 grid gap-4 sm:grid-cols-3"
+        >
+          {[
+            {
+              href: "/pasang-iklan",
+              icon: "📢",
+              title: "Pasang Iklan Gratis",
+              desc: "Tawarkan jasamu dan tampil di direktori Nemshi.",
+              className: "bg-primary text-white",
+            },
+            {
+              href: "/sayembara",
+              icon: "🔍",
+              title: "Papan Permintaan",
+              desc: "Belum nemu penyedianya? Pasang permintaanmu di sini.",
+              className: "bg-accent text-white",
+            },
+            {
+              href: "/kategori",
+              icon: "📍",
+              title: "Jelajahi per Kategori",
+              desc: "Cari berdasarkan kategori dan area di Mesir.",
+              className: "border border-black/5 bg-white text-text",
+            },
+          ].map((card) => (
+            <motion.div key={card.href} variants={fadeUp}>
+              <Link href={card.href}>
+                <motion.div
+                  whileHover={{ y: -4 }}
+                  className={`rounded-2xl p-5 shadow-sm transition-shadow hover:shadow-lg ${card.className}`}
+                >
+                  <span className="text-2xl">{card.icon}</span>
+                  <p className="mt-3 font-semibold">{card.title}</p>
+                  <p className="mt-1 text-sm opacity-85">{card.desc}</p>
+                </motion.div>
+              </Link>
+            </motion.div>
+          ))}
+        </motion.section>
 
         {/* Featured listings panel */}
         <section className="mt-6 rounded-3xl bg-white p-6 shadow-sm shadow-black/5 sm:p-8">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <h2 className="text-2xl font-bold text-text">Iklan Pilihan</h2>
+            <h2 className="font-display text-2xl font-semibold text-text">Iklan Pilihan</h2>
             <div className="flex flex-1 flex-col gap-2 sm:max-w-md sm:flex-row">
               <input
                 type="text"
@@ -166,25 +228,39 @@ export function JelajahiGallery() {
           <div className="mt-5 flex flex-wrap items-center gap-2 border-b border-black/5 pb-5">
             <button
               onClick={() => setCategorySlug("")}
-              className={`rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${
-                categorySlug === ""
-                  ? "border border-primary/30 bg-surface-tint text-primary"
-                  : "border border-transparent text-text-secondary hover:bg-surface"
+              className={`relative rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${
+                categorySlug === "" ? "text-white" : "text-text-secondary hover:bg-surface"
               }`}
             >
-              Semua
+              {categorySlug === "" && (
+                <motion.span
+                  layoutId="category-pill"
+                  className="absolute inset-0 rounded-full bg-primary"
+                  transition={{ type: "spring", stiffness: 400, damping: 32 }}
+                />
+              )}
+              <span className="relative">Semua</span>
             </button>
             {categories.map((category) => (
               <button
                 key={category.id}
                 onClick={() => setCategorySlug(category.slug)}
-                className={`rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${
+                className={`relative rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${
                   categorySlug === category.slug
-                    ? "border border-primary/30 bg-surface-tint text-primary"
-                    : "border border-transparent text-text-secondary hover:bg-surface"
+                    ? "text-white"
+                    : "text-text-secondary hover:bg-surface"
                 }`}
               >
-                {category.icon} {category.name}
+                {categorySlug === category.slug && (
+                  <motion.span
+                    layoutId="category-pill"
+                    className="absolute inset-0 rounded-full bg-primary"
+                    transition={{ type: "spring", stiffness: 400, damping: 32 }}
+                  />
+                )}
+                <span className="relative">
+                  {category.icon} {category.name}
+                </span>
               </button>
             ))}
             {hasActiveFilters && (
@@ -223,14 +299,58 @@ export function JelajahiGallery() {
                 Tidak ada iklan yang sesuai dengan pencarian Anda.
               </div>
             ) : (
-              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+              <motion.div
+                initial="hidden"
+                animate="show"
+                variants={{ show: { transition: { staggerChildren: 0.04 } } }}
+                className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4"
+              >
                 {filteredListings.map((listing) => (
-                  <ListingCard key={listing.id} listing={listing} />
+                  <motion.div key={listing.id} variants={fadeUp}>
+                    <ListingCard listing={listing} />
+                  </motion.div>
                 ))}
-              </div>
+              </motion.div>
             )}
           </div>
         </section>
+
+        {/* Testimonials */}
+        {testimonials.length > 0 && (
+          <motion.section
+            initial="hidden"
+            animate="show"
+            variants={{ show: { transition: { staggerChildren: 0.06 } } }}
+            className="mt-6 rounded-3xl bg-white p-6 shadow-sm shadow-black/5 sm:p-8"
+          >
+            <h2 className="font-display text-2xl font-semibold text-text">Kata Mereka</h2>
+            <p className="mt-1 text-sm text-text-secondary">
+              Pengalaman nyata dari sesama Masisir yang sudah pakai Nemshi.
+            </p>
+            <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {testimonials.map((t) => (
+                <motion.div
+                  key={t.id}
+                  variants={fadeUp}
+                  className="flex flex-col gap-3 rounded-2xl bg-surface p-5"
+                >
+                  <div className="flex gap-0.5 text-accent">
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <span key={i} className={i < t.rating ? "" : "opacity-25"}>
+                        ★
+                      </span>
+                    ))}
+                  </div>
+                  <p className="text-sm text-text">&ldquo;{t.comment}&rdquo;</p>
+                  <p className="mt-auto text-xs text-text-secondary">
+                    <span className="font-semibold text-text">{t.reviewerName}</span> untuk{" "}
+                    {t.revieweeName}
+                  </p>
+                </motion.div>
+              ))}
+            </div>
+          </motion.section>
+        )}
       </div>
     </div>
   );
