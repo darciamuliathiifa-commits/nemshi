@@ -16,11 +16,16 @@ export default async function IklanDetailPage({
   }
 
   return (
-    <main className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
-      <Link href="/" className="mb-6 inline-block text-sm font-medium text-primary hover:underline">
-        ← Kembali ke Jelajahi Iklan Jasa
-      </Link>
-      <ListingDetailClient listing={listing} />
-    </main>
+    <div className="bg-surface-tint">
+      <div className="mx-auto max-w-5xl px-4 py-6 sm:px-6 lg:px-8">
+        <Link
+          href="/"
+          className="mb-4 inline-flex items-center gap-1 text-sm font-medium text-text-secondary hover:text-primary"
+        >
+          ← Kembali ke Jelajahi Iklan Jasa
+        </Link>
+        <ListingDetailClient listing={listing} />
+      </div>
+    </div>
   );
 }
