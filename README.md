@@ -112,6 +112,10 @@ Kalau `create extension pg_cron` error, aktifkan dulu lewat **Database → Exten
 
 Query publik (`isCurrentlyLive` di `src/lib/listings.ts`) sudah aman tanpa sweep ini — iklan yang lewat `expires_at` otomatis tidak muncul di galeri meski kolom `status` belum sempat di-update. Sweep ini murni menjaga akurasi dashboard admin/laporan.
 
+### 3. Data dummy/demo (opsional)
+
+Untuk mengisi direktori dengan contoh data (6 pengguna, 19 iklan, foto, testimoni) supaya tampilannya tidak kosong saat demo, jalankan `supabase/seed-dummy-data.sql` sekali lewat **Supabase Dashboard → SQL Editor**. Aman dijalankan berkali-kali (pakai `ON CONFLICT DO NOTHING`). Pengguna dummy di sini tidak terhubung ke akun Supabase Auth manapun — murni untuk mengisi tampilan.
+
 ## Deploy ke Vercel
 
 1. Import repo ke Vercel, isi semua environment variable dari `.env.example` di **Project Settings → Environment Variables** (pakai `DATABASE_URL` yang **pooled**, port 6543, bukan direct connection — serverless function butuh connection pooling). Isi `NEXT_PUBLIC_APP_URL` dengan domain Vercel/domain custom kamu.
