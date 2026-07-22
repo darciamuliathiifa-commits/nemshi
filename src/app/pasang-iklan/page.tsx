@@ -1,8 +1,8 @@
 "use client";
 
-import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { ImageUploader } from "@/components/image-uploader";
 
 type Category = { id: string; name: string; slug: string; icon: string };
 type Area = { id: string; name: string; slug: string };
@@ -21,7 +21,7 @@ export default function PasangIklanPage() {
   const [priceType, setPriceType] = useState<"Range" | "Contact">("Contact");
   const [priceMin, setPriceMin] = useState("");
   const [priceMax, setPriceMax] = useState("");
-  const [photos, setPhotos] = useState<string[]>([""]);
+  const [photos, setPhotos] = useState<string[]>([]);
   const [paymentMethod, setPaymentMethod] = useState<"Bayar" | "Kuota">("Bayar");
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -45,10 +45,6 @@ export default function PasangIklanPage() {
 
   function updatePhoto(index: number, url: string) {
     setPhotos((prev) => prev.map((p, i) => (i === index ? url : p)));
-  }
-
-  function addPhotoField() {
-    if (photos.length < 5) setPhotos((prev) => [...prev, ""]);
   }
 
   function removePhotoField(index: number) {
@@ -213,41 +209,25 @@ export default function PasangIklanPage() {
         </div>
 
         <div className="flex flex-col gap-2 text-sm text-text-secondary">
-          Foto Portofolio (maks. 5, URL gambar)
-          {photos.map((photo, index) => (
-            <div key={index} className="flex items-center gap-2">
-              <input
-                type="text"
+          Foto Portofolio (maks. 5)
+          <div className="grid grid-cols-3 gap-3 sm:grid-cols-5">
+            {photos.map((photo, index) => (
+              <ImageUploader
+                key={index}
                 value={photo}
-                onChange={(e) => updatePhoto(index, e.target.value)}
-                placeholder="https://..."
-                className="flex-1 rounded-xl border border-black/10 px-3 py-2 text-text outline-none focus:border-primary"
+                aspectClassName="aspect-square"
+                onChange={(url) => updatePhoto(index, url)}
+                onRemove={() => removePhotoField(index)}
               />
-              {photo.trim() && (
-                <div className="relative h-10 w-14 shrink-0 overflow-hidden rounded-lg bg-black/5">
-                  <Image src={photo} alt="" fill className="object-cover" unoptimized />
-                </div>
-              )}
-              {photos.length > 1 && (
-                <button
-                  type="button"
-                  onClick={() => removePhotoField(index)}
-                  className="text-text-secondary"
-                >
-                  ✕
-                </button>
-              )}
-            </div>
-          ))}
-          {photos.length < 5 && (
-            <button
-              type="button"
-              onClick={addPhotoField}
-              className="w-fit text-sm font-medium text-primary hover:underline"
-            >
-              + Tambah Foto
-            </button>
-          )}
+            ))}
+            {photos.length < 5 && (
+              <ImageUploader
+                value=""
+                aspectClassName="aspect-square"
+                onChange={(url) => setPhotos((prev) => [...prev, url])}
+              />
+            )}
+          </div>
         </div>
 
         <div className="flex flex-col gap-2 text-sm text-text-secondary">

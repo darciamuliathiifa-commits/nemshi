@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ListingStatusBadge } from "@/components/listing-status-badge";
+import { ImageUploader } from "@/components/image-uploader";
 
 type Profile = {
   id: string;
@@ -120,16 +121,17 @@ export default function AkunSayaPage() {
               className="rounded-xl border border-black/10 px-3 py-2 text-text outline-none focus:border-primary"
             />
           </label>
-          <label className="flex flex-col gap-1 text-sm text-text-secondary">
-            URL Foto Profil
-            <input
-              type="text"
-              value={form.avatarUrl}
-              onChange={(e) => setForm({ ...form, avatarUrl: e.target.value })}
-              placeholder="https://..."
-              className="rounded-xl border border-black/10 px-3 py-2 text-text outline-none focus:border-primary"
-            />
-          </label>
+          <div className="flex flex-col gap-1 text-sm text-text-secondary">
+            Foto Profil
+            <div className="w-28">
+              <ImageUploader
+                value={form.avatarUrl}
+                aspectClassName="aspect-square"
+                onChange={(url) => setForm({ ...form, avatarUrl: url })}
+                onRemove={() => setForm({ ...form, avatarUrl: "" })}
+              />
+            </div>
+          </div>
           <label className="flex flex-col gap-1 text-sm text-text-secondary">
             Link WhatsApp
             <input
