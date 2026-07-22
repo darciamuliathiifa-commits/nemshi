@@ -1,25 +1,32 @@
-import { countActiveListings, getAreas, getCategories } from "@/lib/listings";
+import { getActiveListings, getAreas, getCategories } from "@/lib/listings";
 import { getFeaturedTestimonials } from "@/lib/users";
+import { getCurrentUserId } from "@/lib/current-user";
+import { getSavedListingIds } from "@/lib/saved-listings";
 import { LandingPage } from "./landing-page";
 
-// Statistik (jumlah iklan aktif dkk) berubah tiap saat — jangan biarkan
+// Data berubah tiap saat (iklan baru, kedaluwarsa, dll) — jangan biarkan
 // Next.js static-optimize halaman ini jadi satu snapshot beku saat build.
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
-  const [listingCount, categories, areas, testimonials] = await Promise.all([
-    countActiveListings("Offers_Service"),
+  const userId = await getCurrentUserId();
+
+  const [listings, categories, areas, testimonials, savedListingIds] = await Promise.all([
+    getActiveListings({ type: "Offers_Service" }),
     getCategories(),
     getAreas(),
     getFeaturedTestimonials(6),
+    userId ? getSavedListingIds(userId) : Promise.resolve([]),
   ]);
 
   return (
     <LandingPage
-      listingCount={listingCount}
+      featuredListings={listings.slice(0, 10)}
+      listingCount={listings.length}
       categoryCount={categories.length}
       areaCount={areas.length}
       testimonials={testimonials}
+      savedListingIds={savedListingIds}
     />
   );
 }
