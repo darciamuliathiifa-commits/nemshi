@@ -29,11 +29,13 @@ export function JelajahiGallery({
   initialCategories,
   initialAreas,
   initialTestimonials,
+  savedListingIds,
 }: {
   initialListings: ListingSummary[];
   initialCategories: Category[];
   initialAreas: Area[];
   initialTestimonials: Testimonial[];
+  savedListingIds: string[];
 }) {
   const searchParams = useSearchParams();
 
@@ -41,6 +43,7 @@ export function JelajahiGallery({
   const categories = initialCategories;
   const areas = initialAreas;
   const testimonials = initialTestimonials;
+  const savedSet = useMemo(() => new Set(savedListingIds), [savedListingIds]);
 
   const [keyword, setKeyword] = useState("");
   const [categorySlug, setCategorySlug] = useState(searchParams.get("category") ?? "");
@@ -285,7 +288,7 @@ export function JelajahiGallery({
               >
                 {filteredListings.map((listing) => (
                   <motion.div key={listing.id} variants={fadeUp}>
-                    <ListingCard listing={listing} />
+                    <ListingCard listing={listing} isSaved={savedSet.has(listing.id)} />
                   </motion.div>
                 ))}
               </motion.div>

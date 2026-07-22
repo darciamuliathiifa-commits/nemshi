@@ -1,5 +1,7 @@
 import { Suspense } from "react";
 import { getActiveListings, getAreas, getCategories } from "@/lib/listings";
+import { getCurrentUserId } from "@/lib/current-user";
+import { getSavedListingIds } from "@/lib/saved-listings";
 import { SayembaraBoard } from "./sayembara-board";
 
 // Data berubah tiap ada sayembara baru/kedaluwarsa — jangan biarkan Next.js
@@ -7,15 +9,23 @@ import { SayembaraBoard } from "./sayembara-board";
 export const dynamic = "force-dynamic";
 
 export default async function SayembaraPage() {
-  const [listings, categories, areas] = await Promise.all([
+  const userId = await getCurrentUserId();
+
+  const [listings, categories, areas, savedListingIds] = await Promise.all([
     getActiveListings({ type: "Needs_Service" }),
     getCategories(),
     getAreas(),
+    userId ? getSavedListingIds(userId) : Promise.resolve([]),
   ]);
 
   return (
     <Suspense>
-      <SayembaraBoard initialListings={listings} initialCategories={categories} initialAreas={areas} />
+      <SayembaraBoard
+        initialListings={listings}
+        initialCategories={categories}
+        initialAreas={areas}
+        savedListingIds={savedListingIds}
+      />
     </Suspense>
   );
 }

@@ -46,6 +46,9 @@ export function AuthNav() {
       <Link href="/iklan-saya" className="hover:underline">
         Iklan Saya
       </Link>
+      <Link href="/tersimpan" className="hover:underline">
+        Tersimpan
+      </Link>
       <Link href="/akun" className="hover:underline">
         Akun Saya
       </Link>

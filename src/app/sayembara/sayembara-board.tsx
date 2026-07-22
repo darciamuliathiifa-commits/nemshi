@@ -19,16 +19,19 @@ export function SayembaraBoard({
   initialListings,
   initialCategories,
   initialAreas,
+  savedListingIds,
 }: {
   initialListings: ListingSummary[];
   initialCategories: Category[];
   initialAreas: Area[];
+  savedListingIds: string[];
 }) {
   const searchParams = useSearchParams();
 
   const listings = initialListings;
   const categories = initialCategories;
   const areas = initialAreas;
+  const savedSet = useMemo(() => new Set(savedListingIds), [savedListingIds]);
 
   const [keyword, setKeyword] = useState("");
   const [categorySlug, setCategorySlug] = useState(searchParams.get("category") ?? "");
@@ -163,7 +166,7 @@ export function SayembaraBoard({
               >
                 {filtered.map((listing) => (
                   <motion.div key={listing.id} variants={fadeUp}>
-                    <ListingCard listing={listing} />
+                    <ListingCard listing={listing} isSaved={savedSet.has(listing.id)} />
                   </motion.div>
                 ))}
               </motion.div>

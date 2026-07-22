@@ -4,8 +4,16 @@ import type { ListingSummary, OwnListingCard } from "@/lib/listings";
 import { formatPriceLabel, formatRemainingLabel } from "@/lib/format";
 import { VerificationBadge } from "@/components/verification-badge";
 import { ListingStatusBadge } from "@/components/listing-status-badge";
+import { SaveButton } from "@/components/save-button";
 
-export function ListingCard({ listing }: { listing: ListingSummary | OwnListingCard }) {
+export function ListingCard({
+  listing,
+  isSaved,
+}: {
+  listing: ListingSummary | OwnListingCard;
+  /** Hanya tampilkan tombol simpan jika prop ini diisi (mis. bukan di grid "Iklan Saya"). */
+  isSaved?: boolean;
+}) {
   const own = "status" in listing ? (listing as OwnListingCard) : null;
   const isExpired = own?.isExpired ?? false;
   const isClickable = (!own || own.status === "Active") && !isExpired;
@@ -41,6 +49,7 @@ export function ListingCard({ listing }: { listing: ListingSummary | OwnListingC
             </span>
           )
         )}
+        {isSaved !== undefined && <SaveButton listingId={listing.id} initialSaved={isSaved} />}
       </div>
       <div className="flex flex-1 flex-col gap-1.5 p-4">
         <div className="flex items-center justify-between gap-2">

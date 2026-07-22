@@ -6,6 +6,7 @@ import {
   pgTable,
   text,
   timestamp,
+  unique,
   uuid,
 } from "drizzle-orm/pg-core";
 
@@ -204,6 +205,23 @@ export const testimonials = pgTable("testimonials", {
     .defaultNow(),
 });
 
+// Iklan yang ditandai pengguna untuk dilihat lagi nanti — murni penanda
+// pribadi, tidak terlihat oleh siapa pun selain pemiliknya.
+export const savedListings = pgTable(
+  "saved_listings",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    listingId: uuid("listing_id")
+      .notNull()
+      .references(() => listings.id, { onDelete: "cascade" }),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [unique().on(table.userId, table.listingId)]
+);
+
 export const orders = pgTable("orders", {
   id: uuid("id").primaryKey().defaultRandom(),
   userId: uuid("user_id")
@@ -281,6 +299,18 @@ export const usersRelations = relations(users, ({ many }) => ({
   adminActivityLogs: many(adminActivityLogs),
   reports: many(reports),
   emergencyContacts: many(emergencyContacts),
+  savedListings: many(savedListings),
+}));
+
+export const savedListingsRelations = relations(savedListings, ({ one }) => ({
+  user: one(users, {
+    fields: [savedListings.userId],
+    references: [users.id],
+  }),
+  listing: one(listings, {
+    fields: [savedListings.listingId],
+    references: [listings.id],
+  }),
 }));
 
 export const reportsRelations = relations(reports, ({ one }) => ({

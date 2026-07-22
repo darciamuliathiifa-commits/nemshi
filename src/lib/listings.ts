@@ -38,7 +38,7 @@ type ListingFilters = {
 // Iklan dianggap benar-benar tayang hanya jika status Active DAN belum
 // lewat masa tayangnya — sweep berkala (expireOldListings) menjaga kolom
 // status tetap akurat, tapi query publik tidak bergantung padanya.
-const isCurrentlyLive = and(
+export const isCurrentlyLive = and(
   eq(listings.status, "Active"),
   or(isNull(listings.expiresAt), gt(listings.expiresAt, new Date()))
 );

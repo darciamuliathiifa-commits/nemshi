@@ -9,13 +9,20 @@ import type { ListingDetail } from "@/lib/listings";
 import { formatPriceLabel } from "@/lib/format";
 import { VerificationBadge } from "@/components/verification-badge";
 import { ReportListingButton } from "@/components/report-listing-button";
+import { SaveButton } from "@/components/save-button";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 16 },
   show: { opacity: 1, y: 0 },
 };
 
-export function ListingDetailClient({ listing }: { listing: ListingDetail }) {
+export function ListingDetailClient({
+  listing,
+  isSaved,
+}: {
+  listing: ListingDetail;
+  isSaved: boolean;
+}) {
   const router = useRouter();
   const [activePhoto, setActivePhoto] = useState(0);
   const [contacted, setContacted] = useState(false);
@@ -165,6 +172,7 @@ export function ListingDetailClient({ listing }: { listing: ListingDetail }) {
         >
           Hubungi via WhatsApp
         </motion.button>
+        <SaveButton listingId={listing.id} initialSaved={isSaved} variant="inline" />
         <p className="text-xs text-text-secondary">
           Nemshi menjamin exposure (tampilan dan klik), bukan kepastian kesepakatan kerja. Seluruh
           negosiasi dan transaksi dilakukan mandiri di WhatsApp.
