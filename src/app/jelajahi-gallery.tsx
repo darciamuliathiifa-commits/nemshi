@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import { ListingCard } from "@/components/listing-card";
@@ -24,33 +24,27 @@ const fadeUp = {
   show: { opacity: 1, y: 0 },
 };
 
-export function JelajahiGallery() {
+export function JelajahiGallery({
+  initialListings,
+  initialCategories,
+  initialAreas,
+  initialTestimonials,
+}: {
+  initialListings: ListingSummary[];
+  initialCategories: Category[];
+  initialAreas: Area[];
+  initialTestimonials: Testimonial[];
+}) {
   const searchParams = useSearchParams();
 
-  const [listings, setListings] = useState<ListingSummary[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [areas, setAreas] = useState<Area[]>([]);
-  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
-  const [loading, setLoading] = useState(true);
+  const listings = initialListings;
+  const categories = initialCategories;
+  const areas = initialAreas;
+  const testimonials = initialTestimonials;
 
   const [keyword, setKeyword] = useState("");
   const [categorySlug, setCategorySlug] = useState(searchParams.get("category") ?? "");
   const [areaSlug, setAreaSlug] = useState(searchParams.get("area") ?? "");
-
-  useEffect(() => {
-    Promise.all([
-      fetch("/api/listings").then((r) => r.json()),
-      fetch("/api/categories").then((r) => r.json()),
-      fetch("/api/areas").then((r) => r.json()),
-      fetch("/api/testimonials/featured").then((r) => (r.ok ? r.json() : [])),
-    ]).then(([listingsData, categoriesData, areasData, testimonialsData]) => {
-      setListings(listingsData);
-      setCategories(categoriesData);
-      setAreas(areasData);
-      setTestimonials(testimonialsData);
-      setLoading(false);
-    });
-  }, []);
 
   const filteredListings = useMemo(() => {
     const normalizedKeyword = keyword.trim().toLowerCase();
@@ -278,23 +272,7 @@ export function JelajahiGallery() {
           </div>
 
           <div className="pt-6">
-            {loading ? (
-              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-                {Array.from({ length: 8 }).map((_, i) => (
-                  <div
-                    key={i}
-                    className="animate-pulse overflow-hidden rounded-2xl border border-black/5"
-                  >
-                    <div className="aspect-[4/3] bg-surface" />
-                    <div className="flex flex-col gap-2 p-4">
-                      <div className="h-3 w-1/2 rounded bg-surface" />
-                      <div className="h-4 w-full rounded bg-surface" />
-                      <div className="h-4 w-2/3 rounded bg-surface" />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : filteredListings.length === 0 ? (
+            {filteredListings.length === 0 ? (
               <div className="rounded-2xl border border-dashed border-black/10 bg-surface/50 py-16 text-center text-text-secondary">
                 Tidak ada iklan yang sesuai dengan pencarian Anda.
               </div>
