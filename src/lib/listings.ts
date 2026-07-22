@@ -1,4 +1,4 @@
-import { and, desc, eq, gt, gte, ilike, isNull, lt, or } from "drizzle-orm";
+import { and, desc, eq, gt, gte, ilike, inArray, isNull, lt, or } from "drizzle-orm";
 import { db } from "@/db";
 import { areas, categories, listingPhotos, listings, users } from "@/db/schema";
 
@@ -42,6 +42,17 @@ const isCurrentlyLive = and(
   eq(listings.status, "Active"),
   or(isNull(listings.expiresAt), gt(listings.expiresAt, new Date()))
 );
+
+async function getCoverPhotosByListingId(listingIds: string[]): Promise<Map<string, string>> {
+  if (listingIds.length === 0) return new Map();
+
+  const coverPhotos = await db
+    .select({ listingId: listingPhotos.listingId, url: listingPhotos.url })
+    .from(listingPhotos)
+    .where(and(inArray(listingPhotos.listingId, listingIds), eq(listingPhotos.sortOrder, 0)));
+
+  return new Map(coverPhotos.map((p) => [p.listingId, p.url]));
+}
 
 export async function getActiveListings(
   filters: ListingFilters = {}
@@ -90,12 +101,7 @@ export async function getActiveListings(
     .where(and(...conditions))
     .orderBy(desc(listings.isPriority), desc(listings.publishedAt));
 
-  const coverPhotos = await db
-    .select({ listingId: listingPhotos.listingId, url: listingPhotos.url })
-    .from(listingPhotos)
-    .where(eq(listingPhotos.sortOrder, 0));
-
-  const coverByListingId = new Map(coverPhotos.map((p) => [p.listingId, p.url]));
+  const coverByListingId = await getCoverPhotosByListingId(rows.map((row) => row.id));
 
   return rows.map((row) => ({
     id: row.id,
@@ -299,11 +305,7 @@ export async function getOwnListingCards(
     .where(and(eq(listings.userId, userId), eq(listings.type, type)))
     .orderBy(desc(listings.createdAt));
 
-  const coverPhotos = await db
-    .select({ listingId: listingPhotos.listingId, url: listingPhotos.url })
-    .from(listingPhotos)
-    .where(eq(listingPhotos.sortOrder, 0));
-  const coverByListingId = new Map(coverPhotos.map((p) => [p.listingId, p.url]));
+  const coverByListingId = await getCoverPhotosByListingId(rows.map((row) => row.id));
 
   const now = new Date();
 
