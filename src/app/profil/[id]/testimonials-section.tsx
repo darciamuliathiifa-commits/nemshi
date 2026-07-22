@@ -73,9 +73,9 @@ export function TestimonialsSection({
   }
 
   return (
-    <section className="mt-6">
+    <section>
       <div className="mb-3 flex items-center justify-between">
-        <h2 className="font-semibold text-text">Testimoni</h2>
+        <h2 className="font-display text-lg font-semibold text-text">Testimoni</h2>
         {!showForm && (
           <button
             onClick={() => setShowForm(true)}
@@ -96,7 +96,7 @@ export function TestimonialsSection({
       )}
 
       {showForm && (
-        <div className="mb-4 flex flex-col gap-3 rounded-xl border border-black/5 bg-white p-4">
+        <div className="mb-4 flex flex-col gap-3 rounded-2xl bg-surface p-4">
           <input
             type="text"
             value={reviewerName}
@@ -136,7 +136,7 @@ export function TestimonialsSection({
       ) : (
         <ul className="flex flex-col gap-3">
           {data.items.map((testimonial) => (
-            <li key={testimonial.id} className="rounded-xl border border-black/5 bg-white p-4">
+            <li key={testimonial.id} className="rounded-2xl bg-surface p-4">
               <div className="mb-1 flex items-center justify-between">
                 <span className="font-medium text-text">{testimonial.reviewerName}</span>
                 <StarRating rating={testimonial.rating} size="text-sm" />

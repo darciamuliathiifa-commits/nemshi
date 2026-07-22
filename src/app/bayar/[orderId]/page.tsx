@@ -67,104 +67,119 @@ export default function RingkasanPesananPage() {
 
   if (!order) {
     return (
-      <main className="mx-auto max-w-xl px-4 py-8 sm:px-6 lg:px-8">
-        <p className="text-text-secondary">Memuat pesanan...</p>
-      </main>
+      <div className="bg-surface-tint">
+        <div className="mx-auto max-w-xl px-4 py-6 sm:px-6 lg:px-8">
+          <div className="rounded-3xl bg-white p-8 text-center shadow-sm shadow-black/5">
+            <p className="text-text-secondary">Memuat pesanan...</p>
+          </div>
+        </div>
+      </div>
     );
   }
 
   return (
-    <main className="mx-auto max-w-xl px-4 py-8 sm:px-6 lg:px-8">
-      <Link href="/bayar" className="mb-6 inline-block text-sm font-medium text-primary hover:underline">
-        ← Kembali ke Pilihan Produk
-      </Link>
+    <div className="bg-surface-tint">
+      <div className="mx-auto max-w-xl px-4 py-6 sm:px-6 lg:px-8">
+        <Link
+          href="/bayar"
+          className="mb-4 inline-flex items-center gap-1 text-sm font-medium text-text-secondary hover:text-primary"
+        >
+          ← Kembali ke Pilihan Produk
+        </Link>
 
-      <h1 className="mb-4 text-2xl font-bold text-text">Ringkasan Pesanan</h1>
+        <section className="rounded-3xl bg-white p-6 shadow-sm shadow-black/5 sm:p-8">
+          <h1 className="font-display text-2xl font-semibold text-text">Ringkasan Pesanan</h1>
 
-      <section className="mb-6 rounded-xl border border-black/5 bg-white p-6">
-        <div className="mb-4 flex items-center justify-between">
-          <span className="text-text-secondary">Produk</span>
-          <span className="font-medium text-text">{PRODUCT_LABELS[order.productType]}</span>
-        </div>
-        <div className="mb-4 flex items-center justify-between">
-          <span className="text-text-secondary">Total Biaya</span>
-          <span className="text-lg font-semibold text-primary">{formatRupiah(order.amount)}</span>
-        </div>
-        <div className="flex items-center justify-between">
-          <span className="text-text-secondary">Status Pembayaran</span>
-          <PaymentStatusBadge status={order.paymentStatus} />
-        </div>
-        {order.fundStatus && (
-          <div className="mt-4 flex items-center justify-between">
-            <span className="text-text-secondary">Status Dana</span>
-            <FundStatusBadge status={order.fundStatus} />
+          <div className="mt-6 rounded-2xl bg-surface p-5">
+            <div className="mb-4 flex items-center justify-between">
+              <span className="text-text-secondary">Produk</span>
+              <span className="font-medium text-text">{PRODUCT_LABELS[order.productType]}</span>
+            </div>
+            <div className="mb-4 flex items-center justify-between">
+              <span className="text-text-secondary">Total Biaya</span>
+              <span className="font-display text-lg font-semibold text-primary">
+                {formatRupiah(order.amount)}
+              </span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-text-secondary">Status Pembayaran</span>
+              <PaymentStatusBadge status={order.paymentStatus} />
+            </div>
+            {order.fundStatus && (
+              <div className="mt-4 flex items-center justify-between">
+                <span className="text-text-secondary">Status Dana</span>
+                <FundStatusBadge status={order.fundStatus} />
+              </div>
+            )}
           </div>
-        )}
-      </section>
 
-      {order.paymentStatus === "Menunggu_Pembayaran" && (
-        <section className="rounded-xl border border-black/5 bg-white p-6">
-          <p className="mb-4 text-sm text-text-secondary">
-            Kamu akan diarahkan ke halaman pembayaran Mayar untuk memilih metode bayar (QRIS,
-            transfer bank, e-wallet, dsb.).
-          </p>
-          {error && (
-            <p className="mb-4 text-sm text-red-600">
-              {error}{" "}
-              {error.includes("telepon") && (
-                <Link href="/akun" className="font-medium underline">
-                  Lengkapi di Akun Saya →
-                </Link>
+          {order.paymentStatus === "Menunggu_Pembayaran" && (
+            <div className="mt-4">
+              <p className="mb-4 text-sm text-text-secondary">
+                Kamu akan diarahkan ke halaman pembayaran Mayar untuk memilih metode bayar (QRIS,
+                transfer bank, e-wallet, dsb.).
+              </p>
+              {error && (
+                <p className="mb-4 text-sm text-red-600">
+                  {error}{" "}
+                  {error.includes("telepon") && (
+                    <Link href="/akun" className="font-medium underline">
+                      Lengkapi di Akun Saya →
+                    </Link>
+                  )}
+                </p>
               )}
+              <button
+                onClick={handleBayar}
+                disabled={redirecting}
+                className="w-full rounded-full bg-primary px-5 py-3 font-semibold text-white shadow-sm transition-transform hover:scale-[1.01] disabled:opacity-60"
+              >
+                {redirecting ? "Mengarahkan ke Mayar..." : `Bayar ${formatRupiah(order.amount)}`}
+              </button>
+              <button
+                onClick={loadOrder}
+                className="mt-3 w-full text-center text-sm font-medium text-text-secondary hover:underline"
+              >
+                Sudah bayar? Cek status terbaru
+              </button>
+            </div>
+          )}
+
+          {order.paymentStatus === "Sukses" && order.productType === "Traktir_Platform" && (
+            <div className="mt-4 rounded-2xl bg-surface-tint p-6 text-center">
+              <p className="mb-1 font-display text-lg font-semibold text-text">
+                Terima kasih atas apresiasimu!
+              </p>
+              <p className="text-sm text-text-secondary">
+                Donasi {formatRupiah(order.amount)} sudah kami terima dan digunakan untuk
+                mendukung pengembangan Nemshi.
+              </p>
+            </div>
+          )}
+
+          {order.paymentStatus === "Sukses" && order.productType !== "Traktir_Platform" && (
+            <p className="mt-4 text-sm text-text-secondary">
+              Pembayaran berhasil.{" "}
+              {order.fundStatus === "Ditahan"
+                ? "Iklanmu berstatus Menunggu Moderasi — dana ditahan sampai admin menyetujui."
+                : "Lihat riwayat transaksi dan akunmu untuk detail lebih lanjut."}{" "}
+              <Link href="/akun/transaksi" className="font-medium text-primary hover:underline">
+                Lihat Riwayat Transaksi →
+              </Link>
             </p>
           )}
-          <button
-            onClick={handleBayar}
-            disabled={redirecting}
-            className="w-full rounded-xl bg-primary px-5 py-3 font-semibold text-white disabled:opacity-60"
-          >
-            {redirecting ? "Mengarahkan ke Mayar..." : `Bayar ${formatRupiah(order.amount)}`}
-          </button>
-          <button
-            onClick={loadOrder}
-            className="mt-3 w-full text-center text-sm font-medium text-text-secondary hover:underline"
-          >
-            Sudah bayar? Cek status terbaru
-          </button>
+
+          {order.paymentStatus === "Gagal" && (
+            <p className="mt-4 text-sm text-red-600">
+              Pembayaran gagal. Silakan coba lagi dengan membuat pesanan baru dari halaman{" "}
+              <Link href="/bayar" className="font-medium underline">
+                Beli Produk Promosi
+              </Link>
+              .
+            </p>
+          )}
         </section>
-      )}
-
-      {order.paymentStatus === "Sukses" && order.productType === "Traktir_Platform" && (
-        <div className="rounded-xl border border-primary/20 bg-primary/5 p-6 text-center">
-          <p className="mb-1 text-lg font-semibold text-text">Terima kasih atas apresiasimu!</p>
-          <p className="text-sm text-text-secondary">
-            Donasi {formatRupiah(order.amount)} sudah kami terima dan digunakan untuk mendukung
-            pengembangan Nemshi.
-          </p>
-        </div>
-      )}
-
-      {order.paymentStatus === "Sukses" && order.productType !== "Traktir_Platform" && (
-        <p className="text-sm text-text-secondary">
-          Pembayaran berhasil.{" "}
-          {order.fundStatus === "Ditahan"
-            ? "Iklanmu berstatus Menunggu Moderasi — dana ditahan sampai admin menyetujui."
-            : "Lihat riwayat transaksi dan akunmu untuk detail lebih lanjut."}{" "}
-          <Link href="/akun/transaksi" className="font-medium text-primary hover:underline">
-            Lihat Riwayat Transaksi →
-          </Link>
-        </p>
-      )}
-
-      {order.paymentStatus === "Gagal" && (
-        <p className="text-sm text-red-600">
-          Pembayaran gagal. Silakan coba lagi dengan membuat pesanan baru dari halaman{" "}
-          <Link href="/bayar" className="font-medium underline">
-            Beli Produk Promosi
-          </Link>
-          .
-        </p>
-      )}
-    </main>
+      </div>
+    </div>
   );
 }

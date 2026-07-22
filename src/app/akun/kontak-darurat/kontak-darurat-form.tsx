@@ -48,7 +48,7 @@ export function KontakDaruratForm() {
   }
 
   return (
-    <div className="rounded-xl border border-black/5 bg-white p-6">
+    <div>
       <EmergencyContactFields contacts={contacts} onChange={setContacts} />
 
       {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
@@ -57,7 +57,7 @@ export function KontakDaruratForm() {
       <button
         onClick={handleSave}
         disabled={saving}
-        className="mt-4 w-fit rounded-xl bg-primary px-5 py-2 text-sm font-semibold text-white disabled:opacity-60"
+        className="mt-4 w-fit rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-transform hover:scale-[1.02] disabled:opacity-60"
       >
         {saving ? "Menyimpan..." : "Simpan Kontak Darurat"}
       </button>

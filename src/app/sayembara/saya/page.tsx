@@ -17,44 +17,52 @@ export default async function SayembaraSayaPage() {
   const prioritySlotQuota = activity.quotas.find((q) => q.quotaType === "Priority_Slot");
 
   return (
-    <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
-      <Link href="/sayembara" className="mb-6 inline-block text-sm font-medium text-primary hover:underline">
-        ← Kembali ke Cari Jasa
-      </Link>
-
-      <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-text">Sayembara Saya</h1>
+    <div className="bg-surface-tint">
+      <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-8">
         <Link
-          href="/sayembara/buat"
-          className="rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-white"
+          href="/sayembara"
+          className="mb-4 inline-flex items-center gap-1 text-sm font-medium text-text-secondary hover:text-primary"
         >
-          Buat Sayembara
+          ← Kembali ke Cari Jasa
         </Link>
-      </div>
 
-      <section className="mb-6 rounded-xl border border-black/5 bg-white p-4">
-        <p className="text-sm text-text-secondary">
-          Sisa Kuota Cari Jasa Prioritas:{" "}
-          <span className="font-semibold text-primary">
-            {prioritySlotQuota?.remainingAmount ?? 0}
-          </span>
-          {prioritySlotQuota && (
-            <span className="ml-1">
-              (berlaku hingga {new Date(prioritySlotQuota.validityEnd).toLocaleDateString("id-ID")})
-            </span>
+        <section className="rounded-3xl bg-white p-6 shadow-sm shadow-black/5 sm:p-8">
+          <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+            <h1 className="font-display text-2xl font-semibold text-text">Sayembara Saya</h1>
+            <Link
+              href="/sayembara/buat"
+              className="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-white shadow-sm transition-transform hover:scale-[1.02]"
+            >
+              Buat Sayembara
+            </Link>
+          </div>
+
+          <div className="mb-6 rounded-2xl bg-surface p-4">
+            <p className="text-sm text-text-secondary">
+              Sisa Kuota Cari Jasa Prioritas:{" "}
+              <span className="font-semibold text-primary">
+                {prioritySlotQuota?.remainingAmount ?? 0}
+              </span>
+              {prioritySlotQuota && (
+                <span className="ml-1">
+                  (berlaku hingga{" "}
+                  {new Date(prioritySlotQuota.validityEnd).toLocaleDateString("id-ID")})
+                </span>
+              )}
+            </p>
+          </div>
+
+          {listingsList.length === 0 ? (
+            <p className="text-text-secondary">Kamu belum pernah membuat sayembara.</p>
+          ) : (
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {listingsList.map((listing) => (
+                <ListingCard key={listing.id} listing={listing} />
+              ))}
+            </div>
           )}
-        </p>
-      </section>
-
-      {listingsList.length === 0 ? (
-        <p className="text-text-secondary">Kamu belum pernah membuat sayembara.</p>
-      ) : (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {listingsList.map((listing) => (
-            <ListingCard key={listing.id} listing={listing} />
-          ))}
-        </div>
-      )}
-    </main>
+        </section>
+      </div>
+    </div>
   );
 }
