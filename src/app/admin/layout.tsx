@@ -6,7 +6,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   await requireAdminForPage();
 
   return (
-    <div className="font-jakarta min-h-screen bg-surface-tint">
+    <div className="min-h-screen bg-surface-tint">
       <div className="mx-auto flex max-w-6xl gap-6 px-4 py-6 sm:px-6 lg:px-8">
         <aside className="w-60 shrink-0">
           <div className="sticky top-6 rounded-3xl bg-white p-4 shadow-sm shadow-black/5">
