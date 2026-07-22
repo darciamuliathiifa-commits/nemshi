@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { AuthShell } from "@/components/auth-shell";
 
 export default function ResetPasswordPage() {
   const router = useRouter();
@@ -42,19 +43,16 @@ export default function ResetPasswordPage() {
 
   if (success) {
     return (
-      <main className="mx-auto max-w-sm px-4 py-12 sm:px-6">
-        <h1 className="mb-2 text-2xl font-bold text-text">Kata Sandi Berhasil Diubah</h1>
-        <p className="text-text-secondary">
+      <AuthShell title="Kata Sandi Berhasil Diubah">
+        <p className="text-center text-sm text-text-secondary">
           Kamu sekarang bisa masuk dengan kata sandi baru. Mengarahkan ke halaman Masuk...
         </p>
-      </main>
+      </AuthShell>
     );
   }
 
   return (
-    <main className="mx-auto max-w-sm px-4 py-12 sm:px-6">
-      <h1 className="mb-6 text-2xl font-bold text-text">Buat Kata Sandi Baru</h1>
-
+    <AuthShell title="Buat Kata Sandi Baru">
       <form onSubmit={handleSubmit} className="flex flex-col gap-3">
         <label className="flex flex-col gap-1 text-sm text-text-secondary">
           Kata Sandi Baru
@@ -84,11 +82,11 @@ export default function ResetPasswordPage() {
         <button
           type="submit"
           disabled={submitting}
-          className="mt-2 rounded-xl bg-primary px-5 py-3 font-semibold text-white disabled:opacity-60"
+          className="mt-2 rounded-xl bg-primary px-5 py-3 font-semibold text-white transition-colors hover:bg-primary-dark disabled:opacity-60"
         >
           {submitting ? "Menyimpan..." : "Simpan"}
         </button>
       </form>
-    </main>
+    </AuthShell>
   );
 }

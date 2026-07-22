@@ -86,14 +86,18 @@ export default function BuatSayembaraPage() {
   }
 
   return (
-    <main className="mx-auto max-w-xl px-4 py-8 sm:px-6 lg:px-8">
-      <h1 className="mb-2 text-2xl font-bold text-text">Buat Sayembara Cari Jasa</h1>
-      <p className="mb-6 text-sm text-text-secondary">
-        Publikasikan kebutuhan jasamu. Penyedia yang relevan akan melihat postingan ini dan
-        menghubungimu langsung lewat WhatsApp.
-      </p>
+    <main className="bg-gradient-to-b from-surface-tint to-white">
+      <div className="mx-auto max-w-xl px-4 py-8 sm:px-6 lg:px-8">
+        <h1 className="mb-2 text-2xl font-bold text-text">Buat Sayembara Cari Jasa</h1>
+        <p className="mb-6 text-sm text-text-secondary">
+          Publikasikan kebutuhan jasamu. Penyedia yang relevan akan melihat postingan ini dan
+          menghubungimu langsung lewat WhatsApp.
+        </p>
 
-      <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+        <form
+          onSubmit={handleSubmit}
+          className="flex flex-col gap-3 rounded-2xl border border-black/5 bg-white p-6 shadow-sm"
+        >
         <label className="flex flex-col gap-1 text-sm text-text-secondary">
           Judul Kebutuhan
           <input
@@ -201,7 +205,11 @@ export default function BuatSayembaraPage() {
 
         <div className="flex flex-col gap-2 text-sm text-text-secondary">
           Pilihan Tayang
-          <label className="flex items-start gap-2 rounded-xl border border-black/10 p-3">
+          <label
+            className={`flex items-start gap-2 rounded-xl border p-3 transition-colors ${
+              tier === "Gratis" ? "border-primary bg-surface-tint" : "border-black/10"
+            }`}
+          >
             <input
               type="radio"
               checked={tier === "Gratis"}
@@ -213,7 +221,11 @@ export default function BuatSayembaraPage() {
               Tayang 24 jam. Maksimal 1x setiap 30 hari.
             </span>
           </label>
-          <label className="flex items-start gap-2 rounded-xl border border-black/10 p-3">
+          <label
+            className={`flex items-start gap-2 rounded-xl border p-3 transition-colors ${
+              tier === "Prioritas" ? "border-primary bg-surface-tint" : "border-black/10"
+            }`}
+          >
             <input
               type="radio"
               checked={tier === "Prioritas"}
@@ -230,7 +242,11 @@ export default function BuatSayembaraPage() {
         {tier === "Prioritas" && (
           <div className="flex flex-col gap-2 text-sm text-text-secondary">
             Cara Bayar
-            <label className="flex items-center gap-2 rounded-xl border border-black/10 p-3">
+            <label
+              className={`flex items-center gap-2 rounded-xl border p-3 transition-colors ${
+                paymentMethod === "Bayar" ? "border-primary bg-surface-tint" : "border-black/10"
+              }`}
+            >
               <input
                 type="radio"
                 checked={paymentMethod === "Bayar"}
@@ -238,7 +254,11 @@ export default function BuatSayembaraPage() {
               />
               Bayar Rp12.000
             </label>
-            <label className="flex items-center gap-2 rounded-xl border border-black/10 p-3">
+            <label
+              className={`flex items-center gap-2 rounded-xl border p-3 transition-colors ${
+                paymentMethod === "Kuota" ? "border-primary bg-surface-tint" : "border-black/10"
+              }`}
+            >
               <input
                 type="radio"
                 checked={paymentMethod === "Kuota"}
@@ -252,20 +272,21 @@ export default function BuatSayembaraPage() {
 
         {error && <p className="text-sm text-red-600">{error}</p>}
 
-        <button
-          type="submit"
-          disabled={submitting}
-          className="mt-2 rounded-xl bg-primary px-5 py-3 font-semibold text-white disabled:opacity-60"
-        >
-          {submitting
-            ? "Memproses..."
-            : tier === "Prioritas"
-              ? paymentMethod === "Kuota"
-                ? "Pasang dengan Kuota"
-                : "Lanjut ke Pembayaran"
-              : "Pasang Gratis"}
-        </button>
-      </form>
+          <button
+            type="submit"
+            disabled={submitting}
+            className="mt-2 rounded-xl bg-primary px-5 py-3 font-semibold text-white transition-colors hover:bg-primary-dark disabled:opacity-60"
+          >
+            {submitting
+              ? "Memproses..."
+              : tier === "Prioritas"
+                ? paymentMethod === "Kuota"
+                  ? "Pasang dengan Kuota"
+                  : "Lanjut ke Pembayaran"
+                : "Pasang Gratis"}
+          </button>
+        </form>
+      </div>
     </main>
   );
 }

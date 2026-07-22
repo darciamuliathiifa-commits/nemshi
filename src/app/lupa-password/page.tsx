@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { AuthShell } from "@/components/auth-shell";
 
 export default function LupaPasswordPage() {
   const [email, setEmail] = useState("");
@@ -25,11 +26,9 @@ export default function LupaPasswordPage() {
   }
 
   return (
-    <main className="mx-auto max-w-sm px-4 py-12 sm:px-6">
-      <h1 className="mb-6 text-2xl font-bold text-text">Atur Ulang Kata Sandi</h1>
-
+    <AuthShell title="Atur Ulang Kata Sandi" subtitle="Kami akan kirim tautan lewat email">
       {submitted ? (
-        <p className="text-text-secondary">
+        <p className="text-sm text-text-secondary">
           Jika email tersebut terdaftar, tautan atur ulang kata sandi telah dikirim. Silakan cek
           inbox (atau folder spam) dan ikuti tautannya.
         </p>
@@ -48,18 +47,18 @@ export default function LupaPasswordPage() {
           <button
             type="submit"
             disabled={submitting}
-            className="mt-2 rounded-xl bg-primary px-5 py-3 font-semibold text-white disabled:opacity-60"
+            className="mt-2 rounded-xl bg-primary px-5 py-3 font-semibold text-white transition-colors hover:bg-primary-dark disabled:opacity-60"
           >
             {submitting ? "Mengirim..." : "Kirim Tautan Atur Ulang"}
           </button>
         </form>
       )}
 
-      <p className="mt-4 text-sm text-text-secondary">
+      <p className="mt-5 text-center text-sm text-text-secondary">
         <Link href="/masuk" className="font-medium text-primary hover:underline">
           ← Kembali ke halaman Masuk
         </Link>
       </p>
-    </main>
+    </AuthShell>
   );
 }

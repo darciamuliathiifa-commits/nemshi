@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { AuthShell } from "@/components/auth-shell";
 
 export function MasukForm() {
   const router = useRouter();
@@ -35,9 +36,7 @@ export function MasukForm() {
   }
 
   return (
-    <main className="mx-auto max-w-sm px-4 py-12 sm:px-6">
-      <h1 className="mb-6 text-2xl font-bold text-text">Masuk ke Nemshi</h1>
-
+    <AuthShell title="Masuk ke Nemshi" subtitle="Direktori jasa untuk Masisir di Mesir">
       <form onSubmit={handleSubmit} className="flex flex-col gap-3">
         <label className="flex flex-col gap-1 text-sm text-text-secondary">
           Email
@@ -65,13 +64,13 @@ export function MasukForm() {
         <button
           type="submit"
           disabled={submitting}
-          className="mt-2 rounded-xl bg-primary px-5 py-3 font-semibold text-white disabled:opacity-60"
+          className="mt-2 rounded-xl bg-primary px-5 py-3 font-semibold text-white transition-colors hover:bg-primary-dark disabled:opacity-60"
         >
           {submitting ? "Masuk..." : "Masuk"}
         </button>
       </form>
 
-      <div className="mt-4 flex flex-col gap-2 text-sm text-text-secondary">
+      <div className="mt-5 flex flex-col gap-2 text-center text-sm text-text-secondary">
         <Link href="/lupa-password" className="font-medium text-primary hover:underline">
           Lupa kata sandi?
         </Link>
@@ -82,6 +81,6 @@ export function MasukForm() {
           </Link>
         </p>
       </div>
-    </main>
+    </AuthShell>
   );
 }

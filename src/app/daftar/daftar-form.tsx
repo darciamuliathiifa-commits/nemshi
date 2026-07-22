@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { EmergencyContactFields, type EmergencyContact } from "@/components/emergency-contact-fields";
+import { AuthShell } from "@/components/auth-shell";
 
 export function DaftarForm() {
   const router = useRouter();
@@ -55,9 +56,7 @@ export function DaftarForm() {
   }
 
   return (
-    <main className="mx-auto max-w-sm px-4 py-12 sm:px-6">
-      <h1 className="mb-6 text-2xl font-bold text-text">Daftar Akun Nemshi</h1>
-
+    <AuthShell title="Daftar Akun Nemshi" subtitle="Gratis, hanya butuh beberapa menit">
       <form onSubmit={handleSubmit} className="flex flex-col gap-3">
         <label className="flex flex-col gap-1 text-sm text-text-secondary">
           Nama Lengkap
@@ -122,18 +121,18 @@ export function DaftarForm() {
         <button
           type="submit"
           disabled={submitting}
-          className="mt-2 rounded-xl bg-primary px-5 py-3 font-semibold text-white disabled:opacity-60"
+          className="mt-2 rounded-xl bg-primary px-5 py-3 font-semibold text-white transition-colors hover:bg-primary-dark disabled:opacity-60"
         >
           {submitting ? "Mendaftar..." : "Daftar"}
         </button>
       </form>
 
-      <p className="mt-4 text-sm text-text-secondary">
+      <p className="mt-5 text-center text-sm text-text-secondary">
         Sudah punya akun?{" "}
         <Link href="/masuk" className="font-medium text-primary hover:underline">
           Masuk di sini
         </Link>
       </p>
-    </main>
+    </AuthShell>
   );
 }

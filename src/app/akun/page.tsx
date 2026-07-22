@@ -90,26 +90,27 @@ export default function AkunSayaPage() {
   }
 
   return (
-    <main className="mx-auto max-w-3xl px-4 py-8 sm:px-6 lg:px-8">
-      <header className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-text">Akun Saya</h1>
-        <div className="flex gap-4 text-sm font-medium text-primary">
-          <Link href="/akun/verifikasi" className="hover:underline">
-            Status Verifikasi
-          </Link>
-          <Link href="/akun/transaksi" className="hover:underline">
-            Riwayat Transaksi
-          </Link>
-          <Link href="/akun/kontak-darurat" className="hover:underline">
-            Kontak Darurat
-          </Link>
-          <Link href={`/profil/${profile.id}`} className="hover:underline">
-            Lihat profil publik →
-          </Link>
-        </div>
-      </header>
+    <main className="bg-gradient-to-b from-surface-tint to-white">
+      <div className="mx-auto max-w-3xl px-4 py-8 sm:px-6 lg:px-8">
+        <header className="mb-6 flex flex-wrap items-center justify-between gap-3">
+          <h1 className="text-2xl font-bold text-text">Akun Saya</h1>
+          <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm font-medium text-primary">
+            <Link href="/akun/verifikasi" className="hover:underline">
+              Status Verifikasi
+            </Link>
+            <Link href="/akun/transaksi" className="hover:underline">
+              Riwayat Transaksi
+            </Link>
+            <Link href="/akun/kontak-darurat" className="hover:underline">
+              Kontak Darurat
+            </Link>
+            <Link href={`/profil/${profile.id}`} className="hover:underline">
+              Lihat profil publik →
+            </Link>
+          </div>
+        </header>
 
-      <section className="mb-6 rounded-xl border border-black/5 bg-white p-6">
+      <section className="mb-6 rounded-2xl border border-black/5 bg-white p-6 shadow-sm">
         <h2 className="mb-4 font-semibold text-text">Data Diri</h2>
         <div className="flex flex-col gap-3">
           <label className="flex flex-col gap-1 text-sm text-text-secondary">
@@ -169,7 +170,7 @@ export default function AkunSayaPage() {
         </div>
       </section>
 
-      <section className="mb-6 rounded-xl border border-black/5 bg-white p-6">
+      <section className="mb-6 rounded-2xl border border-black/5 bg-white p-6 shadow-sm">
         <h2 className="mb-4 font-semibold text-text">Sisa Kuota</h2>
         {activity.quotas.length === 0 ? (
           <p className="text-sm text-text-secondary">Belum ada kuota Paket Plus.</p>
@@ -178,7 +179,7 @@ export default function AkunSayaPage() {
             {activity.quotas.map((quota) => (
               <li
                 key={quota.id}
-                className="flex items-center justify-between rounded-xl bg-[#f0f4f6] px-4 py-3 text-sm"
+                className="flex items-center justify-between rounded-xl bg-surface px-4 py-3 text-sm"
               >
                 <span>
                   {QUOTA_LABELS[quota.quotaType] ?? quota.quotaType}
@@ -193,7 +194,7 @@ export default function AkunSayaPage() {
         )}
       </section>
 
-      <section className="rounded-xl border border-black/5 bg-white p-6">
+      <section className="rounded-2xl border border-black/5 bg-white p-6 shadow-sm">
         <h2 className="mb-4 font-semibold text-text">Riwayat Iklan & Permintaan</h2>
         {activity.listings.length === 0 ? (
           <p className="text-sm text-text-secondary">Belum ada iklan atau permintaan.</p>
@@ -202,7 +203,7 @@ export default function AkunSayaPage() {
             {activity.listings.map((listing) => (
               <li
                 key={listing.id}
-                className="flex items-center justify-between rounded-xl bg-[#f0f4f6] px-4 py-3 text-sm"
+                className="flex items-center justify-between rounded-xl bg-surface px-4 py-3 text-sm"
               >
                 <span>{listing.title}</span>
                 <ListingStatusBadge status={listing.status} />
@@ -211,6 +212,7 @@ export default function AkunSayaPage() {
           </ul>
         )}
       </section>
+      </div>
     </main>
   );
 }
