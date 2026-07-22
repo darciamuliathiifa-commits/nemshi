@@ -10,6 +10,7 @@ type Profile = {
   fullName: string;
   avatarUrl: string | null;
   whatsappLink: string | null;
+  phoneNumber: string | null;
   verificationStatus: string;
 };
 
@@ -39,7 +40,7 @@ export default function AkunSayaPage() {
   const router = useRouter();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [activity, setActivity] = useState<Activity | null>(null);
-  const [form, setForm] = useState({ fullName: "", avatarUrl: "", whatsappLink: "" });
+  const [form, setForm] = useState({ fullName: "", avatarUrl: "", whatsappLink: "", phoneNumber: "" });
   const [saving, setSaving] = useState(false);
   const [savedMessage, setSavedMessage] = useState("");
 
@@ -60,6 +61,7 @@ export default function AkunSayaPage() {
         fullName: profileData.fullName ?? "",
         avatarUrl: profileData.avatarUrl ?? "",
         whatsappLink: profileData.whatsappLink ?? "",
+        phoneNumber: profileData.phoneNumber ?? "",
       });
     });
   }, [router]);
@@ -137,6 +139,19 @@ export default function AkunSayaPage() {
               placeholder="https://wa.me/20XXXXXXXXXX"
               className="rounded-xl border border-black/10 px-3 py-2 text-text outline-none focus:border-primary"
             />
+          </label>
+          <label className="flex flex-col gap-1 text-sm text-text-secondary">
+            Nomor Telepon
+            <input
+              type="tel"
+              value={form.phoneNumber}
+              onChange={(e) => setForm({ ...form, phoneNumber: e.target.value })}
+              placeholder="081234567890"
+              className="rounded-xl border border-black/10 px-3 py-2 text-text outline-none focus:border-primary"
+            />
+            <span className="text-xs text-text-secondary">
+              Wajib diisi sebelum checkout pembayaran (dipakai oleh payment gateway).
+            </span>
           </label>
           <div className="flex items-center gap-3">
             <button

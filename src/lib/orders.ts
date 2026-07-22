@@ -1,10 +1,16 @@
-import { and, desc, eq } from "drizzle-orm";
+import { and, desc, eq, or } from "drizzle-orm";
 import { db } from "@/db";
 import { listings, orders, userQuotas, users } from "@/db/schema";
-import { type OrderProductType, PRODUCT_PRICES, requiresModeration } from "@/lib/pricing";
+import { PRODUCT_LABELS, type OrderProductType, PRODUCT_PRICES, requiresModeration } from "@/lib/pricing";
 import { refundQuota } from "@/lib/quotas";
+import {
+  createMayarInvoice,
+  getMayarWebhookHistory,
+  type MayarPaymentReceivedPayload,
+} from "@/lib/mayar";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
 
 export async function createOrder(
   userId: string,
@@ -38,28 +44,16 @@ export async function getUserOrders(userId: string) {
 }
 
 /**
- * Memproses pembayaran pesanan. Belum terhubung ke gateway asli
- * (Midtrans/Xendit) — mensimulasikan hasil sukses/gagal untuk keperluan
- * pengembangan sampai kredensial gateway tersedia.
+ * Menandai order sukses dibayar dan menerapkan efek bisnisnya (penahanan
+ * dana untuk produk bermoderasi, pemberian kuota Paket Plus, iklan masuk
+ * antrean moderasi). Idempoten — aman dipanggil ulang (mis. oleh retry
+ * webhook gateway) karena hanya bekerja saat order masih Menunggu_Pembayaran.
  */
-export async function payOrder(
-  orderId: string,
-  paymentMethod: string,
-  simulateFailure = false
-) {
+async function markOrderPaidByGateway(orderId: string, paymentMethod: string) {
   const order = await getOrderById(orderId);
   if (!order) throw new Error("Pesanan tidak ditemukan.");
   if (order.paymentStatus !== "Menunggu_Pembayaran") {
-    throw new Error("Pesanan ini sudah diproses sebelumnya.");
-  }
-
-  if (simulateFailure) {
-    const [updated] = await db
-      .update(orders)
-      .set({ paymentStatus: "Gagal", paymentMethod })
-      .where(eq(orders.id, orderId))
-      .returning();
-    return updated;
+    return order;
   }
 
   const productType = order.productType as OrderProductType;
@@ -92,6 +86,107 @@ export async function payOrder(
   }
 
   return updated;
+}
+
+/**
+ * Membuat invoice di Mayar untuk sebuah order dan mengembalikan link
+ * checkout untuk diarahkan (redirect) penggunanya. Menyimpan referensi
+ * invoice/transaction Mayar di order agar bisa dicocokkan lagi saat
+ * webhook payment.received masuk — lihat verifyAndMarkMayarPayment().
+ */
+export async function initiateMayarPayment(orderId: string, userId: string): Promise<string> {
+  const order = await getOrderById(orderId);
+  if (!order) throw new Error("Pesanan tidak ditemukan.");
+  if (order.userId !== userId) throw new Error("Pesanan ini bukan milik Anda.");
+  if (order.paymentStatus !== "Menunggu_Pembayaran") {
+    throw new Error("Pesanan ini sudah diproses sebelumnya.");
+  }
+
+  const [user] = await db.select().from(users).where(eq(users.id, userId)).limit(1);
+  if (!user) throw new Error("Pengguna tidak ditemukan.");
+  if (!user.phoneNumber) {
+    throw new Error(
+      "Nomor telepon belum diisi. Lengkapi dulu di Akun Saya sebelum melanjutkan pembayaran."
+    );
+  }
+
+  const productType = order.productType as OrderProductType;
+  const productLabel = PRODUCT_LABELS[productType];
+
+  const invoice = await createMayarInvoice({
+    name: user.fullName,
+    email: user.email,
+    mobile: user.phoneNumber,
+    redirectUrl: `${APP_URL}/bayar/${order.id}`,
+    description: productLabel,
+    expiredAt: new Date(Date.now() + DAY_MS).toISOString(),
+    items: [{ quantity: 1, rate: order.amount, description: productLabel }],
+    extraData: { noCustomer: userId, idProd: order.id },
+  });
+
+  await db
+    .update(orders)
+    .set({ mayarInvoiceId: invoice.id, mayarTransactionId: invoice.transactionId })
+    .where(eq(orders.id, order.id));
+
+  return invoice.link;
+}
+
+/**
+ * Verifikasi keaslian notifikasi payment.received dari webhook Mayar
+ * dengan memanggil balik endpoint Get History milik Mayar memakai API
+ * key rahasia kita. Mayar tidak mendokumentasikan skema signature untuk
+ * webhook, jadi ini dipakai sebagai penggantinya: penyerang yang mengirim
+ * POST palsu ke endpoint kita tidak akan pernah muncul di riwayat webhook
+ * resmi akun kita, sehingga pencocokan ini gagal dan order tidak ditandai
+ * lunas.
+ */
+export async function verifyAndMarkMayarPayment(payload: MayarPaymentReceivedPayload) {
+  const eventId = payload?.data?.id;
+  if (!eventId) {
+    throw new Error("Payload webhook tidak valid: data.id tidak ada.");
+  }
+
+  const history = await getMayarWebhookHistory({
+    type: "payment.received",
+    status: "SUCCESS",
+    limit: 50,
+  });
+
+  const matchedDelivery = history.find((entry) => {
+    if (entry.type !== "payment.received") return false;
+    try {
+      const deliveredPayload = JSON.parse(entry.payload) as MayarPaymentReceivedPayload;
+      return deliveredPayload?.data?.id === eventId;
+    } catch {
+      return false;
+    }
+  });
+
+  if (!matchedDelivery) {
+    throw new Error("Notifikasi webhook tidak ditemukan di riwayat resmi Mayar — diabaikan.");
+  }
+
+  // Cocokkan ke order kita lewat transactionId (paling dapat diandalkan),
+  // dengan invoiceId sebagai fallback — bentuk pasti field `data.id` pada
+  // payload webhook belum terkonfirmasi lewat pengujian sandbox nyata.
+  const [order] = await db
+    .select()
+    .from(orders)
+    .where(
+      or(
+        eq(orders.mayarTransactionId, matchedDelivery.paymentLinkTransactionId),
+        eq(orders.mayarTransactionId, eventId),
+        eq(orders.mayarInvoiceId, eventId)
+      )
+    )
+    .limit(1);
+
+  if (!order) {
+    throw new Error(`Tidak ada order yang cocok dengan transaksi Mayar ${eventId}.`);
+  }
+
+  return markOrderPaidByGateway(order.id, "Mayar");
 }
 
 /**

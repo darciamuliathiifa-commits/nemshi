@@ -17,36 +17,52 @@ type Order = {
   listingId: string | null;
 };
 
-const PAYMENT_METHODS = ["QRIS", "Virtual Account BCA", "Virtual Account Mandiri"];
-
 export default function RingkasanPesananPage() {
   const { orderId } = useParams<{ orderId: string }>();
   const router = useRouter();
   const [order, setOrder] = useState<Order | null>(null);
-  const [method, setMethod] = useState(PAYMENT_METHODS[0]);
-  const [simulateFailure, setSimulateFailure] = useState(false);
-  const [paying, setPaying] = useState(false);
+  const [redirecting, setRedirecting] = useState(false);
+  const [error, setError] = useState("");
+
+  async function loadOrder() {
+    const response = await fetch(`/api/orders/${orderId}`);
+    if (response.status === 401) {
+      router.replace(`/masuk?redirectTo=/bayar/${orderId}`);
+      return;
+    }
+    setOrder(await response.json());
+  }
 
   useEffect(() => {
-    fetch(`/api/orders/${orderId}`).then(async (response) => {
-      if (response.status === 401) {
-        router.replace(`/masuk?redirectTo=/bayar/${orderId}`);
-        return;
-      }
-      setOrder(await response.json());
-    });
-  }, [orderId, router]);
+    loadOrder();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [orderId]);
+
+  // Webhook Mayar bisa datang beberapa detik setelah pengguna diarahkan
+  // kembali ke halaman ini, jadi poll status secara berkala selagi masih
+  // menunggu pembayaran.
+  useEffect(() => {
+    if (order?.paymentStatus !== "Menunggu_Pembayaran") return;
+
+    const interval = setInterval(loadOrder, 4000);
+    return () => clearInterval(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [order?.paymentStatus]);
 
   async function handleBayar() {
-    setPaying(true);
-    const response = await fetch(`/api/orders/${orderId}/pay`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ paymentMethod: method, simulateFailure }),
-    });
-    const updated = await response.json();
-    setOrder(updated);
-    setPaying(false);
+    setRedirecting(true);
+    setError("");
+
+    const response = await fetch(`/api/orders/${orderId}/mayar-checkout`, { method: "POST" });
+    const data = await response.json();
+
+    if (!response.ok) {
+      setError(data.error ?? "Gagal memulai pembayaran.");
+      setRedirecting(false);
+      return;
+    }
+
+    window.location.href = data.link;
   }
 
   if (!order) {
@@ -88,37 +104,32 @@ export default function RingkasanPesananPage() {
 
       {order.paymentStatus === "Menunggu_Pembayaran" && (
         <section className="rounded-xl border border-black/5 bg-white p-6">
-          <h2 className="mb-3 font-semibold text-text">Pilih Metode Bayar</h2>
-          <div className="mb-4 flex flex-col gap-2">
-            {PAYMENT_METHODS.map((paymentMethod) => (
-              <label
-                key={paymentMethod}
-                className="flex items-center gap-2 rounded-xl border border-black/10 px-4 py-2 text-sm"
-              >
-                <input
-                  type="radio"
-                  name="method"
-                  checked={method === paymentMethod}
-                  onChange={() => setMethod(paymentMethod)}
-                />
-                {paymentMethod}
-              </label>
-            ))}
-          </div>
-          <label className="mb-4 flex items-center gap-2 text-xs text-text-secondary">
-            <input
-              type="checkbox"
-              checked={simulateFailure}
-              onChange={(e) => setSimulateFailure(e.target.checked)}
-            />
-            Simulasikan pembayaran gagal (mode uji coba — belum terhubung gateway asli)
-          </label>
+          <p className="mb-4 text-sm text-text-secondary">
+            Kamu akan diarahkan ke halaman pembayaran Mayar untuk memilih metode bayar (QRIS,
+            transfer bank, e-wallet, dsb.).
+          </p>
+          {error && (
+            <p className="mb-4 text-sm text-red-600">
+              {error}{" "}
+              {error.includes("telepon") && (
+                <Link href="/akun" className="font-medium underline">
+                  Lengkapi di Akun Saya →
+                </Link>
+              )}
+            </p>
+          )}
           <button
             onClick={handleBayar}
-            disabled={paying}
+            disabled={redirecting}
             className="w-full rounded-xl bg-primary px-5 py-3 font-semibold text-white disabled:opacity-60"
           >
-            {paying ? "Memproses Pembayaran..." : `Bayar ${formatRupiah(order.amount)}`}
+            {redirecting ? "Mengarahkan ke Mayar..." : `Bayar ${formatRupiah(order.amount)}`}
+          </button>
+          <button
+            onClick={loadOrder}
+            className="mt-3 w-full text-center text-sm font-medium text-text-secondary hover:underline"
+          >
+            Sudah bayar? Cek status terbaru
           </button>
         </section>
       )}

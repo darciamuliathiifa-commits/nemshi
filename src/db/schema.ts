@@ -106,6 +106,9 @@ export const users = pgTable("users", {
   email: text("email").notNull().unique(),
   avatarUrl: text("avatar_url"),
   whatsappLink: text("whatsapp_link"),
+  // Wajib diisi sebelum checkout — dipakai sebagai field "mobile" saat
+  // membuat invoice di payment gateway (Mayar).
+  phoneNumber: text("phone_number"),
   role: userRoleEnum("role").notNull().default("Pelanggan"),
   verificationStatus: verificationStatusEnum("verification_status")
     .notNull()
@@ -214,6 +217,10 @@ export const orders = pgTable("orders", {
   paymentMethod: text("payment_method"),
   // null selama menunggu pembayaran; terisi begitu pembayaran sukses
   fundStatus: fundStatusEnum("fund_status"),
+  // Referensi ke invoice Mayar (payment gateway) — dipakai untuk
+  // mencocokkan notifikasi webhook payment.received ke order ini.
+  mayarInvoiceId: text("mayar_invoice_id"),
+  mayarTransactionId: text("mayar_transaction_id"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   paidAt: timestamp("paid_at", { withTimezone: true }),
 });

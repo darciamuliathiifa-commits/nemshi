@@ -56,6 +56,29 @@ export async function isUserSuspended(userId: string): Promise<boolean> {
   return user?.isSuspended ?? false;
 }
 
+/**
+ * Profil lengkap milik sendiri (termasuk phoneNumber) — jangan pernah
+ * dipakai untuk endpoint publik seperti /api/users/[id], hanya untuk
+ * /api/me karena nomor telepon bukan data publik.
+ */
+export async function getOwnProfile(userId: string) {
+  const [user] = await db
+    .select({
+      id: users.id,
+      fullName: users.fullName,
+      email: users.email,
+      avatarUrl: users.avatarUrl,
+      whatsappLink: users.whatsappLink,
+      phoneNumber: users.phoneNumber,
+      verificationStatus: users.verificationStatus,
+    })
+    .from(users)
+    .where(eq(users.id, userId))
+    .limit(1);
+
+  return user ?? null;
+}
+
 export async function getUserActiveListings(userId: string) {
   const rows = await db
     .select({
@@ -148,7 +171,12 @@ export async function getUserActivitySummary(userId: string) {
 
 export async function updateUserProfile(
   userId: string,
-  data: { fullName?: string; avatarUrl?: string | null; whatsappLink?: string | null }
+  data: {
+    fullName?: string;
+    avatarUrl?: string | null;
+    whatsappLink?: string | null;
+    phoneNumber?: string | null;
+  }
 ) {
   const [updated] = await db
     .update(users)
