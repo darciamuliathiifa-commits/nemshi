@@ -10,17 +10,9 @@ import type { ListingSummary } from "@/lib/listings";
 
 type Category = { id: string; name: string; slug: string; icon: string };
 type Area = { id: string; name: string; slug: string };
-type Testimonial = {
-  id: string;
-  reviewerName: string;
-  rating: number;
-  comment: string;
-  revieweeName: string;
-  revieweeId: string;
-};
 
 const fadeUp = {
-  hidden: { opacity: 0, y: 18 },
+  hidden: { opacity: 0, y: 16 },
   show: { opacity: 1, y: 0 },
 };
 
@@ -49,17 +41,15 @@ function FilterChip({ label, onRemove }: { label: string; onRemove: () => void }
   );
 }
 
-export function JelajahiGallery({
+export function JelajahiCatalog({
   initialListings,
   initialCategories,
   initialAreas,
-  initialTestimonials,
   savedListingIds,
 }: {
   initialListings: ListingSummary[];
   initialCategories: Category[];
   initialAreas: Area[];
-  initialTestimonials: Testimonial[];
   savedListingIds: string[];
 }) {
   const searchParams = useSearchParams();
@@ -67,7 +57,6 @@ export function JelajahiGallery({
   const listings = initialListings;
   const categories = initialCategories;
   const areas = initialAreas;
-  const testimonials = initialTestimonials;
   const savedSet = useMemo(() => new Set(savedListingIds), [savedListingIds]);
 
   const [keyword, setKeyword] = useState("");
@@ -95,18 +84,12 @@ export function JelajahiGallery({
   const activeCategory = categories.find((c) => c.slug === categorySlug);
   const activeArea = areas.find((a) => a.slug === areaSlug);
 
-  const stats = [
-    { label: "Iklan aktif", value: listings.length },
-    { label: "Kategori jasa", value: categories.length },
-    { label: "Area di Mesir", value: areas.length },
-  ];
-
   return (
     <div className="bg-surface-tint">
       <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-8">
-        {/* Hero panel */}
-        <section className="overflow-hidden rounded-3xl bg-white shadow-sm shadow-black/5">
-          <div className="grid gap-6 p-8 sm:p-10 lg:grid-cols-2 lg:items-center lg:gap-10 lg:p-14">
+        {/* Promo banner */}
+        <section className="overflow-hidden rounded-3xl bg-primary text-white">
+          <div className="grid gap-6 p-8 sm:p-10 lg:grid-cols-[1.3fr_1fr] lg:items-center lg:gap-8 lg:p-12">
             <motion.div
               initial="hidden"
               animate="show"
@@ -114,49 +97,33 @@ export function JelajahiGallery({
             >
               <motion.span
                 variants={fadeUp}
-                className="inline-block rounded-full bg-surface-tint px-3 py-1 text-xs font-semibold tracking-wide text-primary"
+                className="inline-block rounded-full bg-white/15 px-3 py-1 text-xs font-semibold tracking-wide"
               >
                 Direktori Jasa Masisir
               </motion.span>
               <motion.h1
                 variants={fadeUp}
-                className="mt-4 font-display text-4xl font-semibold leading-[1.08] tracking-tight text-text sm:text-5xl"
+                className="mt-4 font-display text-3xl font-semibold leading-[1.1] tracking-tight sm:text-4xl"
               >
-                Kami hubungkan kamu dengan{" "}
-                <span className="italic text-accent">jasa terpercaya</span>
+                Dapatkan <span className="italic text-accent">jasa terpercaya</span> di
+                sekitarmu
               </motion.h1>
-              <motion.p variants={fadeUp} className="mt-4 max-w-md text-text-secondary">
-                Direktori iklan jasa untuk Mahasiswa Indonesia di Mesir — temukan penyedia jasa dan
-                hubungi langsung via WhatsApp, tanpa perantara.
+              <motion.p variants={fadeUp} className="mt-3 max-w-md text-white/80">
+                Hubungi penyedia jasa langsung via WhatsApp — tanpa perantara, tanpa ribet.
               </motion.p>
-              <motion.div variants={fadeUp} className="mt-6 flex flex-wrap items-center gap-4">
-                <Link href="/kategori" className="group">
-                  <motion.span
-                    whileHover={{ scale: 1.03 }}
-                    whileTap={{ scale: 0.97 }}
-                    className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-white shadow-sm"
-                  >
-                    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white/20 transition-transform group-hover:translate-x-0.5">
-                      →
-                    </span>
-                    Jelajahi Semua Kategori
-                  </motion.span>
+              <motion.div variants={fadeUp} className="mt-6 flex flex-wrap gap-3">
+                <Link
+                  href="/pasang-iklan"
+                  className="rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-primary shadow-sm transition-transform hover:scale-[1.02]"
+                >
+                  Pasang Iklan Gratis
                 </Link>
                 <Link
                   href="/sayembara"
-                  className="text-sm font-semibold text-text underline decoration-accent/50 decoration-2 underline-offset-4 hover:text-accent"
+                  className="rounded-full border border-white/30 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-white/10"
                 >
-                  Cari Jasa (Papan Permintaan)
+                  Papan Permintaan
                 </Link>
-              </motion.div>
-
-              <motion.div variants={fadeUp} className="mt-8 flex gap-6 border-t border-black/5 pt-6">
-                {stats.map((stat) => (
-                  <div key={stat.label}>
-                    <p className="font-display text-2xl font-semibold text-text">{stat.value}</p>
-                    <p className="text-xs text-text-secondary">{stat.label}</p>
-                  </div>
-                ))}
               </motion.div>
             </motion.div>
 
@@ -164,75 +131,25 @@ export function JelajahiGallery({
               initial={{ opacity: 0, scale: 0.94 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.6, ease: "easeOut" }}
-              className="relative mx-auto w-full max-w-md"
+              className="relative mx-auto hidden w-full max-w-xs sm:block"
             >
-              <motion.div
-                animate={{ y: [0, -10, 0] }}
-                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-              >
-                <Image
-                  src="/hero-illustration.png"
-                  alt="Ilustrasi direktori jasa Nemshi"
-                  width={900}
-                  height={680}
-                  priority
-                  className="w-full rounded-2xl"
-                />
-              </motion.div>
+              <Image
+                src="/hero-illustration.png"
+                alt="Ilustrasi direktori jasa Nemshi"
+                width={600}
+                height={450}
+                priority
+                className="w-full rounded-2xl"
+              />
             </motion.div>
           </div>
         </section>
 
-        {/* Quick actions */}
-        <motion.section
-          initial="hidden"
-          animate="show"
-          variants={{ show: { transition: { staggerChildren: 0.08, delayChildren: 0.3 } } }}
-          className="mt-6 grid gap-4 sm:grid-cols-3"
-        >
-          {[
-            {
-              href: "/pasang-iklan",
-              icon: "📢",
-              title: "Pasang Iklan Gratis",
-              desc: "Tawarkan jasamu dan tampil di direktori Nemshi.",
-              className: "bg-primary text-white",
-            },
-            {
-              href: "/sayembara",
-              icon: "🔍",
-              title: "Papan Permintaan",
-              desc: "Belum nemu penyedianya? Pasang permintaanmu di sini.",
-              className: "bg-accent text-white",
-            },
-            {
-              href: "/kategori",
-              icon: "📍",
-              title: "Jelajahi per Kategori",
-              desc: "Cari berdasarkan kategori dan area di Mesir.",
-              className: "border border-black/5 bg-white text-text",
-            },
-          ].map((card) => (
-            <motion.div key={card.href} variants={fadeUp}>
-              <Link href={card.href}>
-                <motion.div
-                  whileHover={{ y: -4 }}
-                  className={`rounded-2xl p-5 shadow-sm transition-shadow hover:shadow-lg ${card.className}`}
-                >
-                  <span className="text-2xl">{card.icon}</span>
-                  <p className="mt-3 font-semibold">{card.title}</p>
-                  <p className="mt-1 text-sm opacity-85">{card.desc}</p>
-                </motion.div>
-              </Link>
-            </motion.div>
-          ))}
-        </motion.section>
-
-        {/* Featured listings panel */}
+        {/* Catalog panel */}
         <section className="mt-6 rounded-3xl bg-white p-6 shadow-sm shadow-black/5 sm:p-8">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <h2 className="font-display text-2xl font-semibold text-text">Iklan Pilihan</h2>
-            <div className="flex flex-1 flex-col gap-2 sm:max-w-md sm:flex-row">
+            <h2 className="font-display text-2xl font-semibold text-text">Semua Iklan</h2>
+            <div className="flex flex-1 flex-col gap-2 sm:max-w-lg sm:flex-row">
               <input
                 type="text"
                 value={keyword}
@@ -266,9 +183,7 @@ export function JelajahiGallery({
 
           {hasActiveFilters && (
             <div className="mt-4 flex flex-wrap items-center gap-2">
-              {keyword && (
-                <FilterChip label={`"${keyword}"`} onRemove={() => setKeyword("")} />
-              )}
+              {keyword && <FilterChip label={`"${keyword}"`} onRemove={() => setKeyword("")} />}
               {activeCategory && (
                 <FilterChip
                   label={`${activeCategory.icon} ${activeCategory.name}`}
@@ -290,12 +205,12 @@ export function JelajahiGallery({
             >
               {categorySlug === "" && (
                 <motion.span
-                  layoutId="category-pill"
+                  layoutId="jelajahi-category-pill"
                   className="absolute inset-0 rounded-full bg-primary"
                   transition={{ type: "spring", stiffness: 400, damping: 32 }}
                 />
               )}
-              <span className="relative">Semua</span>
+              <span className="relative">Semua Kategori</span>
             </button>
             {categories.map((category) => (
               <button
@@ -309,7 +224,7 @@ export function JelajahiGallery({
               >
                 {categorySlug === category.slug && (
                   <motion.span
-                    layoutId="category-pill"
+                    layoutId="jelajahi-category-pill"
                     className="absolute inset-0 rounded-full bg-primary"
                     transition={{ type: "spring", stiffness: 400, damping: 32 }}
                   />
@@ -354,43 +269,6 @@ export function JelajahiGallery({
             )}
           </div>
         </section>
-
-        {/* Testimonials */}
-        {testimonials.length > 0 && (
-          <motion.section
-            initial="hidden"
-            animate="show"
-            variants={{ show: { transition: { staggerChildren: 0.06 } } }}
-            className="mt-6 rounded-3xl bg-white p-6 shadow-sm shadow-black/5 sm:p-8"
-          >
-            <h2 className="font-display text-2xl font-semibold text-text">Kata Mereka</h2>
-            <p className="mt-1 text-sm text-text-secondary">
-              Pengalaman nyata dari sesama Masisir yang sudah pakai Nemshi.
-            </p>
-            <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {testimonials.map((t) => (
-                <motion.div
-                  key={t.id}
-                  variants={fadeUp}
-                  className="flex flex-col gap-3 rounded-2xl bg-surface p-5"
-                >
-                  <div className="flex gap-0.5 text-accent">
-                    {Array.from({ length: 5 }).map((_, i) => (
-                      <span key={i} className={i < t.rating ? "" : "opacity-25"}>
-                        ★
-                      </span>
-                    ))}
-                  </div>
-                  <p className="text-sm text-text">&ldquo;{t.comment}&rdquo;</p>
-                  <p className="mt-auto text-xs text-text-secondary">
-                    <span className="font-semibold text-text">{t.reviewerName}</span> untuk{" "}
-                    {t.revieweeName}
-                  </p>
-                </motion.div>
-              ))}
-            </div>
-          </motion.section>
-        )}
       </div>
     </div>
   );

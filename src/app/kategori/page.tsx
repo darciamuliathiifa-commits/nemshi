@@ -13,7 +13,7 @@ export default async function KategoriPage() {
       <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-8">
         <div className="rounded-3xl bg-white p-8 shadow-sm shadow-black/5 sm:p-10">
           <Link
-            href="/"
+            href="/jelajahi"
             className="mb-4 inline-flex items-center gap-1 text-sm font-medium text-text-secondary hover:text-primary"
           >
             ← Kembali ke Jelajahi Iklan Jasa
@@ -29,7 +29,7 @@ export default async function KategoriPage() {
               return (
                 <Link
                   key={category.id}
-                  href={`/?category=${category.slug}`}
+                  href={`/jelajahi?category=${category.slug}`}
                   className="group flex flex-col items-center gap-3 rounded-2xl border border-black/5 bg-surface p-6 text-center transition-all hover:-translate-y-1 hover:shadow-lg"
                 >
                   <span

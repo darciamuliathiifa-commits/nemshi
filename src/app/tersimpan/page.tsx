@@ -13,7 +13,7 @@ export default async function TersimpanPage() {
     <div className="bg-surface-tint">
       <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-8">
         <Link
-          href="/"
+          href="/jelajahi"
           className="mb-4 inline-flex items-center gap-1 text-sm font-medium text-text-secondary hover:text-primary"
         >
           ← Kembali ke Jelajahi Iklan Jasa

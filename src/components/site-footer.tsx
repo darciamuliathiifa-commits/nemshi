@@ -21,7 +21,7 @@ export function SiteFooter() {
         <nav className="flex gap-8 text-sm">
           <div className="flex flex-col gap-2">
             <span className="font-semibold text-text">Jelajahi</span>
-            <Link href="/" className="text-text-secondary hover:text-primary">
+            <Link href="/jelajahi" className="text-text-secondary hover:text-primary">
               Iklan Jasa
             </Link>
             <Link href="/sayembara" className="text-text-secondary hover:text-primary">

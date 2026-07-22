@@ -1,4 +1,4 @@
-import { and, desc, eq, gt, gte, ilike, inArray, isNull, lt, or } from "drizzle-orm";
+import { and, count, desc, eq, gt, gte, ilike, inArray, isNull, lt, or } from "drizzle-orm";
 import { db } from "@/db";
 import { areas, categories, listingPhotos, listings, users } from "@/db/schema";
 
@@ -120,6 +120,15 @@ export async function getActiveListings(
       avatarUrl: row.providerAvatarUrl,
     },
   }));
+}
+
+export async function countActiveListings(type: "Offers_Service" | "Needs_Service") {
+  const [row] = await db
+    .select({ count: count() })
+    .from(listings)
+    .where(and(isCurrentlyLive, eq(listings.type, type)));
+
+  return row.count;
 }
 
 export async function getListingById(id: string): Promise<ListingDetail | null> {

@@ -10,7 +10,7 @@ import { AuthShell } from "@/components/auth-shell";
 export function DaftarForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const redirectTo = searchParams.get("redirectTo") ?? "/";
+  const redirectTo = searchParams.get("redirectTo") ?? "/jelajahi";
 
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");

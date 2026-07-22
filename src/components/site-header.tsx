@@ -2,6 +2,7 @@ import Link from "next/link";
 import { AuthNav } from "@/components/auth-nav";
 
 const NAV_LINKS = [
+  { href: "/jelajahi", label: "Jelajahi Jasa" },
   { href: "/sayembara", label: "Cari Jasa" },
   { href: "/kategori", label: "Kategori" },
 ];
