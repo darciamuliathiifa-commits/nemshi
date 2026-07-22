@@ -1,38 +1,38 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import { motion } from "framer-motion";
 import { ListingCard } from "@/components/listing-card";
 import type { ListingSummary } from "@/lib/listings";
 
 type Category = { id: string; name: string; slug: string; icon: string };
 type Area = { id: string; name: string; slug: string };
 
-export function SayembaraBoard() {
+const fadeUp = {
+  hidden: { opacity: 0, y: 16 },
+  show: { opacity: 1, y: 0 },
+};
+
+export function SayembaraBoard({
+  initialListings,
+  initialCategories,
+  initialAreas,
+}: {
+  initialListings: ListingSummary[];
+  initialCategories: Category[];
+  initialAreas: Area[];
+}) {
   const searchParams = useSearchParams();
 
-  const [listings, setListings] = useState<ListingSummary[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [areas, setAreas] = useState<Area[]>([]);
-  const [loading, setLoading] = useState(true);
+  const listings = initialListings;
+  const categories = initialCategories;
+  const areas = initialAreas;
 
   const [keyword, setKeyword] = useState("");
   const [categorySlug, setCategorySlug] = useState(searchParams.get("category") ?? "");
   const [areaSlug, setAreaSlug] = useState(searchParams.get("area") ?? "");
-
-  useEffect(() => {
-    Promise.all([
-      fetch("/api/sayembara").then((r) => r.json()),
-      fetch("/api/categories").then((r) => r.json()),
-      fetch("/api/areas").then((r) => r.json()),
-    ]).then(([listingsData, categoriesData, areasData]) => {
-      setListings(listingsData);
-      setCategories(categoriesData);
-      setAreas(areasData);
-      setLoading(false);
-    });
-  }, []);
 
   const filtered = useMemo(() => {
     const normalizedKeyword = keyword.trim().toLowerCase();
@@ -48,88 +48,129 @@ export function SayembaraBoard() {
   const hasActiveFilters = keyword || categorySlug || areaSlug;
 
   return (
-    <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
-      <header className="mb-8 flex flex-col gap-2">
-        <div className="flex items-start justify-between gap-4">
-          <h1 className="text-3xl font-extrabold text-text">Cari Jasa</h1>
-          <Link
-            href="/sayembara/buat"
-            className="shrink-0 rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-white"
-          >
-            Buat Sayembara
-          </Link>
-        </div>
-        <p className="text-text-secondary">
-          Papan permintaan jasa dari sesama Masisir — penyedia yang relevan akan menghubungimu
-          langsung lewat WhatsApp.
-        </p>
-        <div className="flex gap-4 text-sm font-medium text-primary">
-          <Link href="/" className="hover:underline">
-            ← Jelajahi Iklan Jasa
-          </Link>
-          <Link href="/sayembara/saya" className="hover:underline">
-            Sayembara Saya
-          </Link>
-        </div>
-      </header>
+    <div className="bg-surface-tint">
+      <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-8">
+        <section className="rounded-3xl bg-white p-6 shadow-sm shadow-black/5 sm:p-8">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+            <div>
+              <h1 className="font-display text-3xl font-semibold text-text">Cari Jasa</h1>
+              <p className="mt-2 max-w-xl text-text-secondary">
+                Papan permintaan jasa dari sesama Masisir — penyedia yang relevan akan
+                menghubungimu langsung lewat WhatsApp.
+              </p>
+              <div className="mt-3 flex gap-4 text-sm font-medium">
+                <Link href="/" className="text-text-secondary hover:text-primary">
+                  ← Jelajahi Iklan Jasa
+                </Link>
+                <Link href="/sayembara/saya" className="text-text-secondary hover:text-primary">
+                  Sayembara Saya
+                </Link>
+              </div>
+            </div>
+            <Link
+              href="/sayembara/buat"
+              className="shrink-0 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-transform hover:scale-[1.02]"
+            >
+              Buat Sayembara
+            </Link>
+          </div>
 
-      <section className="mb-8 flex flex-col gap-3 rounded-xl border border-black/5 bg-white p-4 sm:flex-row sm:items-center">
-        <input
-          type="text"
-          value={keyword}
-          onChange={(e) => setKeyword(e.target.value)}
-          placeholder="Cari kebutuhan jasa..."
-          className="flex-1 rounded-xl border border-black/10 px-4 py-2 text-sm outline-none focus:border-primary"
-        />
-        <select
-          value={categorySlug}
-          onChange={(e) => setCategorySlug(e.target.value)}
-          className="rounded-xl border border-black/10 px-4 py-2 text-sm outline-none focus:border-primary"
-        >
-          <option value="">Semua Kategori</option>
-          {categories.map((category) => (
-            <option key={category.id} value={category.slug}>
-              {category.icon} {category.name}
-            </option>
-          ))}
-        </select>
-        <select
-          value={areaSlug}
-          onChange={(e) => setAreaSlug(e.target.value)}
-          className="rounded-xl border border-black/10 px-4 py-2 text-sm outline-none focus:border-primary"
-        >
-          <option value="">Semua Area</option>
-          {areas.map((area) => (
-            <option key={area.id} value={area.slug}>
-              {area.name}
-            </option>
-          ))}
-        </select>
-        {hasActiveFilters && (
-          <button
-            onClick={() => {
-              setKeyword("");
-              setCategorySlug("");
-              setAreaSlug("");
-            }}
-            className="rounded-xl border border-black/10 px-4 py-2 text-sm font-medium text-text-secondary hover:bg-black/5"
-          >
-            Reset Filter
-          </button>
-        )}
-      </section>
+          <div className="mt-6 flex flex-col gap-3 rounded-2xl bg-surface p-4 sm:flex-row sm:items-center">
+            <input
+              type="text"
+              value={keyword}
+              onChange={(e) => setKeyword(e.target.value)}
+              placeholder="Cari kebutuhan jasa..."
+              className="flex-1 rounded-full border border-black/10 px-4 py-2 text-sm outline-none transition-colors focus:border-primary"
+            />
+            <select
+              value={areaSlug}
+              onChange={(e) => setAreaSlug(e.target.value)}
+              className="rounded-full border border-black/10 px-4 py-2 text-sm outline-none transition-colors focus:border-primary"
+            >
+              <option value="">Semua Area</option>
+              {areas.map((area) => (
+                <option key={area.id} value={area.slug}>
+                  {area.name}
+                </option>
+              ))}
+            </select>
+          </div>
 
-      {loading ? (
-        <p className="text-text-secondary">Memuat sayembara...</p>
-      ) : filtered.length === 0 ? (
-        <p className="text-text-secondary">Belum ada sayembara yang sesuai.</p>
-      ) : (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {filtered.map((listing) => (
-            <ListingCard key={listing.id} listing={listing} />
-          ))}
-        </div>
-      )}
-    </main>
+          <div className="mt-4 flex flex-wrap items-center gap-2 border-b border-black/5 pb-5">
+            <button
+              onClick={() => setCategorySlug("")}
+              className={`relative rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${
+                categorySlug === "" ? "text-white" : "text-text-secondary hover:bg-surface"
+              }`}
+            >
+              {categorySlug === "" && (
+                <motion.span
+                  layoutId="sayembara-category-pill"
+                  className="absolute inset-0 rounded-full bg-primary"
+                  transition={{ type: "spring", stiffness: 400, damping: 32 }}
+                />
+              )}
+              <span className="relative">Semua</span>
+            </button>
+            {categories.map((category) => (
+              <button
+                key={category.id}
+                onClick={() => setCategorySlug(category.slug)}
+                className={`relative rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${
+                  categorySlug === category.slug
+                    ? "text-white"
+                    : "text-text-secondary hover:bg-surface"
+                }`}
+              >
+                {categorySlug === category.slug && (
+                  <motion.span
+                    layoutId="sayembara-category-pill"
+                    className="absolute inset-0 rounded-full bg-primary"
+                    transition={{ type: "spring", stiffness: 400, damping: 32 }}
+                  />
+                )}
+                <span className="relative">
+                  {category.icon} {category.name}
+                </span>
+              </button>
+            ))}
+            {hasActiveFilters && (
+              <button
+                onClick={() => {
+                  setKeyword("");
+                  setCategorySlug("");
+                  setAreaSlug("");
+                }}
+                className="ml-auto text-sm font-medium text-text-secondary hover:text-primary"
+              >
+                Reset Filter
+              </button>
+            )}
+          </div>
+
+          <div className="pt-6">
+            {filtered.length === 0 ? (
+              <div className="rounded-2xl border border-dashed border-black/10 bg-surface/50 py-16 text-center text-text-secondary">
+                Belum ada sayembara yang sesuai.
+              </div>
+            ) : (
+              <motion.div
+                initial="hidden"
+                animate="show"
+                variants={{ show: { transition: { staggerChildren: 0.04 } } }}
+                className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4"
+              >
+                {filtered.map((listing) => (
+                  <motion.div key={listing.id} variants={fadeUp}>
+                    <ListingCard listing={listing} />
+                  </motion.div>
+                ))}
+              </motion.div>
+            )}
+          </div>
+        </section>
+      </div>
+    </div>
   );
 }
