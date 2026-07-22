@@ -215,6 +215,7 @@ export default function PasangIklanPage() {
               <ImageUploader
                 key={index}
                 value={photo}
+                folder="listings"
                 aspectClassName="aspect-square"
                 onChange={(url) => updatePhoto(index, url)}
                 onRemove={() => removePhotoField(index)}
@@ -223,6 +224,7 @@ export default function PasangIklanPage() {
             {photos.length < 5 && (
               <ImageUploader
                 value=""
+                folder="listings"
                 aspectClassName="aspect-square"
                 onChange={(url) => setPhotos((prev) => [...prev, url])}
               />

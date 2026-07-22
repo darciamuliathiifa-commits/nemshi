@@ -126,6 +126,7 @@ export default function AkunSayaPage() {
             <div className="w-28">
               <ImageUploader
                 value={form.avatarUrl}
+                folder="avatars"
                 aspectClassName="aspect-square"
                 onChange={(url) => setForm({ ...form, avatarUrl: url })}
                 onRemove={() => setForm({ ...form, avatarUrl: "" })}

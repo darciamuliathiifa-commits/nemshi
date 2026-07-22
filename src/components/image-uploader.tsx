@@ -2,17 +2,19 @@
 
 import Image from "next/image";
 import { useRef, useState } from "react";
-import { uploadImageToCloudinary } from "@/lib/cloudinary";
+import { uploadImage } from "@/lib/storage";
 
 export function ImageUploader({
   value,
   onChange,
   onRemove,
+  folder,
   aspectClassName = "aspect-[4/3]",
 }: {
   value: string;
   onChange: (url: string) => void;
   onRemove?: () => void;
+  folder: "avatars" | "listings";
   aspectClassName?: string;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -27,7 +29,7 @@ export function ImageUploader({
     setError("");
     setUploading(true);
     try {
-      const url = await uploadImageToCloudinary(file);
+      const url = await uploadImage(file, folder);
       onChange(url);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Gagal mengunggah gambar.");
