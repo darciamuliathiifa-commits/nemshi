@@ -4,7 +4,10 @@
   --font-sans: var(--font-plus-jakarta-sans), system-ui, sans-serif;
 
   --color-primary: #05668d;
+  --color-primary-dark: #044f6e;
   --color-background: #ffffff;
+  --color-surface: #f0f4f6;
+  --color-surface-tint: #e8f1f5;
   --color-text: #102a36;
   --color-text-secondary: #647780;
 }
@@ -13,4 +16,14 @@ body {
   background: var(--color-background);
   color: var(--color-text);
   font-family: var(--font-sans);
+}
+
+::selection {
+  background: var(--color-primary);
+  color: white;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
 }
