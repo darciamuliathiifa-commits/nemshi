@@ -15,6 +15,31 @@ const fadeUp = {
   show: { opacity: 1, y: 0 },
 };
 
+type SortBy = "terbaru" | "termurah" | "termahal";
+
+function sortListings(listings: ListingSummary[], sortBy: SortBy): ListingSummary[] {
+  if (sortBy === "terbaru") return listings;
+
+  const withPrice = listings.filter((l) => l.priceType === "Range" && l.priceMin != null);
+  const withoutPrice = listings.filter((l) => !(l.priceType === "Range" && l.priceMin != null));
+  withPrice.sort((a, b) =>
+    sortBy === "termurah" ? a.priceMin! - b.priceMin! : b.priceMin! - a.priceMin!
+  );
+  return [...withPrice, ...withoutPrice];
+}
+
+function FilterChip({ label, onRemove }: { label: string; onRemove: () => void }) {
+  return (
+    <button
+      onClick={onRemove}
+      className="inline-flex items-center gap-1.5 rounded-full bg-surface px-3 py-1 text-sm font-medium text-text transition-colors hover:bg-primary/10 hover:text-primary"
+    >
+      {label}
+      <span className="text-text-secondary">×</span>
+    </button>
+  );
+}
+
 export function SayembaraBoard({
   initialListings,
   initialCategories,
@@ -36,6 +61,7 @@ export function SayembaraBoard({
   const [keyword, setKeyword] = useState("");
   const [categorySlug, setCategorySlug] = useState(searchParams.get("category") ?? "");
   const [areaSlug, setAreaSlug] = useState(searchParams.get("area") ?? "");
+  const [sortBy, setSortBy] = useState<SortBy>("terbaru");
 
   const filtered = useMemo(() => {
     const normalizedKeyword = keyword.trim().toLowerCase();
@@ -48,7 +74,11 @@ export function SayembaraBoard({
     });
   }, [listings, keyword, categorySlug, areaSlug]);
 
+  const sortedListings = useMemo(() => sortListings(filtered, sortBy), [filtered, sortBy]);
+
   const hasActiveFilters = keyword || categorySlug || areaSlug;
+  const activeCategory = categories.find((c) => c.slug === categorySlug);
+  const activeArea = areas.find((a) => a.slug === areaSlug);
 
   return (
     <div className="bg-surface-tint">
@@ -98,7 +128,31 @@ export function SayembaraBoard({
                 </option>
               ))}
             </select>
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value as SortBy)}
+              className="rounded-full border border-black/10 px-4 py-2 text-sm outline-none transition-colors focus:border-primary"
+            >
+              <option value="terbaru">Terbaru</option>
+              <option value="termurah">Termurah</option>
+              <option value="termahal">Termahal</option>
+            </select>
           </div>
+
+          {hasActiveFilters && (
+            <div className="mt-4 flex flex-wrap items-center gap-2">
+              {keyword && <FilterChip label={`"${keyword}"`} onRemove={() => setKeyword("")} />}
+              {activeCategory && (
+                <FilterChip
+                  label={`${activeCategory.icon} ${activeCategory.name}`}
+                  onRemove={() => setCategorySlug("")}
+                />
+              )}
+              {activeArea && (
+                <FilterChip label={activeArea.name} onRemove={() => setAreaSlug("")} />
+              )}
+            </div>
+          )}
 
           <div className="mt-4 flex flex-wrap items-center gap-2 border-b border-black/5 pb-5">
             <button
@@ -153,7 +207,7 @@ export function SayembaraBoard({
           </div>
 
           <div className="pt-6">
-            {filtered.length === 0 ? (
+            {sortedListings.length === 0 ? (
               <div className="rounded-2xl border border-dashed border-black/10 bg-surface/50 py-16 text-center text-text-secondary">
                 Belum ada sayembara yang sesuai.
               </div>
@@ -164,7 +218,7 @@ export function SayembaraBoard({
                 variants={{ show: { transition: { staggerChildren: 0.04 } } }}
                 className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4"
               >
-                {filtered.map((listing) => (
+                {sortedListings.map((listing) => (
                   <motion.div key={listing.id} variants={fadeUp}>
                     <ListingCard listing={listing} isSaved={savedSet.has(listing.id)} />
                   </motion.div>
