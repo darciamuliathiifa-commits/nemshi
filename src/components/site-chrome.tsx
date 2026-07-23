@@ -1,10 +1,11 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { SiteHeader } from "@/components/site-header";
+import { AppSidebar } from "@/components/app-sidebar";
+import { AppTopbar } from "@/components/app-topbar";
 import { SiteFooter } from "@/components/site-footer";
 
-/** Admin punya app-shell sendiri (sidebar) — jangan tumpuk header/footer publik di atasnya. */
+/** Admin punya app-shell sendiri (sidebar) — jangan tumpuk sidebar/topbar publik di atasnya. */
 export function SiteChrome({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const isAdmin = pathname?.startsWith("/admin");
@@ -14,10 +15,13 @@ export function SiteChrome({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div className="flex min-h-screen flex-col">
-      <SiteHeader />
-      <div className="flex-1">{children}</div>
-      <SiteFooter />
+    <div className="min-h-screen">
+      <AppSidebar />
+      <div className="flex min-h-screen flex-col pl-16 sm:pl-20">
+        <AppTopbar />
+        <div className="flex-1">{children}</div>
+        <SiteFooter />
+      </div>
     </div>
   );
 }
