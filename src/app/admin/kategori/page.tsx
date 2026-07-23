@@ -65,7 +65,7 @@ export default function KategoriRefundPage() {
   }
 
   return (
-    <div className="rounded-3xl bg-white p-6 shadow-sm shadow-black/5 sm:p-8">
+    <div className="bg-white p-6 border border-black/10 sm:p-8">
       <h1 className="mb-6 text-2xl font-bold text-text">Manajemen Kategori & Refund</h1>
 
       <section className="mb-8">
@@ -77,18 +77,18 @@ export default function KategoriRefundPage() {
             value={icon}
             onChange={(e) => setIcon(e.target.value)}
             placeholder="Ikon (emoji)"
-            className="w-24 rounded-xl border border-black/10 px-3 py-2 text-sm outline-none focus:border-primary"
+            className="w-24 border border-black/10 px-3 py-2 text-sm outline-none focus:border-accent"
           />
           <input
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Nama kategori baru"
-            className="flex-1 rounded-xl border border-black/10 px-3 py-2 text-sm outline-none focus:border-primary"
+            className="flex-1 border border-black/10 px-3 py-2 text-sm outline-none focus:border-accent"
           />
           <button
             type="submit"
-            className="rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-white"
+            className="bg-primary px-4 py-2 text-sm font-semibold text-white"
           >
             Tambah
           </button>
@@ -101,14 +101,14 @@ export default function KategoriRefundPage() {
             {categories.map((category) => (
               <li
                 key={category.id}
-                className="flex items-center justify-between rounded-2xl bg-surface px-4 py-3"
+                className="flex items-center justify-between bg-surface px-4 py-3"
               >
                 <span>
                   {category.icon} {category.name}
                 </span>
                 <div className="flex items-center gap-3">
                   <span
-                    className={`rounded-full px-2 py-0.5 text-xs font-medium ${
+                    className={`rounded px-2 py-0.5 text-xs font-medium ${
                       category.isActive
                         ? "bg-green-100 text-green-700"
                         : "bg-black/10 text-text-secondary"
@@ -140,7 +140,7 @@ export default function KategoriRefundPage() {
             {refunds.map((refund) => (
               <li
                 key={refund.orderId}
-                className="rounded-2xl bg-surface p-4"
+                className="bg-surface p-4"
               >
                 <div className="mb-1 flex items-center justify-between">
                   <span className="font-medium text-text">{refund.listingTitle}</span>
@@ -154,7 +154,7 @@ export default function KategoriRefundPage() {
                 </p>
                 <button
                   onClick={() => handleConfirmRefund(refund.orderId)}
-                  className="rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-white"
+                  className="bg-primary px-4 py-2 text-sm font-semibold text-white"
                 >
                   Konfirmasi Refund Selesai
                 </button>

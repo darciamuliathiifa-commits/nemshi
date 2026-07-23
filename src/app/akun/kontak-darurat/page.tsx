@@ -17,7 +17,7 @@ export default async function KontakDaruratPage() {
           ← Kembali ke Akun Saya
         </Link>
 
-        <section className="rounded-3xl bg-white p-6 shadow-sm shadow-black/5 sm:p-8">
+        <section className="bg-white p-6 border border-black/10 sm:p-8">
           <h1 className="font-display text-2xl font-semibold text-text">Kontak Darurat</h1>
           <p className="mt-2 mb-6 text-text-secondary">
             Digunakan admin Nemshi untuk verifikasi identitas dan penanganan situasi

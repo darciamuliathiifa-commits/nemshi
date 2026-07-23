@@ -32,12 +32,12 @@ export default function PantauTransaksiPage() {
   }, [productType, paymentStatus]);
 
   return (
-    <div className="rounded-3xl bg-white p-6 shadow-sm shadow-black/5 sm:p-8">
+    <div className="bg-white p-6 border border-black/10 sm:p-8">
       <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-2xl font-bold text-text">Pantau Transaksi</h1>
         <a
           href="/api/admin/reports/export"
-          className="rounded-full border border-black/10 px-4 py-2 text-sm font-medium text-text-secondary hover:bg-surface"
+          className="border border-black/10 px-4 py-2 text-sm font-medium text-text-secondary hover:bg-surface"
         >
           Unduh CSV
         </a>
@@ -47,7 +47,7 @@ export default function PantauTransaksiPage() {
         <select
           value={productType}
           onChange={(e) => setProductType(e.target.value)}
-          className="rounded-xl border border-black/10 px-3 py-2 text-sm outline-none focus:border-primary"
+          className="border border-black/10 px-3 py-2 text-sm outline-none focus:border-accent"
         >
           <option value="">Semua Tipe</option>
           {Object.entries(PRODUCT_LABELS).map(([key, label]) => (
@@ -59,7 +59,7 @@ export default function PantauTransaksiPage() {
         <select
           value={paymentStatus}
           onChange={(e) => setPaymentStatus(e.target.value)}
-          className="rounded-xl border border-black/10 px-3 py-2 text-sm outline-none focus:border-primary"
+          className="border border-black/10 px-3 py-2 text-sm outline-none focus:border-accent"
         >
           <option value="">Semua Status</option>
           <option value="Menunggu_Pembayaran">Menunggu Pembayaran</option>
@@ -71,7 +71,7 @@ export default function PantauTransaksiPage() {
       {!orders ? (
         <p className="text-text-secondary">Memuat...</p>
       ) : (
-        <div className="overflow-x-auto rounded-2xl bg-surface">
+        <div className="overflow-x-auto bg-surface">
           <table className="w-full text-left text-sm">
             <thead className="border-b border-black/10 text-text-secondary">
               <tr>

@@ -11,7 +11,7 @@ export default async function KategoriPage() {
   return (
     <div className="bg-surface-tint">
       <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-8">
-        <div className="rounded-3xl bg-white p-8 shadow-sm shadow-black/5 sm:p-10">
+        <div className="bg-white p-8 border border-black/10 sm:p-10">
           <Link
             href="/jelajahi"
             className="mb-4 inline-flex items-center gap-1 text-sm font-medium text-text-secondary hover:text-primary"
@@ -30,10 +30,10 @@ export default async function KategoriPage() {
                 <Link
                   key={category.id}
                   href={`/jelajahi?category=${category.slug}`}
-                  className="group flex flex-col items-center gap-3 rounded-2xl border border-black/5 bg-surface p-6 text-center transition-all hover:-translate-y-1 hover:shadow-lg"
+                  className="group flex flex-col items-center gap-3 border border-black/5 bg-surface p-6 text-center transition-all hover:-translate-y-1 hover:shadow-lg"
                 >
                   <span
-                    className={`flex h-14 w-14 items-center justify-center rounded-2xl text-2xl text-white transition-transform group-hover:scale-105 ${tint}`}
+                    className={`flex h-14 w-14 items-center justify-center text-2xl text-white transition-transform group-hover:scale-105 ${tint}`}
                   >
                     {category.icon}
                   </span>

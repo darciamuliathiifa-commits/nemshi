@@ -14,7 +14,7 @@ export function SavedListingsGrid({ initialListings }: { initialListings: Listin
 
   if (listings.length === 0) {
     return (
-      <div className="rounded-2xl border border-dashed border-black/10 bg-surface/50 py-16 text-center text-text-secondary">
+      <div className="border border-dashed border-black/10 bg-surface/50 py-16 text-center text-text-secondary">
         Belum ada jasa yang kamu simpan.
       </div>
     );

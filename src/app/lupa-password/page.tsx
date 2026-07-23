@@ -41,13 +41,13 @@ export default function LupaPasswordPage() {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="rounded-xl border border-black/10 px-3 py-2 text-text outline-none focus:border-primary"
+              className="border border-black/10 px-3 py-2 text-text outline-none focus:border-accent"
             />
           </label>
           <button
             type="submit"
             disabled={submitting}
-            className="mt-2 rounded-xl bg-primary px-5 py-3 font-semibold text-white transition-colors hover:bg-primary-dark disabled:opacity-60"
+            className="mt-2 bg-primary px-5 py-3 font-semibold text-white transition-colors hover:bg-primary-dark disabled:opacity-60"
           >
             {submitting ? "Mengirim..." : "Kirim Tautan Atur Ulang"}
           </button>

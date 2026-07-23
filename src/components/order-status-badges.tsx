@@ -13,7 +13,7 @@ const PAYMENT_STATUS_LABELS: Record<string, string> = {
 export function PaymentStatusBadge({ status }: { status: string }) {
   return (
     <span
-      className={`rounded-full px-2 py-0.5 text-xs font-medium ${
+      className={`rounded px-2 py-0.5 text-xs font-medium ${
         PAYMENT_STATUS_STYLES[status] ?? "bg-black/10 text-text-secondary"
       }`}
     >
@@ -37,7 +37,7 @@ const FUND_STATUS_LABELS: Record<string, string> = {
 export function FundStatusBadge({ status }: { status: string }) {
   return (
     <span
-      className={`rounded-full px-2 py-0.5 text-xs font-medium ${
+      className={`rounded px-2 py-0.5 text-xs font-medium ${
         FUND_STATUS_STYLES[status] ?? "bg-black/10 text-text-secondary"
       }`}
     >

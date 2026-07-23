@@ -110,7 +110,7 @@ export default function AkunSayaPage() {
           </div>
         </header>
 
-      <section className="mb-6 rounded-2xl border border-black/5 bg-white p-6 shadow-sm">
+      <section className="mb-6 border border-black/5 bg-white p-6">
         <h2 className="mb-4 font-semibold text-text">Data Diri</h2>
         <div className="flex flex-col gap-3">
           <label className="flex flex-col gap-1 text-sm text-text-secondary">
@@ -119,7 +119,7 @@ export default function AkunSayaPage() {
               type="text"
               value={form.fullName}
               onChange={(e) => setForm({ ...form, fullName: e.target.value })}
-              className="rounded-xl border border-black/10 px-3 py-2 text-text outline-none focus:border-primary"
+              className="border border-black/10 px-3 py-2 text-text outline-none focus:border-accent"
             />
           </label>
           <div className="flex flex-col gap-1 text-sm text-text-secondary">
@@ -141,7 +141,7 @@ export default function AkunSayaPage() {
               value={form.whatsappLink}
               onChange={(e) => setForm({ ...form, whatsappLink: e.target.value })}
               placeholder="https://wa.me/20XXXXXXXXXX"
-              className="rounded-xl border border-black/10 px-3 py-2 text-text outline-none focus:border-primary"
+              className="border border-black/10 px-3 py-2 text-text outline-none focus:border-accent"
             />
           </label>
           <label className="flex flex-col gap-1 text-sm text-text-secondary">
@@ -151,7 +151,7 @@ export default function AkunSayaPage() {
               value={form.phoneNumber}
               onChange={(e) => setForm({ ...form, phoneNumber: e.target.value })}
               placeholder="081234567890"
-              className="rounded-xl border border-black/10 px-3 py-2 text-text outline-none focus:border-primary"
+              className="border border-black/10 px-3 py-2 text-text outline-none focus:border-accent"
             />
             <span className="text-xs text-text-secondary">
               Wajib diisi sebelum checkout pembayaran (dipakai oleh payment gateway).
@@ -161,7 +161,7 @@ export default function AkunSayaPage() {
             <button
               onClick={handleSave}
               disabled={saving}
-              className="w-fit rounded-xl bg-primary px-5 py-2 text-sm font-semibold text-white disabled:opacity-60"
+              className="w-fit bg-primary px-5 py-2 text-sm font-semibold text-white disabled:opacity-60"
             >
               {saving ? "Menyimpan..." : "Simpan Perubahan"}
             </button>
@@ -170,7 +170,7 @@ export default function AkunSayaPage() {
         </div>
       </section>
 
-      <section className="mb-6 rounded-2xl border border-black/5 bg-white p-6 shadow-sm">
+      <section className="mb-6 border border-black/5 bg-white p-6">
         <h2 className="mb-4 font-semibold text-text">Sisa Kuota</h2>
         {activity.quotas.length === 0 ? (
           <p className="text-sm text-text-secondary">Belum ada kuota Paket Plus.</p>
@@ -179,7 +179,7 @@ export default function AkunSayaPage() {
             {activity.quotas.map((quota) => (
               <li
                 key={quota.id}
-                className="flex items-center justify-between rounded-xl bg-surface px-4 py-3 text-sm"
+                className="flex items-center justify-between bg-surface px-4 py-3 text-sm"
               >
                 <span>
                   {QUOTA_LABELS[quota.quotaType] ?? quota.quotaType}
@@ -194,7 +194,7 @@ export default function AkunSayaPage() {
         )}
       </section>
 
-      <section className="rounded-2xl border border-black/5 bg-white p-6 shadow-sm">
+      <section className="border border-black/5 bg-white p-6">
         <h2 className="mb-4 font-semibold text-text">Riwayat Iklan & Permintaan</h2>
         {activity.listings.length === 0 ? (
           <p className="text-sm text-text-secondary">Belum ada iklan atau permintaan.</p>
@@ -203,7 +203,7 @@ export default function AkunSayaPage() {
             {activity.listings.map((listing) => (
               <li
                 key={listing.id}
-                className="flex items-center justify-between rounded-xl bg-surface px-4 py-3 text-sm"
+                className="flex items-center justify-between bg-surface px-4 py-3 text-sm"
               >
                 <span>{listing.title}</span>
                 <ListingStatusBadge status={listing.status} />

@@ -26,18 +26,18 @@ export default async function SayembaraSayaPage() {
           ← Kembali ke Cari Jasa
         </Link>
 
-        <section className="rounded-3xl bg-white p-6 shadow-sm shadow-black/5 sm:p-8">
+        <section className="bg-white p-6 border border-black/10 sm:p-8">
           <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
             <h1 className="font-display text-2xl font-semibold text-text">Sayembara Saya</h1>
             <Link
               href="/sayembara/buat"
-              className="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-white shadow-sm transition-transform hover:scale-[1.02]"
+              className="bg-primary px-4 py-2 text-sm font-semibold text-white transition-transform hover:scale-[1.02]"
             >
               Buat Sayembara
             </Link>
           </div>
 
-          <div className="mb-6 rounded-2xl bg-surface p-4">
+          <div className="mb-6 bg-surface p-4">
             <p className="text-sm text-text-secondary">
               Sisa Kuota Cari Jasa Prioritas:{" "}
               <span className="font-semibold text-primary">

@@ -96,13 +96,13 @@ export function TestimonialsSection({
       )}
 
       {showForm && (
-        <div className="mb-4 flex flex-col gap-3 rounded-2xl bg-surface p-4">
+        <div className="mb-4 flex flex-col gap-3 bg-surface p-4">
           <input
             type="text"
             value={reviewerName}
             onChange={(e) => setReviewerName(e.target.value)}
             placeholder="Nama kamu"
-            className="rounded-xl border border-black/10 px-3 py-2 text-sm outline-none focus:border-primary"
+            className="border border-black/10 px-3 py-2 text-sm outline-none focus:border-accent"
           />
           <StarRatingInput value={rating} onChange={setRating} />
           <textarea
@@ -110,20 +110,20 @@ export function TestimonialsSection({
             onChange={(e) => setComment(e.target.value)}
             placeholder="Bagaimana pengalamanmu menggunakan jasa ini? (minimal 10 karakter)"
             rows={3}
-            className="rounded-xl border border-black/10 px-3 py-2 text-sm outline-none focus:border-primary"
+            className="border border-black/10 px-3 py-2 text-sm outline-none focus:border-accent"
           />
           {error && <p className="text-sm text-red-600">{error}</p>}
           <div className="flex gap-2">
             <button
               onClick={handleSubmit}
               disabled={submitting}
-              className="rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-white disabled:opacity-60"
+              className="bg-primary px-4 py-2 text-sm font-semibold text-white disabled:opacity-60"
             >
               {submitting ? "Mengirim..." : "Kirim Testimoni"}
             </button>
             <button
               onClick={() => setShowForm(false)}
-              className="rounded-xl border border-black/10 px-4 py-2 text-sm text-text-secondary"
+              className="border border-black/10 px-4 py-2 text-sm text-text-secondary"
             >
               Batal
             </button>
@@ -136,7 +136,7 @@ export function TestimonialsSection({
       ) : (
         <ul className="flex flex-col gap-3">
           {data.items.map((testimonial) => (
-            <li key={testimonial.id} className="rounded-2xl bg-surface p-4">
+            <li key={testimonial.id} className="bg-surface p-4">
               <div className="mb-1 flex items-center justify-between">
                 <span className="font-medium text-text">{testimonial.reviewerName}</span>
                 <StarRating rating={testimonial.rating} size="text-sm" />

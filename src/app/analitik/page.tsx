@@ -50,7 +50,7 @@ export default function AnalitikExposurePage() {
       ) : (
         <ul className="flex flex-col gap-3">
           {analytics.map((item) => (
-            <li key={item.id} className="rounded-xl border border-black/5 bg-white p-4">
+            <li key={item.id} className="border border-black/5 bg-white p-4">
               <Link
                 href={`/iklan/${item.id}`}
                 className="mb-3 block font-medium text-text hover:underline"

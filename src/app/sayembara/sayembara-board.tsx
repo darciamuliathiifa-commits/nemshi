@@ -33,7 +33,7 @@ function FilterChip({ label, onRemove }: { label: string; onRemove: () => void }
   return (
     <button
       onClick={onRemove}
-      className="inline-flex items-center gap-1.5 rounded-full bg-surface px-3 py-1 text-sm font-medium text-text transition-colors hover:bg-primary/10 hover:text-primary"
+      className="inline-flex items-center gap-1.5 bg-surface px-3 py-1 text-sm font-medium text-text transition-colors hover:bg-primary/10 hover:text-primary"
     >
       {label}
       <span className="text-text-secondary">×</span>
@@ -85,10 +85,10 @@ export function SayembaraBoard({
     <div className="bg-surface-tint">
       <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-8">
         {/* Promo banner */}
-        <section className="overflow-hidden rounded-3xl bg-accent text-white">
+        <section className="overflow-hidden bg-accent text-white">
           <div className="grid gap-6 p-8 sm:p-10 lg:grid-cols-[1.3fr_1fr] lg:items-center lg:gap-8 lg:p-12">
             <div>
-              <span className="inline-block rounded-full bg-white/15 px-3 py-1 text-xs font-semibold tracking-wide">
+              <span className="inline-block rounded bg-white/15 px-3 py-1 text-xs font-semibold tracking-wide">
                 Papan Permintaan
               </span>
               <h1 className="mt-4 font-display text-3xl font-semibold leading-[1.1] tracking-tight sm:text-4xl">
@@ -101,13 +101,13 @@ export function SayembaraBoard({
               <div className="mt-6 flex flex-wrap gap-3">
                 <Link
                   href="/sayembara/buat"
-                  className="rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-accent shadow-sm transition-transform hover:scale-[1.02]"
+                  className="bg-white px-5 py-2.5 text-sm font-semibold text-accent transition-transform hover:scale-[1.02]"
                 >
                   Buat Sayembara
                 </Link>
                 <Link
                   href="/sayembara/saya"
-                  className="rounded-full border border-white/30 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-white/10"
+                  className="border border-white/30 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-white/10"
                 >
                   Sayembara Saya
                 </Link>
@@ -126,28 +126,28 @@ export function SayembaraBoard({
                 alt="Ilustrasi papan permintaan jasa Nemshi"
                 width={600}
                 height={450}
-                className="w-full rounded-2xl"
+                className="w-full"
               />
             </div>
           </div>
         </section>
 
         {/* Catalog panel */}
-        <section className="mt-6 rounded-3xl bg-white p-6 shadow-sm shadow-black/5 sm:p-8">
+        <section className="mt-6 bg-white p-6 border border-black/10 sm:p-8">
           <h2 className="font-display text-2xl font-semibold text-text">Semua Permintaan</h2>
 
-          <div className="mt-4 flex flex-col gap-3 rounded-2xl bg-surface p-4 sm:flex-row sm:items-center">
+          <div className="mt-4 flex flex-col gap-3 bg-surface p-4 sm:flex-row sm:items-center">
             <input
               type="text"
               value={keyword}
               onChange={(e) => setKeyword(e.target.value)}
               placeholder="Cari kebutuhan jasa..."
-              className="flex-1 rounded-full border border-black/10 px-4 py-2 text-sm outline-none transition-colors focus:border-primary"
+              className="flex-1 border border-black/10 px-4 py-2 text-sm outline-none transition-colors focus:border-accent"
             />
             <select
               value={areaSlug}
               onChange={(e) => setAreaSlug(e.target.value)}
-              className="rounded-full border border-black/10 px-4 py-2 text-sm outline-none transition-colors focus:border-primary"
+              className="border border-black/10 px-4 py-2 text-sm outline-none transition-colors focus:border-accent"
             >
               <option value="">Semua Area</option>
               {areas.map((area) => (
@@ -159,7 +159,7 @@ export function SayembaraBoard({
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as SortBy)}
-              className="rounded-full border border-black/10 px-4 py-2 text-sm outline-none transition-colors focus:border-primary"
+              className="border border-black/10 px-4 py-2 text-sm outline-none transition-colors focus:border-accent"
             >
               <option value="terbaru">Terbaru</option>
               <option value="termurah">Termurah</option>
@@ -185,14 +185,14 @@ export function SayembaraBoard({
           <div className="mt-4 flex flex-wrap items-center gap-2 border-b border-black/5 pb-5">
             <button
               onClick={() => setCategorySlug("")}
-              className={`relative rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${
+              className={`relative px-4 py-1.5 text-sm font-medium transition-colors ${
                 categorySlug === "" ? "text-white" : "text-text-secondary hover:bg-surface"
               }`}
             >
               {categorySlug === "" && (
                 <motion.span
                   layoutId="sayembara-category-pill"
-                  className="absolute inset-0 rounded-full bg-primary"
+                  className="absolute inset-0 bg-primary"
                   transition={{ type: "spring", stiffness: 400, damping: 32 }}
                 />
               )}
@@ -202,7 +202,7 @@ export function SayembaraBoard({
               <button
                 key={category.id}
                 onClick={() => setCategorySlug(category.slug)}
-                className={`relative rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${
+                className={`relative px-4 py-1.5 text-sm font-medium transition-colors ${
                   categorySlug === category.slug
                     ? "text-white"
                     : "text-text-secondary hover:bg-surface"
@@ -211,7 +211,7 @@ export function SayembaraBoard({
                 {categorySlug === category.slug && (
                   <motion.span
                     layoutId="sayembara-category-pill"
-                    className="absolute inset-0 rounded-full bg-primary"
+                    className="absolute inset-0 bg-primary"
                     transition={{ type: "spring", stiffness: 400, damping: 32 }}
                   />
                 )}
@@ -236,7 +236,7 @@ export function SayembaraBoard({
 
           <div className="pt-6">
             {sortedListings.length === 0 ? (
-              <div className="rounded-2xl border border-dashed border-black/10 bg-surface/50 py-16 text-center text-text-secondary">
+              <div className="border border-dashed border-black/10 bg-surface/50 py-16 text-center text-text-secondary">
                 Belum ada sayembara yang sesuai.
               </div>
             ) : (

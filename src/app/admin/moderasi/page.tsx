@@ -51,7 +51,7 @@ export default function AntreanModerasiPage() {
   }
 
   return (
-    <div className="rounded-3xl bg-white p-6 shadow-sm shadow-black/5 sm:p-8">
+    <div className="bg-white p-6 border border-black/10 sm:p-8">
       <h1 className="mb-2 text-2xl font-bold text-text">Antrean Moderasi</h1>
       <p className="mb-6 text-sm text-text-secondary">
         Tinjau iklan dan permintaan jasa sebelum tayang ke publik.
@@ -60,7 +60,7 @@ export default function AntreanModerasiPage() {
       <div className="mb-4 flex gap-2">
         <button
           onClick={() => setTab("Offers_Service")}
-          className={`rounded-full px-4 py-2 text-sm font-medium transition-colors ${
+          className={`px-4 py-2 text-sm font-medium transition-colors ${
             tab === "Offers_Service"
               ? "bg-primary text-white"
               : "text-text-secondary hover:bg-surface"
@@ -70,7 +70,7 @@ export default function AntreanModerasiPage() {
         </button>
         <button
           onClick={() => setTab("Needs_Service")}
-          className={`rounded-full px-4 py-2 text-sm font-medium transition-colors ${
+          className={`px-4 py-2 text-sm font-medium transition-colors ${
             tab === "Needs_Service"
               ? "bg-primary text-white"
               : "text-text-secondary hover:bg-surface"
@@ -89,14 +89,14 @@ export default function AntreanModerasiPage() {
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           {items.map((item) => (
-            <div key={item.id} className="rounded-2xl bg-surface p-4">
+            <div key={item.id} className="bg-surface p-4">
               <div className="mb-2 flex gap-3">
                 {item.coverPhotoUrl && (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
                     src={item.coverPhotoUrl}
                     alt=""
-                    className="h-16 w-20 shrink-0 rounded-lg object-cover"
+                    className="h-16 w-20 shrink-0 object-cover"
                   />
                 )}
                 <div>
@@ -117,19 +117,19 @@ export default function AntreanModerasiPage() {
                     onChange={(e) => setReason(e.target.value)}
                     placeholder="Alasan penolakan..."
                     rows={2}
-                    className="rounded-xl border border-black/10 px-3 py-2 text-sm outline-none focus:border-primary"
+                    className="border border-black/10 px-3 py-2 text-sm outline-none focus:border-accent"
                   />
                   <div className="flex gap-2">
                     <button
                       onClick={handleReject}
                       disabled={!reason.trim()}
-                      className="rounded-xl bg-red-600 px-3 py-1.5 text-sm font-semibold text-white disabled:opacity-60"
+                      className="bg-red-600 px-3 py-1.5 text-sm font-semibold text-white disabled:opacity-60"
                     >
                       Simpan Penolakan
                     </button>
                     <button
                       onClick={() => setRejectingId(null)}
-                      className="rounded-xl border border-black/10 px-3 py-1.5 text-sm text-text-secondary"
+                      className="border border-black/10 px-3 py-1.5 text-sm text-text-secondary"
                     >
                       Batal
                     </button>
@@ -139,13 +139,13 @@ export default function AntreanModerasiPage() {
                 <div className="flex gap-2">
                   <button
                     onClick={() => handleApprove(item.id)}
-                    className="rounded-xl bg-primary px-3 py-1.5 text-sm font-semibold text-white"
+                    className="bg-primary px-3 py-1.5 text-sm font-semibold text-white"
                   >
                     Setuju
                   </button>
                   <button
                     onClick={() => setRejectingId(item.id)}
-                    className="rounded-xl border border-black/10 px-3 py-1.5 text-sm text-text-secondary"
+                    className="border border-black/10 px-3 py-1.5 text-sm text-text-secondary"
                   >
                     Tolak
                   </button>

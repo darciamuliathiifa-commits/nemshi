@@ -96,7 +96,7 @@ export default function BuatSayembaraPage() {
 
         <form
           onSubmit={handleSubmit}
-          className="flex flex-col gap-3 rounded-2xl border border-black/5 bg-white p-6 shadow-sm"
+          className="flex flex-col gap-3 border border-black/5 bg-white p-6"
         >
         <label className="flex flex-col gap-1 text-sm text-text-secondary">
           Judul Kebutuhan
@@ -106,7 +106,7 @@ export default function BuatSayembaraPage() {
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Contoh: Butuh jasa pindahan kost akhir bulan ini"
-            className="rounded-xl border border-black/10 px-3 py-2 text-text outline-none focus:border-primary"
+            className="border border-black/10 px-3 py-2 text-text outline-none focus:border-accent"
           />
         </label>
 
@@ -115,7 +115,7 @@ export default function BuatSayembaraPage() {
           <select
             value={categoryId}
             onChange={(e) => setCategoryId(e.target.value)}
-            className="rounded-xl border border-black/10 px-3 py-2 text-text outline-none focus:border-primary"
+            className="border border-black/10 px-3 py-2 text-text outline-none focus:border-accent"
           >
             {categories.map((c) => (
               <option key={c.id} value={c.id}>
@@ -130,7 +130,7 @@ export default function BuatSayembaraPage() {
           <select
             value={areaId}
             onChange={(e) => setAreaId(e.target.value)}
-            className="rounded-xl border border-black/10 px-3 py-2 text-text outline-none focus:border-primary"
+            className="border border-black/10 px-3 py-2 text-text outline-none focus:border-accent"
           >
             {areas.map((a) => (
               <option key={a.id} value={a.id}>
@@ -147,7 +147,7 @@ export default function BuatSayembaraPage() {
             rows={4}
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="rounded-xl border border-black/10 px-3 py-2 text-text outline-none focus:border-primary"
+            className="border border-black/10 px-3 py-2 text-text outline-none focus:border-accent"
           />
         </label>
 
@@ -159,7 +159,7 @@ export default function BuatSayembaraPage() {
             value={whatsappLink}
             onChange={(e) => setWhatsappLink(e.target.value)}
             placeholder="https://wa.me/20XXXXXXXXXX"
-            className="rounded-xl border border-black/10 px-3 py-2 text-text outline-none focus:border-primary"
+            className="border border-black/10 px-3 py-2 text-text outline-none focus:border-accent"
           />
         </label>
 
@@ -190,14 +190,14 @@ export default function BuatSayembaraPage() {
                 value={priceMin}
                 onChange={(e) => setPriceMin(e.target.value)}
                 placeholder="Min (EGP)"
-                className="w-full rounded-xl border border-black/10 px-3 py-2 text-text outline-none focus:border-primary"
+                className="w-full border border-black/10 px-3 py-2 text-text outline-none focus:border-accent"
               />
               <input
                 type="number"
                 value={priceMax}
                 onChange={(e) => setPriceMax(e.target.value)}
                 placeholder="Maks (EGP)"
-                className="w-full rounded-xl border border-black/10 px-3 py-2 text-text outline-none focus:border-primary"
+                className="w-full border border-black/10 px-3 py-2 text-text outline-none focus:border-accent"
               />
             </div>
           )}
@@ -206,7 +206,7 @@ export default function BuatSayembaraPage() {
         <div className="flex flex-col gap-2 text-sm text-text-secondary">
           Pilihan Tayang
           <label
-            className={`flex items-start gap-2 rounded-xl border p-3 transition-colors ${
+            className={`flex items-start gap-2 border p-3 transition-colors ${
               tier === "Gratis" ? "border-primary bg-surface-tint" : "border-black/10"
             }`}
           >
@@ -222,7 +222,7 @@ export default function BuatSayembaraPage() {
             </span>
           </label>
           <label
-            className={`flex items-start gap-2 rounded-xl border p-3 transition-colors ${
+            className={`flex items-start gap-2 border p-3 transition-colors ${
               tier === "Prioritas" ? "border-primary bg-surface-tint" : "border-black/10"
             }`}
           >
@@ -243,7 +243,7 @@ export default function BuatSayembaraPage() {
           <div className="flex flex-col gap-2 text-sm text-text-secondary">
             Cara Bayar
             <label
-              className={`flex items-center gap-2 rounded-xl border p-3 transition-colors ${
+              className={`flex items-center gap-2 border p-3 transition-colors ${
                 paymentMethod === "Bayar" ? "border-primary bg-surface-tint" : "border-black/10"
               }`}
             >
@@ -255,7 +255,7 @@ export default function BuatSayembaraPage() {
               Bayar Rp12.000
             </label>
             <label
-              className={`flex items-center gap-2 rounded-xl border p-3 transition-colors ${
+              className={`flex items-center gap-2 border p-3 transition-colors ${
                 paymentMethod === "Kuota" ? "border-primary bg-surface-tint" : "border-black/10"
               }`}
             >
@@ -275,7 +275,7 @@ export default function BuatSayembaraPage() {
           <button
             type="submit"
             disabled={submitting}
-            className="mt-2 rounded-xl bg-primary px-5 py-3 font-semibold text-white transition-colors hover:bg-primary-dark disabled:opacity-60"
+            className="mt-2 bg-primary px-5 py-3 font-semibold text-white transition-colors hover:bg-primary-dark disabled:opacity-60"
           >
             {submitting
               ? "Memproses..."

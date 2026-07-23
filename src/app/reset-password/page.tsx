@@ -62,7 +62,7 @@ export default function ResetPasswordPage() {
             minLength={6}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="rounded-xl border border-black/10 px-3 py-2 text-text outline-none focus:border-primary"
+            className="border border-black/10 px-3 py-2 text-text outline-none focus:border-accent"
           />
         </label>
         <label className="flex flex-col gap-1 text-sm text-text-secondary">
@@ -73,7 +73,7 @@ export default function ResetPasswordPage() {
             minLength={6}
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
-            className="rounded-xl border border-black/10 px-3 py-2 text-text outline-none focus:border-primary"
+            className="border border-black/10 px-3 py-2 text-text outline-none focus:border-accent"
           />
         </label>
 
@@ -82,7 +82,7 @@ export default function ResetPasswordPage() {
         <button
           type="submit"
           disabled={submitting}
-          className="mt-2 rounded-xl bg-primary px-5 py-3 font-semibold text-white transition-colors hover:bg-primary-dark disabled:opacity-60"
+          className="mt-2 bg-primary px-5 py-3 font-semibold text-white transition-colors hover:bg-primary-dark disabled:opacity-60"
         >
           {submitting ? "Menyimpan..." : "Simpan"}
         </button>

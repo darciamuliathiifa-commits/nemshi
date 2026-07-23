@@ -89,7 +89,7 @@ export default function KelolaJasaPage() {
   }
 
   return (
-    <div className="rounded-3xl bg-white p-6 shadow-sm shadow-black/5 sm:p-8">
+    <div className="bg-white p-6 border border-black/10 sm:p-8">
       <h1 className="mb-2 text-2xl font-bold text-text">Kelola Jasa</h1>
       <p className="mb-6 text-sm text-text-secondary">
         Tinjau semua iklan dan permintaan jasa; tangguhkan atau hapus yang melanggar.
@@ -101,12 +101,12 @@ export default function KelolaJasaPage() {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Cari judul..."
-          className="w-full max-w-sm rounded-xl border border-black/10 px-3 py-2 text-sm outline-none focus:border-primary"
+          className="w-full max-w-sm border border-black/10 px-3 py-2 text-sm outline-none focus:border-accent"
         />
         <select
           value={status}
           onChange={(e) => setStatus(e.target.value)}
-          className="rounded-xl border border-black/10 px-3 py-2 text-sm outline-none focus:border-primary"
+          className="border border-black/10 px-3 py-2 text-sm outline-none focus:border-accent"
         >
           <option value="">Semua Status</option>
           {STATUS_OPTIONS.filter(Boolean).map((s) => (
@@ -120,7 +120,7 @@ export default function KelolaJasaPage() {
       {!listings ? (
         <p className="text-text-secondary">Memuat...</p>
       ) : (
-        <div className="overflow-x-auto rounded-2xl bg-surface">
+        <div className="overflow-x-auto bg-surface">
           <table className="w-full text-left text-sm">
             <thead className="border-b border-black/10 text-text-secondary">
               <tr>
@@ -169,7 +169,7 @@ export default function KelolaJasaPage() {
             <div className="my-3 flex gap-2 overflow-x-auto">
               {detail.photos.map((url) => (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img key={url} src={url} alt="" className="h-24 w-32 rounded-lg object-cover" />
+                <img key={url} src={url} alt="" className="h-24 w-32 object-cover" />
               ))}
             </div>
           )}
@@ -180,7 +180,7 @@ export default function KelolaJasaPage() {
           <p className="mb-3 text-sm text-text-secondary">WhatsApp: {detail.whatsappLink}</p>
 
           {detail.moderationReason && (
-            <p className="mb-3 rounded-xl bg-amber-50 p-3 text-sm text-amber-800">
+            <p className="mb-3 bg-amber-50 p-3 text-sm text-amber-800">
               Alasan sebelumnya: {detail.moderationReason}
             </p>
           )}
@@ -191,7 +191,7 @@ export default function KelolaJasaPage() {
               value={reason}
               onChange={(e) => setReason(e.target.value)}
               rows={2}
-              className="rounded-xl border border-black/10 px-3 py-2 text-text outline-none focus:border-primary"
+              className="border border-black/10 px-3 py-2 text-text outline-none focus:border-accent"
             />
           </label>
 
@@ -199,14 +199,14 @@ export default function KelolaJasaPage() {
             <button
               onClick={handleSuspend}
               disabled={actionLoading || !reason.trim()}
-              className="rounded-xl bg-amber-500 px-4 py-2 text-sm font-semibold text-white disabled:opacity-60"
+              className="bg-amber-500 px-4 py-2 text-sm font-semibold text-white disabled:opacity-60"
             >
               Tangguhkan
             </button>
             <button
               onClick={handleDelete}
               disabled={actionLoading}
-              className="rounded-xl bg-red-600 px-4 py-2 text-sm font-semibold text-white disabled:opacity-60"
+              className="bg-red-600 px-4 py-2 text-sm font-semibold text-white disabled:opacity-60"
             >
               Hapus
             </button>

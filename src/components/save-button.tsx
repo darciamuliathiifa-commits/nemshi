@@ -60,7 +60,7 @@ export function SaveButton({
       <button
         onClick={handleClick}
         disabled={loading}
-        className={`flex items-center justify-center gap-2 rounded-full border px-5 py-3 text-sm font-semibold transition-colors disabled:opacity-60 ${
+        className={`flex items-center justify-center gap-2 border px-5 py-3 text-sm font-semibold transition-colors disabled:opacity-60 ${
           saved
             ? "border-primary bg-surface-tint text-primary"
             : "border-black/10 text-text hover:bg-surface"

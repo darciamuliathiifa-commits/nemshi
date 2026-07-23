@@ -22,7 +22,7 @@ export default async function RiwayatTransaksiPage() {
           ← Kembali ke Akun Saya
         </Link>
 
-        <section className="rounded-3xl bg-white p-6 shadow-sm shadow-black/5 sm:p-8">
+        <section className="bg-white p-6 border border-black/10 sm:p-8">
           <h1 className="mb-6 font-display text-2xl font-semibold text-text">
             Riwayat Transaksi
           </h1>
@@ -37,7 +37,7 @@ export default async function RiwayatTransaksiPage() {
           ) : (
             <ul className="flex flex-col gap-3">
               {ordersList.map((order) => (
-                <li key={order.id} className="rounded-2xl bg-surface p-5">
+                <li key={order.id} className="bg-surface p-5">
                   <div className="mb-2 flex items-center justify-between">
                     <span className="font-medium text-text">
                       {PRODUCT_LABELS[order.productType as OrderProductType]}

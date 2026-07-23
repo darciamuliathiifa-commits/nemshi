@@ -57,7 +57,7 @@ export function KontakDaruratForm() {
       <button
         onClick={handleSave}
         disabled={saving}
-        className="mt-4 w-fit rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-transform hover:scale-[1.02] disabled:opacity-60"
+        className="mt-4 w-fit bg-primary px-5 py-2.5 text-sm font-semibold text-white transition-transform hover:scale-[1.02] disabled:opacity-60"
       >
         {saving ? "Menyimpan..." : "Simpan Kontak Darurat"}
       </button>

@@ -34,7 +34,7 @@ export default async function PublicProfilePage({
           ← Kembali ke Jelajahi Iklan Jasa
         </Link>
 
-        <section className="rounded-3xl bg-white p-6 shadow-sm shadow-black/5 sm:p-8">
+        <section className="bg-white p-6 border border-black/10 sm:p-8">
           <div className="flex items-center gap-4">
             <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-full bg-surface">
               {profile.avatarUrl ? (
@@ -56,7 +56,7 @@ export default async function PublicProfilePage({
                 href={profile.whatsappLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="ml-auto shrink-0 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-transform hover:scale-[1.02]"
+                className="ml-auto shrink-0 bg-primary px-5 py-2.5 text-sm font-semibold text-white transition-transform hover:scale-[1.02]"
               >
                 Hubungi via WhatsApp
               </a>
@@ -71,7 +71,7 @@ export default async function PublicProfilePage({
                   <li key={listing.id}>
                     <Link
                       href={`/iklan/${listing.id}`}
-                      className="block rounded-2xl bg-surface p-4 transition-colors hover:bg-surface-tint"
+                      className="block bg-surface p-4 transition-colors hover:bg-surface-tint"
                     >
                       {listing.title}
                     </Link>
@@ -91,7 +91,7 @@ export default async function PublicProfilePage({
                   <li key={listing.id}>
                     <Link
                       href={`/iklan/${listing.id}`}
-                      className="block rounded-2xl bg-surface p-4 transition-colors hover:bg-surface-tint"
+                      className="block bg-surface p-4 transition-colors hover:bg-surface-tint"
                     >
                       {listing.title}
                     </Link>

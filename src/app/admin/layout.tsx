@@ -9,7 +9,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     <div className="min-h-screen bg-surface-tint">
       <div className="mx-auto flex max-w-6xl gap-6 px-4 py-6 sm:px-6 lg:px-8">
         <aside className="w-60 shrink-0">
-          <div className="sticky top-6 rounded-3xl bg-white p-4 shadow-sm shadow-black/5">
+          <div className="sticky top-6 bg-white p-4 border border-black/10">
             <Link
               href="/"
               className="mb-4 flex items-center gap-2 px-2 text-sm font-medium text-text-secondary hover:text-primary"
@@ -17,7 +17,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
               ← Kembali ke Nemshi
             </Link>
             <div className="mb-4 flex items-center gap-2 px-2">
-              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-sm font-bold text-white">
+              <span className="flex h-8 w-8 items-center justify-center bg-primary text-sm font-bold text-white">
                 N
               </span>
               <h2 className="text-base font-bold text-text">Dasbor Admin</h2>

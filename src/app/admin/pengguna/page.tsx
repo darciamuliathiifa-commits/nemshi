@@ -55,7 +55,7 @@ export default function KelolaPenggunaPage() {
   }
 
   return (
-    <div className="rounded-3xl bg-white p-6 shadow-sm shadow-black/5 sm:p-8">
+    <div className="bg-white p-6 border border-black/10 sm:p-8">
       <h1 className="mb-2 text-2xl font-bold text-text">Kelola Pengguna</h1>
       <p className="mb-6 text-sm text-text-secondary">
         Lihat semua pengguna terdaftar dan verifikasi akun secara manual.
@@ -66,13 +66,13 @@ export default function KelolaPenggunaPage() {
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         placeholder="Cari nama atau email..."
-        className="mb-4 w-full max-w-sm rounded-xl border border-black/10 px-3 py-2 text-sm outline-none focus:border-primary"
+        className="mb-4 w-full max-w-sm border border-black/10 px-3 py-2 text-sm outline-none focus:border-accent"
       />
 
       {!users ? (
         <p className="text-text-secondary">Memuat pengguna...</p>
       ) : (
-        <div className="overflow-x-auto rounded-2xl bg-surface">
+        <div className="overflow-x-auto bg-surface">
           <table className="w-full text-left text-sm">
             <thead className="border-b border-black/10 text-text-secondary">
               <tr>
@@ -90,12 +90,12 @@ export default function KelolaPenggunaPage() {
                     <td className="px-4 py-3 text-text">
                       {user.fullName}
                       {user.isAdmin && (
-                        <span className="ml-2 rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
+                        <span className="ml-2 rounded bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
                           Admin
                         </span>
                       )}
                       {user.isSuspended && (
-                        <span className="ml-2 rounded-full bg-red-100 px-2 py-0.5 text-xs font-medium text-red-700">
+                        <span className="ml-2 rounded bg-red-100 px-2 py-0.5 text-xs font-medium text-red-700">
                           Ditangguhkan
                         </span>
                       )}
@@ -108,7 +108,7 @@ export default function KelolaPenggunaPage() {
                       <select
                         value={user.verificationStatus}
                         onChange={(e) => handleStatusChange(user.id, e.target.value)}
-                        className="rounded-xl border border-black/10 px-2 py-1 text-sm outline-none focus:border-primary"
+                        className="border border-black/10 px-2 py-1 text-sm outline-none focus:border-accent"
                       >
                         {STATUS_OPTIONS.map((status) => (
                           <option key={status} value={status}>

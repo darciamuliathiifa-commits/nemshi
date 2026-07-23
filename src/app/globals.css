@@ -2,17 +2,21 @@
 
 @theme {
   --font-sans: var(--font-plus-jakarta-sans), system-ui, sans-serif;
-  --font-display: var(--font-plus-jakarta-sans), system-ui, sans-serif;
+  --font-display: var(--font-fraunces), Georgia, serif;
+  --font-mono: var(--font-jetbrains-mono), "Courier New", monospace;
 
-  --color-primary: #2451e6;
-  --color-primary-dark: #1a3cb8;
-  --color-accent: #f2622e;
-  --color-accent-dark: #c94c1f;
+  /* Palet terinspirasi Jasper: navy dominan + coral untuk aksi + krem hangat. */
+  --color-primary: #fa4028;
+  --color-primary-dark: #e63a1f;
+  --color-accent: #00063d;
+  --color-accent-dark: #000228;
+  --color-success: #2f9e00;
   --color-background: #ffffff;
-  --color-surface: #f1f3f9;
-  --color-surface-tint: #eaeeff;
-  --color-text: #12152b;
-  --color-text-secondary: #656b85;
+  --color-surface: #fff1ec;
+  --color-surface-tint: #fff7f5;
+  --color-text: #1f1d1e;
+  --color-text-secondary: #8a8a8a;
+  --color-border: #e0e0e1;
 }
 
 body {

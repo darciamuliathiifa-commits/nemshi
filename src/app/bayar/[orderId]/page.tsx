@@ -69,7 +69,7 @@ export default function RingkasanPesananPage() {
     return (
       <div className="bg-surface-tint">
         <div className="mx-auto max-w-xl px-4 py-6 sm:px-6 lg:px-8">
-          <div className="rounded-3xl bg-white p-8 text-center shadow-sm shadow-black/5">
+          <div className="bg-white p-8 text-center border border-black/10">
             <p className="text-text-secondary">Memuat pesanan...</p>
           </div>
         </div>
@@ -87,10 +87,10 @@ export default function RingkasanPesananPage() {
           ← Kembali ke Pilihan Produk
         </Link>
 
-        <section className="rounded-3xl bg-white p-6 shadow-sm shadow-black/5 sm:p-8">
+        <section className="bg-white p-6 border border-black/10 sm:p-8">
           <h1 className="font-display text-2xl font-semibold text-text">Ringkasan Pesanan</h1>
 
-          <div className="mt-6 rounded-2xl bg-surface p-5">
+          <div className="mt-6 bg-surface p-5">
             <div className="mb-4 flex items-center justify-between">
               <span className="text-text-secondary">Produk</span>
               <span className="font-medium text-text">{PRODUCT_LABELS[order.productType]}</span>
@@ -132,7 +132,7 @@ export default function RingkasanPesananPage() {
               <button
                 onClick={handleBayar}
                 disabled={redirecting}
-                className="w-full rounded-full bg-primary px-5 py-3 font-semibold text-white shadow-sm transition-transform hover:scale-[1.01] disabled:opacity-60"
+                className="w-full bg-primary px-5 py-3 font-semibold text-white transition-transform hover:scale-[1.01] disabled:opacity-60"
               >
                 {redirecting ? "Mengarahkan ke Mayar..." : `Bayar ${formatRupiah(order.amount)}`}
               </button>
@@ -146,7 +146,7 @@ export default function RingkasanPesananPage() {
           )}
 
           {order.paymentStatus === "Sukses" && order.productType === "Traktir_Platform" && (
-            <div className="mt-4 rounded-2xl bg-surface-tint p-6 text-center">
+            <div className="mt-4 bg-surface-tint p-6 text-center">
               <p className="mb-1 font-display text-lg font-semibold text-text">
                 Terima kasih atas apresiasimu!
               </p>

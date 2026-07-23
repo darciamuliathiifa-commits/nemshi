@@ -22,7 +22,7 @@ export default function AdminDashboardPage() {
 
   if (!report) {
     return (
-      <div className="rounded-3xl bg-white p-8 shadow-sm shadow-black/5">
+      <div className="bg-white p-8 border border-black/10">
         <p className="text-text-secondary">Memuat laporan...</p>
       </div>
     );
@@ -39,12 +39,12 @@ export default function AdminDashboardPage() {
   ];
 
   return (
-    <div className="rounded-3xl bg-white p-6 shadow-sm shadow-black/5 sm:p-8">
+    <div className="bg-white p-6 border border-black/10 sm:p-8">
       <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-2xl font-bold text-text">Dashboard Laporan Bisnis</h1>
         <a
           href="/api/admin/reports/export"
-          className="rounded-full border border-black/10 px-4 py-2 text-sm font-medium text-text-secondary hover:bg-surface"
+          className="border border-black/10 px-4 py-2 text-sm font-medium text-text-secondary hover:bg-surface"
         >
           Unduh CSV
         </a>
@@ -52,7 +52,7 @@ export default function AdminDashboardPage() {
 
       <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {stats.map((stat) => (
-          <div key={stat.label} className="rounded-2xl bg-surface p-5">
+          <div key={stat.label} className="bg-surface p-5">
             <p className="text-sm text-text-secondary">{stat.label}</p>
             <p className="mt-1 text-2xl font-bold text-primary">{stat.value}</p>
           </div>
@@ -63,7 +63,7 @@ export default function AdminDashboardPage() {
         Tawarkan Jasa.
       </p>
 
-      <section className="mb-6 rounded-2xl bg-surface p-5">
+      <section className="mb-6 bg-surface p-5">
         <h2 className="mb-4 font-semibold text-text">Pendapatan Bulanan (3 Bulan Terakhir)</h2>
         {report.monthlyRevenue.length === 0 ? (
           <p className="text-sm text-text-secondary">Belum ada data.</p>
@@ -83,7 +83,7 @@ export default function AdminDashboardPage() {
         )}
       </section>
 
-      <section className="rounded-2xl bg-surface p-5">
+      <section className="bg-surface p-5">
         <h2 className="mb-4 font-semibold text-text">Rata-rata Klik WhatsApp per Kategori</h2>
         {report.avgClicksPerCategory.length === 0 ? (
           <p className="text-sm text-text-secondary">Belum ada data.</p>
@@ -92,9 +92,9 @@ export default function AdminDashboardPage() {
             {report.avgClicksPerCategory.map((c) => (
               <div key={c.categoryName} className="flex items-center gap-3">
                 <span className="w-40 shrink-0 text-sm text-text-secondary">{c.categoryName}</span>
-                <div className="h-3 flex-1 overflow-hidden rounded-full bg-white">
+                <div className="h-3 flex-1 overflow-hidden bg-white">
                   <div
-                    className="h-full rounded-full bg-primary"
+                    className="h-full bg-primary"
                     style={{ width: `${(c.averageClicks / maxClicks) * 100}%` }}
                   />
                 </div>

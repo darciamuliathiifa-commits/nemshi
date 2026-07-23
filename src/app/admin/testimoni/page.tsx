@@ -40,7 +40,7 @@ export default function AdminTestimoniPage() {
   }
 
   return (
-    <div className="rounded-3xl bg-white p-6 shadow-sm shadow-black/5 sm:p-8">
+    <div className="bg-white p-6 border border-black/10 sm:p-8">
       <h1 className="mb-2 text-2xl font-bold text-text">Kelola Testimoni</h1>
       <p className="mb-6 text-sm text-text-secondary">
         Sembunyikan atau hapus testimoni yang melanggar dari profil publik pengiklan.
@@ -53,7 +53,7 @@ export default function AdminTestimoniPage() {
       ) : (
         <ul className="flex flex-col gap-3">
           {items.map((item) => (
-            <li key={item.id} className="rounded-2xl bg-surface p-4">
+            <li key={item.id} className="bg-surface p-4">
               <div className="mb-1 flex items-center justify-between">
                 <Link
                   href={`/profil/${item.revieweeUserId}`}
@@ -68,7 +68,7 @@ export default function AdminTestimoniPage() {
               </p>
               <div className="flex items-center gap-3">
                 {item.isHidden && (
-                  <span className="rounded-full bg-black/10 px-2 py-0.5 text-xs font-medium text-text-secondary">
+                  <span className="rounded bg-black/10 px-2 py-0.5 text-xs font-medium text-text-secondary">
                     Disembunyikan
                   </span>
                 )}

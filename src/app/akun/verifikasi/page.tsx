@@ -30,7 +30,7 @@ export default async function StatusVerifikasiPage() {
           ← Kembali ke Akun Saya
         </Link>
 
-        <section className="rounded-3xl bg-white p-6 shadow-sm shadow-black/5 sm:p-8">
+        <section className="bg-white p-6 border border-black/10 sm:p-8">
           <h1 className="font-display text-2xl font-semibold text-text">Status Verifikasi</h1>
           <p className="mt-2 mb-6 text-text-secondary">
             {currentLabel
@@ -39,7 +39,7 @@ export default async function StatusVerifikasiPage() {
           </p>
 
           <div className="flex flex-col gap-4">
-            <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-surface p-5">
+            <div className="flex flex-wrap items-center justify-between gap-3 bg-surface p-5">
               <div>
                 <h2 className="font-semibold text-text">Identitas Terverifikasi</h2>
                 <p className="text-sm text-text-secondary">
@@ -47,7 +47,7 @@ export default async function StatusVerifikasiPage() {
                 </p>
               </div>
               {identityVerified ? (
-                <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
+                <span className="rounded bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
                   ✓ Terverifikasi
                 </span>
               ) : (
@@ -55,14 +55,14 @@ export default async function StatusVerifikasiPage() {
                   href={ADMIN_WHATSAPP_LINK}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="whitespace-nowrap rounded-full bg-primary px-4 py-2 text-sm font-semibold text-white shadow-sm transition-transform hover:scale-[1.02]"
+                  className="whitespace-nowrap bg-primary px-4 py-2 text-sm font-semibold text-white transition-transform hover:scale-[1.02]"
                 >
                   Verifikasi Identitas Sekarang
                 </a>
               )}
             </div>
 
-            <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-surface p-5">
+            <div className="flex flex-wrap items-center justify-between gap-3 bg-surface p-5">
               <div>
                 <h2 className="font-semibold text-text">Keahlian Terverifikasi</h2>
                 <p className="text-sm text-text-secondary">
@@ -71,7 +71,7 @@ export default async function StatusVerifikasiPage() {
                 </p>
               </div>
               {skillVerified ? (
-                <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
+                <span className="rounded bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
                   ✓ Terverifikasi
                 </span>
               ) : (
@@ -79,7 +79,7 @@ export default async function StatusVerifikasiPage() {
                   href={ADMIN_WHATSAPP_LINK}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="whitespace-nowrap rounded-full bg-primary px-4 py-2 text-sm font-semibold text-white shadow-sm transition-transform hover:scale-[1.02]"
+                  className="whitespace-nowrap bg-primary px-4 py-2 text-sm font-semibold text-white transition-transform hover:scale-[1.02]"
                 >
                   Verifikasi Keahlian Sekarang
                 </a>

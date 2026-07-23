@@ -13,7 +13,7 @@ export function Modal({
       onClick={onClose}
     >
       <div
-        className="max-h-[85vh] w-full max-w-lg overflow-y-auto rounded-2xl bg-white p-6 shadow-xl"
+        className="max-h-[85vh] w-full max-w-lg overflow-y-auto bg-white p-6 shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
         {children}

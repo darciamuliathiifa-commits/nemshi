@@ -15,7 +15,7 @@ const STATUS_LABELS: Record<string, string> = {
 export function ListingStatusBadge({ status }: { status: string }) {
   return (
     <span
-      className={`rounded-full px-2 py-0.5 text-xs font-medium ${
+      className={`rounded px-2 py-0.5 text-xs font-medium ${
         STATUS_STYLES[status] ?? "bg-black/10 text-text-secondary"
       }`}
     >

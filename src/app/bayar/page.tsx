@@ -36,7 +36,7 @@ export default function BayarPage() {
   return (
     <div className="bg-surface-tint">
       <div className="mx-auto max-w-2xl px-4 py-6 sm:px-6 lg:px-8">
-        <section className="rounded-3xl bg-white p-6 shadow-sm shadow-black/5 sm:p-8">
+        <section className="bg-white p-6 border border-black/10 sm:p-8">
           <h1 className="font-display text-2xl font-semibold text-text">Beli Produk Promosi</h1>
           <p className="mt-2 mb-6 text-text-secondary">
             Platform Nemshi tidak menjual jasa antar pengguna — hanya ruang iklan dan exposure.
@@ -46,7 +46,7 @@ export default function BayarPage() {
             {(Object.keys(PRODUCT_LABELS) as OrderProductType[]).map((productType) => (
               <div
                 key={productType}
-                className="flex flex-wrap items-center justify-between gap-4 rounded-2xl bg-surface p-5"
+                className="flex flex-wrap items-center justify-between gap-4 bg-surface p-5"
               >
                 <div>
                   <h2 className="font-semibold text-text">{PRODUCT_LABELS[productType]}</h2>
@@ -60,7 +60,7 @@ export default function BayarPage() {
                 <button
                   onClick={() => handlePilih(productType)}
                   disabled={loadingProduct !== null}
-                  className="shrink-0 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-transform hover:scale-[1.02] disabled:opacity-60"
+                  className="shrink-0 bg-primary px-5 py-2.5 text-sm font-semibold text-white transition-transform hover:scale-[1.02] disabled:opacity-60"
                 >
                   {loadingProduct === productType ? "Memproses..." : "Pilih"}
                 </button>

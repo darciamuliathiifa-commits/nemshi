@@ -20,8 +20,8 @@ export function ListingCard({
 
   const body = (
     <div
-      className={`group flex h-full flex-col overflow-hidden rounded-2xl border border-black/5 bg-white shadow-sm transition-all duration-200 ${
-        isClickable ? "hover:-translate-y-0.5 hover:shadow-lg hover:shadow-black/10" : ""
+      className={`group flex h-full flex-col overflow-hidden border border-black/10 bg-white transition-all duration-200 ${
+        isClickable ? "hover:shadow-lg hover:shadow-black/10" : ""
       } ${isExpired ? "opacity-60" : ""}`}
     >
       <div className="relative aspect-[4/3] w-full overflow-hidden bg-surface">
@@ -39,12 +39,12 @@ export function ListingCard({
           </div>
         )}
         {isExpired ? (
-          <span className="absolute left-2 top-2 rounded-full bg-black/60 px-2 py-0.5 text-xs font-semibold text-white shadow-sm backdrop-blur-sm">
+          <span className="absolute left-2 top-2 rounded bg-black/60 px-2 py-0.5 text-xs font-semibold text-white shadow-sm backdrop-blur-sm">
             Sudah Berakhir
           </span>
         ) : (
           listing.isPriority && (
-            <span className="absolute left-2 top-2 rounded-full bg-primary px-2 py-0.5 text-xs font-semibold text-white shadow-sm">
+            <span className="absolute left-2 top-2 rounded bg-primary px-2 py-0.5 text-xs font-semibold text-white">
               Prioritas
             </span>
           )

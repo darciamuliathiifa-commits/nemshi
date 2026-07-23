@@ -68,7 +68,7 @@ export function ListingDetailClient({
       {/* Foto */}
       <motion.div
         variants={fadeUp}
-        className="order-1 overflow-hidden rounded-3xl bg-white shadow-sm shadow-black/5 lg:order-none lg:col-start-1 lg:row-start-1"
+        className="order-1 overflow-hidden bg-white border border-black/10 lg:order-none lg:col-start-1 lg:row-start-1"
       >
         <div className="relative aspect-[4/3] w-full bg-surface">
           {photos.length > 0 ? (
@@ -118,7 +118,7 @@ export function ListingDetailClient({
           )}
 
           {listing.isPriority && (
-            <span className="absolute left-3 top-3 rounded-full bg-accent px-2.5 py-1 text-xs font-semibold text-white">
+            <span className="absolute left-3 top-3 rounded bg-accent px-2.5 py-1 text-xs font-semibold text-white">
               Prioritas
             </span>
           )}
@@ -128,9 +128,9 @@ export function ListingDetailClient({
       {/* Info & CTA */}
       <motion.div
         variants={fadeUp}
-        className="order-2 flex flex-col gap-4 rounded-3xl bg-white p-6 shadow-sm shadow-black/5 lg:order-none lg:sticky lg:top-6 lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:self-start"
+        className="order-2 flex flex-col gap-4 bg-white p-6 border border-black/10 lg:order-none lg:sticky lg:top-6 lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:self-start"
       >
-        <span className="w-fit rounded-full bg-surface-tint px-3 py-1 text-xs font-semibold text-primary">
+        <span className="w-fit rounded bg-surface-tint px-3 py-1 text-xs font-semibold text-primary">
           {listing.category.name} · {listing.area.name}
         </span>
         <h1 className="font-display text-2xl font-semibold leading-tight text-text">
@@ -139,7 +139,7 @@ export function ListingDetailClient({
 
         <Link
           href={`/profil/${listing.provider.id}`}
-          className="flex items-center gap-2.5 rounded-2xl bg-surface p-2.5 transition-colors hover:bg-surface-tint"
+          className="flex items-center gap-2.5 bg-surface p-2.5 transition-colors hover:bg-surface-tint"
         >
           <div className="relative h-9 w-9 shrink-0 overflow-hidden rounded-full bg-white">
             {listing.provider.avatarUrl && (
@@ -168,7 +168,7 @@ export function ListingDetailClient({
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
           onClick={handleContactClick}
-          className="rounded-full bg-primary px-6 py-3 text-center font-semibold text-white shadow-sm"
+          className="bg-primary px-6 py-3 text-center font-semibold text-white"
         >
           Hubungi via WhatsApp
         </motion.button>
@@ -179,7 +179,7 @@ export function ListingDetailClient({
         </p>
 
         {contacted && (
-          <div className="rounded-2xl border border-primary/20 bg-surface-tint p-4">
+          <div className="border border-primary/20 bg-surface-tint p-4">
             <p className="mb-3 text-sm text-text-secondary">
               Berhasil terhubung dengan penyedia jasa? Dukung pengembangan Nemshi lewat apresiasi
               sukarela.
@@ -187,7 +187,7 @@ export function ListingDetailClient({
             <button
               onClick={handleTraktir}
               disabled={creatingTraktir}
-              className="w-full rounded-full border border-primary px-5 py-2.5 text-sm font-semibold text-primary transition-colors hover:bg-white disabled:opacity-60"
+              className="w-full border border-primary px-5 py-2.5 text-sm font-semibold text-primary transition-colors hover:bg-white disabled:opacity-60"
             >
               {creatingTraktir ? "Memproses..." : "Traktir Platform (Rp5.000)"}
             </button>
@@ -202,7 +202,7 @@ export function ListingDetailClient({
       {/* Deskripsi */}
       <motion.div
         variants={fadeUp}
-        className="order-3 rounded-3xl bg-white p-6 shadow-sm shadow-black/5 sm:p-8 lg:order-none lg:col-start-1 lg:row-start-2"
+        className="order-3 bg-white p-6 border border-black/10 sm:p-8 lg:order-none lg:col-start-1 lg:row-start-2"
       >
         <h2 className="font-display text-lg font-semibold text-text">Deskripsi</h2>
         <p className="mt-2 whitespace-pre-line text-text-secondary">{listing.description}</p>
