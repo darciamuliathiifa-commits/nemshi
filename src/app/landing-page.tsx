@@ -183,84 +183,70 @@ export function LandingPage({
   return (
     <div className="bg-surface-tint">
       <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-8">
-        {/* Hero panel */}
-        <section className="overflow-hidden rounded-3xl bg-white border border-black/10">
-          <div className="grid gap-6 p-8 sm:p-10 lg:grid-cols-2 lg:items-center lg:gap-10 lg:p-14">
-            <motion.div
-              initial="hidden"
-              animate="show"
-              variants={{ show: { transition: { staggerChildren: 0.08 } } }}
-            >
+        {/* Hero */}
+        <motion.section
+          initial="hidden"
+          animate="show"
+          variants={{ show: { transition: { staggerChildren: 0.08 } } }}
+          className="flex flex-col items-center px-4 pb-12 pt-16 text-center sm:pt-24"
+        >
+          <motion.div variants={fadeUp} className="relative h-20 w-20">
+            <span className="absolute inset-0 translate-x-1.5 translate-y-1.5 rotate-6 rounded-2xl bg-primary/10" />
+            <span className="absolute inset-0 -translate-x-1.5 translate-y-2.5 -rotate-6 rounded-2xl bg-primary/10" />
+            <span className="relative flex h-20 w-20 items-center justify-center rounded-2xl bg-primary text-2xl font-bold text-white">
+              N
+            </span>
+          </motion.div>
+
+          <motion.h1
+            variants={fadeUp}
+            className="mt-8 max-w-3xl font-display text-5xl font-bold leading-[1.05] tracking-tight text-text sm:text-6xl lg:text-7xl"
+          >
+            Kami hubungkan kamu dengan{" "}
+            <span className="italic text-accent">jasa terpercaya</span>.
+          </motion.h1>
+
+          <motion.p variants={fadeUp} className="mt-6 max-w-xl text-lg text-text-secondary">
+            Direktori iklan jasa untuk Mahasiswa Indonesia di Mesir — temukan penyedia jasa dan
+            hubungi langsung via WhatsApp, tanpa perantara.
+          </motion.p>
+
+          <motion.div variants={fadeUp} className="mt-8 flex flex-wrap items-center justify-center gap-3">
+            <Link href="/jelajahi">
               <motion.span
-                variants={fadeUp}
-                className="inline-block rounded bg-surface-tint px-3 py-1 text-xs font-semibold tracking-wide text-primary"
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
+                className="inline-block rounded-full bg-primary px-6 py-3 text-sm font-semibold text-white"
               >
-                Direktori Jasa Masisir
+                Mulai Jelajahi
               </motion.span>
-              <motion.h1
-                variants={fadeUp}
-                className="mt-4 font-display text-4xl font-semibold leading-[1.08] tracking-tight text-text sm:text-5xl"
+            </Link>
+            <Link href="/sayembara">
+              <motion.span
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
+                className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white px-6 py-3 text-sm font-semibold text-text"
               >
-                Kami hubungkan kamu dengan{" "}
-                <span className="italic text-accent">jasa terpercaya</span>
-              </motion.h1>
-              <motion.p variants={fadeUp} className="mt-4 max-w-md text-text-secondary">
-                Direktori iklan jasa untuk Mahasiswa Indonesia di Mesir — temukan penyedia jasa dan
-                hubungi langsung via WhatsApp, tanpa perantara.
-              </motion.p>
-              <motion.div variants={fadeUp} className="mt-6 flex flex-wrap items-center gap-4">
-                <Link href="/jelajahi" className="group">
-                  <motion.span
-                    whileHover={{ scale: 1.03 }}
-                    whileTap={{ scale: 0.97 }}
-                    className="rounded-full inline-flex items-center gap-2 bg-primary px-6 py-3 text-sm font-semibold text-white"
-                  >
-                    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white/20 transition-transform group-hover:translate-x-0.5">
-                      →
-                    </span>
-                    Mulai Jelajahi
-                  </motion.span>
-                </Link>
-                <Link
-                  href="/sayembara"
-                  className="text-sm font-semibold text-text underline decoration-accent/50 decoration-2 underline-offset-4 hover:text-accent"
-                >
-                  Cari Jasa (Papan Permintaan)
-                </Link>
-              </motion.div>
+                Cari Jasa
+                <span aria-hidden>→</span>
+              </motion.span>
+            </Link>
+          </motion.div>
 
-              <motion.div variants={fadeUp} className="mt-8 flex gap-6 border-t border-black/5 pt-6">
-                {stats.map((stat) => (
-                  <div key={stat.label}>
-                    <p className="font-display text-2xl font-semibold text-text">{stat.value}</p>
-                    <p className="text-xs text-text-secondary">{stat.label}</p>
-                  </div>
-                ))}
-              </motion.div>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, scale: 0.94 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6, ease: "easeOut" }}
-              className="relative mx-auto w-full max-w-md"
-            >
-              <motion.div
-                animate={{ y: [0, -10, 0] }}
-                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-              >
-                <Image
-                  src="/hero-illustration.png"
-                  alt="Ilustrasi direktori jasa Nemshi"
-                  width={900}
-                  height={680}
-                  priority
-                  className="w-full"
-                />
-              </motion.div>
-            </motion.div>
-          </div>
-        </section>
+          <motion.div variants={fadeUp} className="mt-16 flex flex-col items-center gap-4">
+            <p className="text-xs font-semibold uppercase tracking-wide text-text-secondary">
+              Dipercaya Masisir di seluruh Mesir
+            </p>
+            <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-3">
+              {stats.map((stat) => (
+                <div key={stat.label}>
+                  <span className="font-display text-2xl font-bold text-text">{stat.value}</span>{" "}
+                  <span className="text-sm text-text-secondary">{stat.label}</span>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        </motion.section>
 
         {/* Quick actions */}
         <motion.section
