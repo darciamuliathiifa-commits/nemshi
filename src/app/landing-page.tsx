@@ -342,7 +342,7 @@ export function LandingPage({
             <motion.span
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
-              className="rounded-full inline-flex items-center gap-2 bg-white px-6 py-3 text-sm font-semibold text-text shadow-sm"
+              className="rounded-full inline-flex items-center gap-2 bg-white px-6 py-3 text-sm font-semibold text-text"
             >
               Mulai Jelajahi
             </motion.span>

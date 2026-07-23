@@ -73,7 +73,7 @@ export default function LaporanKomunitasPage() {
         menangguhkan akun pelanggar secara permanen.
       </p>
 
-      {message && <p className="mb-4 text-sm text-primary">{message}</p>}
+      {message && <p className="mb-4 text-sm text-success">{message}</p>}
 
       {!reports ? (
         <p className="text-text-secondary">Memuat laporan...</p>

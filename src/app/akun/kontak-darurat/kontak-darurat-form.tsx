@@ -52,7 +52,7 @@ export function KontakDaruratForm() {
       <EmergencyContactFields contacts={contacts} onChange={setContacts} />
 
       {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
-      {message && <p className="mt-3 text-sm text-primary">{message}</p>}
+      {message && <p className="mt-3 text-sm text-success">{message}</p>}
 
       <button
         onClick={handleSave}

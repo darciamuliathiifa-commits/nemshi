@@ -90,7 +90,7 @@ export default function PantauTransaksiPage() {
                     onClick={() => setExpandedId(expandedId === order.id ? null : order.id)}
                     className="cursor-pointer border-b border-black/10 last:border-0 hover:bg-white"
                   >
-                    <td className="px-4 py-3 font-mono text-xs text-text-secondary">
+                    <td className="px-4 py-3 text-xs text-text-secondary">
                       {order.id.slice(0, 8)}
                     </td>
                     <td className="px-4 py-3 text-text">{order.userFullName}</td>

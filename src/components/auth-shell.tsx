@@ -9,7 +9,7 @@ export function AuthShell({
 }) {
   return (
     <main className="flex min-h-[calc(100vh-64px)] items-center justify-center bg-gradient-to-b from-surface-tint to-white px-4 py-12 sm:px-6">
-      <div className="rounded-3xl w-full max-w-sm border border-black/5 bg-white p-7 shadow-lg shadow-black/5">
+      <div className="rounded-3xl w-full max-w-sm border border-black/10 bg-white p-7">
         <div className="mb-6 flex flex-col items-center text-center">
           <span className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-lg font-bold text-white">
             N

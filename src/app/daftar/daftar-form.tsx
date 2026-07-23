@@ -97,6 +97,7 @@ export function DaftarForm() {
               <input
                 type="radio"
                 name="role"
+                className="accent-accent"
                 checked={role === "Pelanggan"}
                 onChange={() => setRole("Pelanggan")}
               />
@@ -106,6 +107,7 @@ export function DaftarForm() {
               <input
                 type="radio"
                 name="role"
+                className="accent-accent"
                 checked={role === "Penyedia_Jasa"}
                 onChange={() => setRole("Penyedia_Jasa")}
               />

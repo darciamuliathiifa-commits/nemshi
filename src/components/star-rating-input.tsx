@@ -8,7 +8,7 @@ export function StarRatingInput({
   onChange: (rating: number) => void;
 }) {
   return (
-    <div className="flex gap-1 text-2xl text-primary">
+    <div className="flex gap-1 text-2xl text-accent">
       {[1, 2, 3, 4, 5].map((star) => (
         <button
           key={star}

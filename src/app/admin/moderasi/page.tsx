@@ -80,7 +80,7 @@ export default function AntreanModerasiPage() {
         </button>
       </div>
 
-      {message && <p className="mb-4 text-sm text-primary">{message}</p>}
+      {message && <p className="mb-4 text-sm text-success">{message}</p>}
 
       {!items ? (
         <p className="text-text-secondary">Memuat...</p>
