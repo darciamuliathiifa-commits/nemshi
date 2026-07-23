@@ -105,7 +105,7 @@ export default function PasangIklanPage() {
 
         <form
           onSubmit={handleSubmit}
-          className="flex flex-col gap-3 border border-black/5 bg-white p-6"
+          className="rounded-3xl flex flex-col gap-3 border border-black/5 bg-white p-6"
         >
         <label className="flex flex-col gap-1 text-sm text-text-secondary">
           Judul Iklan
@@ -115,7 +115,7 @@ export default function PasangIklanPage() {
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Contoh: Jasa Titip Beli & Antar Barang Kairo"
-            className="border border-black/10 px-3 py-2 text-text outline-none focus:border-accent"
+            className="rounded-lg border border-black/10 px-3 py-2 text-text outline-none focus:border-accent focus:ring-4 focus:ring-accent/10"
           />
         </label>
 
@@ -124,7 +124,7 @@ export default function PasangIklanPage() {
           <select
             value={categoryId}
             onChange={(e) => setCategoryId(e.target.value)}
-            className="border border-black/10 px-3 py-2 text-text outline-none focus:border-accent"
+            className="rounded-lg border border-black/10 px-3 py-2 text-text outline-none focus:border-accent focus:ring-4 focus:ring-accent/10"
           >
             {categories.map((c) => (
               <option key={c.id} value={c.id}>
@@ -139,7 +139,7 @@ export default function PasangIklanPage() {
           <select
             value={areaId}
             onChange={(e) => setAreaId(e.target.value)}
-            className="border border-black/10 px-3 py-2 text-text outline-none focus:border-accent"
+            className="rounded-lg border border-black/10 px-3 py-2 text-text outline-none focus:border-accent focus:ring-4 focus:ring-accent/10"
           >
             {areas.map((a) => (
               <option key={a.id} value={a.id}>
@@ -156,7 +156,7 @@ export default function PasangIklanPage() {
             rows={4}
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="border border-black/10 px-3 py-2 text-text outline-none focus:border-accent"
+            className="rounded-lg border border-black/10 px-3 py-2 text-text outline-none focus:border-accent focus:ring-4 focus:ring-accent/10"
           />
         </label>
 
@@ -168,7 +168,7 @@ export default function PasangIklanPage() {
             value={whatsappLink}
             onChange={(e) => setWhatsappLink(e.target.value)}
             placeholder="https://wa.me/20XXXXXXXXXX"
-            className="border border-black/10 px-3 py-2 text-text outline-none focus:border-accent"
+            className="rounded-lg border border-black/10 px-3 py-2 text-text outline-none focus:border-accent focus:ring-4 focus:ring-accent/10"
           />
         </label>
 
@@ -199,14 +199,14 @@ export default function PasangIklanPage() {
                 value={priceMin}
                 onChange={(e) => setPriceMin(e.target.value)}
                 placeholder="Min (EGP)"
-                className="w-full border border-black/10 px-3 py-2 text-text outline-none focus:border-accent"
+                className="w-full rounded-lg border border-black/10 px-3 py-2 text-text outline-none focus:border-accent focus:ring-4 focus:ring-accent/10"
               />
               <input
                 type="number"
                 value={priceMax}
                 onChange={(e) => setPriceMax(e.target.value)}
                 placeholder="Maks (EGP)"
-                className="w-full border border-black/10 px-3 py-2 text-text outline-none focus:border-accent"
+                className="w-full rounded-lg border border-black/10 px-3 py-2 text-text outline-none focus:border-accent focus:ring-4 focus:ring-accent/10"
               />
             </div>
           )}
@@ -239,7 +239,7 @@ export default function PasangIklanPage() {
         <div className="flex flex-col gap-2 text-sm text-text-secondary">
           Cara Bayar
           <label
-            className={`flex items-start gap-2 border p-3 transition-colors ${
+            className={`flex items-start gap-2 rounded-xl border p-3 transition-colors ${
               paymentMethod === "Bayar" ? "border-primary bg-surface-tint" : "border-black/10"
             }`}
           >
@@ -255,7 +255,7 @@ export default function PasangIklanPage() {
             </span>
           </label>
           <label
-            className={`flex items-start gap-2 border p-3 transition-colors ${
+            className={`flex items-start gap-2 rounded-xl border p-3 transition-colors ${
               paymentMethod === "Kuota" ? "border-primary bg-surface-tint" : "border-black/10"
             }`}
           >
@@ -282,7 +282,7 @@ export default function PasangIklanPage() {
           <button
             type="submit"
             disabled={submitting}
-            className="mt-2 bg-primary px-5 py-3 font-semibold text-white transition-colors hover:bg-primary-dark disabled:opacity-60"
+            className="rounded-full mt-2 bg-primary px-5 py-3 font-semibold text-white transition-colors hover:bg-primary-dark disabled:opacity-60"
           >
             {submitting
               ? "Memproses..."

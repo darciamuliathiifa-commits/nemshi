@@ -45,7 +45,7 @@ export function MasukForm() {
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="border border-black/10 px-3 py-2 text-text outline-none focus:border-accent"
+            className="rounded-lg border border-black/10 px-3 py-2 text-text outline-none focus:border-accent focus:ring-4 focus:ring-accent/10"
           />
         </label>
         <label className="flex flex-col gap-1 text-sm text-text-secondary">
@@ -55,7 +55,7 @@ export function MasukForm() {
             required
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="border border-black/10 px-3 py-2 text-text outline-none focus:border-accent"
+            className="rounded-lg border border-black/10 px-3 py-2 text-text outline-none focus:border-accent focus:ring-4 focus:ring-accent/10"
           />
         </label>
 
@@ -64,19 +64,19 @@ export function MasukForm() {
         <button
           type="submit"
           disabled={submitting}
-          className="mt-2 bg-primary px-5 py-3 font-semibold text-white transition-colors hover:bg-primary-dark disabled:opacity-60"
+          className="rounded-full mt-2 bg-primary px-5 py-3 font-semibold text-white transition-colors hover:bg-primary-dark disabled:opacity-60"
         >
           {submitting ? "Masuk..." : "Masuk"}
         </button>
       </form>
 
       <div className="mt-5 flex flex-col gap-2 text-center text-sm text-text-secondary">
-        <Link href="/lupa-password" className="font-medium text-primary hover:underline">
+        <Link href="/lupa-password" className="font-medium text-accent hover:underline">
           Lupa kata sandi?
         </Link>
         <p>
           Belum punya akun?{" "}
-          <Link href="/daftar" className="font-medium text-primary hover:underline">
+          <Link href="/daftar" className="font-medium text-accent hover:underline">
             Daftar di sini
           </Link>
         </p>

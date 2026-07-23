@@ -9,18 +9,18 @@ const NAV_LINKS = [
 
 export function SiteHeader() {
   return (
-    <header className="sticky top-0 z-40 border-b border-black/5 bg-white/80 backdrop-blur-md">
-      <div className="mx-auto flex max-w-6xl items-center justify-between gap-6 px-4 py-4 sm:px-6 lg:px-8">
+    <header className="sticky top-4 z-40 flex justify-center px-4">
+      <div className="flex w-full max-w-5xl items-center justify-between gap-6 rounded-full border border-black/5 bg-[rgba(237,237,237,0.72)] px-5 py-2.5 backdrop-blur-md">
         <Link href="/" className="flex shrink-0 items-center gap-2">
-          <span className="flex h-8 w-8 items-center justify-center bg-primary text-sm font-bold text-white">
+          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-sm font-bold text-white">
             N
           </span>
-          <span className="text-xl font-extrabold tracking-tight text-text">Nemshi</span>
+          <span className="text-lg font-semibold tracking-tight text-text">Nemshi</span>
         </Link>
 
-        <nav className="hidden items-center gap-6 text-sm font-medium text-text-secondary md:flex">
+        <nav className="hidden items-center gap-6 text-sm text-text md:flex">
           {NAV_LINKS.map((link) => (
-            <Link key={link.href} href={link.href} className="transition-colors hover:text-primary">
+            <Link key={link.href} href={link.href} className="transition-colors hover:text-accent">
               {link.label}
             </Link>
           ))}

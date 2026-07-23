@@ -48,7 +48,7 @@ export function ImageUploader({
         className="hidden"
       />
       {value ? (
-        <div className={`relative ${aspectClassName} w-full overflow-hidden bg-black/5`}>
+        <div className={`relative ${aspectClassName} w-full overflow-hidden rounded-lg bg-black/5`}>
           <Image src={value} alt="" fill className="object-cover" unoptimized />
           <div className="absolute inset-x-0 bottom-0 flex divide-x divide-black/10 bg-white/90 text-[11px] font-medium">
             <button
@@ -76,7 +76,7 @@ export function ImageUploader({
           type="button"
           onClick={() => inputRef.current?.click()}
           disabled={uploading}
-          className={`flex ${aspectClassName} w-full items-center justify-center border-2 border-dashed border-black/10 px-2 text-center text-xs text-text-secondary hover:border-primary hover:text-primary disabled:opacity-60`}
+          className={`flex ${aspectClassName} w-full items-center justify-center rounded-lg border-2 border-dashed border-black/10 px-2 text-center text-xs text-text-secondary hover:border-accent hover:text-accent disabled:opacity-60`}
         >
           {uploading ? "Mengunggah..." : "+ Unggah Foto"}
         </button>

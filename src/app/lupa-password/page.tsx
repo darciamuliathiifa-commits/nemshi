@@ -41,13 +41,13 @@ export default function LupaPasswordPage() {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="border border-black/10 px-3 py-2 text-text outline-none focus:border-accent"
+              className="rounded-lg border border-black/10 px-3 py-2 text-text outline-none focus:border-accent focus:ring-4 focus:ring-accent/10"
             />
           </label>
           <button
             type="submit"
             disabled={submitting}
-            className="mt-2 bg-primary px-5 py-3 font-semibold text-white transition-colors hover:bg-primary-dark disabled:opacity-60"
+            className="rounded-full mt-2 bg-primary px-5 py-3 font-semibold text-white transition-colors hover:bg-primary-dark disabled:opacity-60"
           >
             {submitting ? "Mengirim..." : "Kirim Tautan Atur Ulang"}
           </button>
@@ -55,7 +55,7 @@ export default function LupaPasswordPage() {
       )}
 
       <p className="mt-5 text-center text-sm text-text-secondary">
-        <Link href="/masuk" className="font-medium text-primary hover:underline">
+        <Link href="/masuk" className="font-medium text-accent hover:underline">
           ← Kembali ke halaman Masuk
         </Link>
       </p>

@@ -33,7 +33,7 @@ function FilterChip({ label, onRemove }: { label: string; onRemove: () => void }
   return (
     <button
       onClick={onRemove}
-      className="inline-flex items-center gap-1.5 bg-surface px-3 py-1 text-sm font-medium text-text transition-colors hover:bg-primary/10 hover:text-primary"
+      className="inline-flex items-center gap-1.5 rounded-full bg-surface px-3 py-1 text-sm font-medium text-text transition-colors hover:bg-primary/10 hover:text-accent"
     >
       {label}
       <span className="text-text-secondary">×</span>
@@ -88,7 +88,7 @@ export function JelajahiCatalog({
     <div className="bg-surface-tint">
       <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-8">
         {/* Promo banner */}
-        <section className="overflow-hidden bg-primary text-white">
+        <section className="overflow-hidden rounded-3xl bg-primary text-white">
           <div className="grid gap-6 p-8 sm:p-10 lg:grid-cols-[1.3fr_1fr] lg:items-center lg:gap-8 lg:p-12">
             <motion.div
               initial="hidden"
@@ -114,7 +114,7 @@ export function JelajahiCatalog({
               <motion.div variants={fadeUp} className="mt-6 flex flex-wrap gap-3">
                 <Link
                   href="/pasang-iklan"
-                  className="bg-white px-5 py-2.5 text-sm font-semibold text-primary transition-transform hover:scale-[1.02]"
+                  className="rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-primary transition-transform hover:scale-[1.02]"
                 >
                   Pasang Iklan Gratis
                 </Link>
@@ -146,7 +146,7 @@ export function JelajahiCatalog({
         </section>
 
         {/* Catalog panel */}
-        <section className="mt-6 bg-white p-6 border border-black/10 sm:p-8">
+        <section className="rounded-3xl mt-6 bg-white p-6 border border-black/10 sm:p-8">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <h2 className="font-display text-2xl font-semibold text-text">Semua Iklan</h2>
             <div className="flex flex-1 flex-col gap-2 sm:max-w-lg sm:flex-row">
@@ -155,12 +155,12 @@ export function JelajahiCatalog({
                 value={keyword}
                 onChange={(e) => setKeyword(e.target.value)}
                 placeholder="Cari jasa berdasarkan kata kunci..."
-                className="flex-1 border border-black/10 px-4 py-2 text-sm outline-none transition-colors focus:border-accent"
+                className="flex-1 rounded-lg border border-black/10 px-4 py-2 text-sm outline-none transition-colors focus:border-accent focus:ring-4 focus:ring-accent/10"
               />
               <select
                 value={areaSlug}
                 onChange={(e) => setAreaSlug(e.target.value)}
-                className="border border-black/10 px-4 py-2 text-sm outline-none transition-colors focus:border-accent"
+                className="rounded-lg border border-black/10 px-4 py-2 text-sm outline-none transition-colors focus:border-accent focus:ring-4 focus:ring-accent/10"
               >
                 <option value="">Semua Area</option>
                 {areas.map((area) => (
@@ -172,7 +172,7 @@ export function JelajahiCatalog({
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as SortBy)}
-                className="border border-black/10 px-4 py-2 text-sm outline-none transition-colors focus:border-accent"
+                className="rounded-lg border border-black/10 px-4 py-2 text-sm outline-none transition-colors focus:border-accent focus:ring-4 focus:ring-accent/10"
               >
                 <option value="terbaru">Terbaru</option>
                 <option value="termurah">Termurah</option>
@@ -199,14 +199,14 @@ export function JelajahiCatalog({
           <div className="mt-5 flex flex-wrap items-center gap-2 border-b border-black/5 pb-5">
             <button
               onClick={() => setCategorySlug("")}
-              className={`relative px-4 py-1.5 text-sm font-medium transition-colors ${
+              className={`relative rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${
                 categorySlug === "" ? "text-white" : "text-text-secondary hover:bg-surface"
               }`}
             >
               {categorySlug === "" && (
                 <motion.span
                   layoutId="jelajahi-category-pill"
-                  className="absolute inset-0 bg-primary"
+                  className="absolute inset-0 rounded-full bg-primary"
                   transition={{ type: "spring", stiffness: 400, damping: 32 }}
                 />
               )}
@@ -216,7 +216,7 @@ export function JelajahiCatalog({
               <button
                 key={category.id}
                 onClick={() => setCategorySlug(category.slug)}
-                className={`relative px-4 py-1.5 text-sm font-medium transition-colors ${
+                className={`relative rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${
                   categorySlug === category.slug
                     ? "text-white"
                     : "text-text-secondary hover:bg-surface"
@@ -225,7 +225,7 @@ export function JelajahiCatalog({
                 {categorySlug === category.slug && (
                   <motion.span
                     layoutId="jelajahi-category-pill"
-                    className="absolute inset-0 bg-primary"
+                    className="absolute inset-0 rounded-full bg-primary"
                     transition={{ type: "spring", stiffness: 400, damping: 32 }}
                   />
                 )}
@@ -241,7 +241,7 @@ export function JelajahiCatalog({
                   setCategorySlug("");
                   setAreaSlug("");
                 }}
-                className="ml-auto text-sm font-medium text-text-secondary hover:text-primary"
+                className="ml-auto text-sm font-medium text-text-secondary hover:text-accent"
               >
                 Reset Filter
               </button>
@@ -250,7 +250,7 @@ export function JelajahiCatalog({
 
           <div className="pt-6">
             {sortedListings.length === 0 ? (
-              <div className="border border-dashed border-black/10 bg-surface/50 py-16 text-center text-text-secondary">
+              <div className="rounded-2xl border border-dashed border-black/10 bg-surface/50 py-16 text-center text-text-secondary">
                 Tidak ada iklan yang sesuai dengan pencarian Anda.
               </div>
             ) : (

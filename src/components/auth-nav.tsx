@@ -27,11 +27,14 @@ export function AuthNav() {
 
   if (!isLoggedIn) {
     return (
-      <div className="flex shrink-0 gap-4 text-sm font-medium text-primary">
-        <Link href="/masuk" className="hover:underline">
+      <div className="flex shrink-0 gap-4 text-sm text-text">
+        <Link href="/masuk" className="transition-colors hover:text-accent">
           Masuk
         </Link>
-        <Link href="/daftar" className="hover:underline">
+        <Link
+          href="/daftar"
+          className="rounded-full bg-primary px-4 py-1.5 font-medium text-white transition-colors hover:bg-primary-dark"
+        >
           Daftar
         </Link>
       </div>
@@ -39,22 +42,25 @@ export function AuthNav() {
   }
 
   return (
-    <div className="flex shrink-0 gap-4 text-sm font-medium text-primary">
-      <Link href="/pasang-iklan" className="hover:underline">
-        Pasang Iklan
-      </Link>
-      <Link href="/iklan-saya" className="hover:underline">
+    <div className="flex shrink-0 items-center gap-4 text-sm text-text">
+      <Link href="/iklan-saya" className="hidden transition-colors hover:text-accent sm:inline">
         Iklan Saya
       </Link>
-      <Link href="/tersimpan" className="hover:underline">
+      <Link href="/tersimpan" className="hidden transition-colors hover:text-accent sm:inline">
         Tersimpan
       </Link>
-      <Link href="/akun" className="hover:underline">
+      <Link href="/akun" className="hidden transition-colors hover:text-accent sm:inline">
         Akun Saya
       </Link>
-      <button onClick={handleLogout} className="hover:underline">
+      <button onClick={handleLogout} className="hidden transition-colors hover:text-accent sm:inline">
         Keluar
       </button>
+      <Link
+        href="/pasang-iklan"
+        className="rounded-full bg-primary px-4 py-1.5 font-medium text-white transition-colors hover:bg-primary-dark"
+      >
+        Pasang Iklan
+      </Link>
     </div>
   );
 }

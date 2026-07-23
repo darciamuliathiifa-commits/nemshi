@@ -55,7 +55,7 @@ export default function KelolaPenggunaPage() {
   }
 
   return (
-    <div className="bg-white p-6 border border-black/10 sm:p-8">
+    <div className="rounded-3xl bg-white p-6 border border-black/10 sm:p-8">
       <h1 className="mb-2 text-2xl font-bold text-text">Kelola Pengguna</h1>
       <p className="mb-6 text-sm text-text-secondary">
         Lihat semua pengguna terdaftar dan verifikasi akun secara manual.
@@ -66,7 +66,7 @@ export default function KelolaPenggunaPage() {
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         placeholder="Cari nama atau email..."
-        className="mb-4 w-full max-w-sm border border-black/10 px-3 py-2 text-sm outline-none focus:border-accent"
+        className="mb-4 w-full max-w-sm rounded-lg border border-black/10 px-3 py-2 text-sm outline-none focus:border-accent focus:ring-4 focus:ring-accent/10"
       />
 
       {!users ? (
@@ -108,7 +108,7 @@ export default function KelolaPenggunaPage() {
                       <select
                         value={user.verificationStatus}
                         onChange={(e) => handleStatusChange(user.id, e.target.value)}
-                        className="border border-black/10 px-2 py-1 text-sm outline-none focus:border-accent"
+                        className="rounded-lg border border-black/10 px-2 py-1 text-sm outline-none focus:border-accent focus:ring-4 focus:ring-accent/10"
                       >
                         {STATUS_OPTIONS.map((status) => (
                           <option key={status} value={status}>
@@ -120,7 +120,7 @@ export default function KelolaPenggunaPage() {
                     <td className="px-4 py-3">
                       <button
                         onClick={() => toggleEmergencyContacts(user.id)}
-                        className="text-sm font-medium text-primary hover:underline"
+                        className="text-sm font-medium text-accent hover:underline"
                       >
                         {expandedUserId === user.id ? "Sembunyikan" : "Lihat"}
                       </button>

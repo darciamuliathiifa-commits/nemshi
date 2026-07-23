@@ -51,7 +51,7 @@ export default function AntreanModerasiPage() {
   }
 
   return (
-    <div className="bg-white p-6 border border-black/10 sm:p-8">
+    <div className="rounded-3xl bg-white p-6 border border-black/10 sm:p-8">
       <h1 className="mb-2 text-2xl font-bold text-text">Antrean Moderasi</h1>
       <p className="mb-6 text-sm text-text-secondary">
         Tinjau iklan dan permintaan jasa sebelum tayang ke publik.
@@ -89,14 +89,14 @@ export default function AntreanModerasiPage() {
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           {items.map((item) => (
-            <div key={item.id} className="bg-surface p-4">
+            <div key={item.id} className="rounded-2xl bg-surface p-4">
               <div className="mb-2 flex gap-3">
                 {item.coverPhotoUrl && (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
                     src={item.coverPhotoUrl}
                     alt=""
-                    className="h-16 w-20 shrink-0 object-cover"
+                    className="h-16 w-20 shrink-0 rounded-lg object-cover"
                   />
                 )}
                 <div>
@@ -117,19 +117,19 @@ export default function AntreanModerasiPage() {
                     onChange={(e) => setReason(e.target.value)}
                     placeholder="Alasan penolakan..."
                     rows={2}
-                    className="border border-black/10 px-3 py-2 text-sm outline-none focus:border-accent"
+                    className="rounded-lg border border-black/10 px-3 py-2 text-sm outline-none focus:border-accent focus:ring-4 focus:ring-accent/10"
                   />
                   <div className="flex gap-2">
                     <button
                       onClick={handleReject}
                       disabled={!reason.trim()}
-                      className="bg-red-600 px-3 py-1.5 text-sm font-semibold text-white disabled:opacity-60"
+                      className="rounded-full bg-red-600 px-3 py-1.5 text-sm font-semibold text-white disabled:opacity-60"
                     >
                       Simpan Penolakan
                     </button>
                     <button
                       onClick={() => setRejectingId(null)}
-                      className="border border-black/10 px-3 py-1.5 text-sm text-text-secondary"
+                      className="rounded-full border border-black/10 px-3 py-1.5 text-sm text-text-secondary"
                     >
                       Batal
                     </button>
@@ -139,13 +139,13 @@ export default function AntreanModerasiPage() {
                 <div className="flex gap-2">
                   <button
                     onClick={() => handleApprove(item.id)}
-                    className="bg-primary px-3 py-1.5 text-sm font-semibold text-white"
+                    className="rounded-full bg-primary px-3 py-1.5 text-sm font-semibold text-white"
                   >
                     Setuju
                   </button>
                   <button
                     onClick={() => setRejectingId(item.id)}
-                    className="border border-black/10 px-3 py-1.5 text-sm text-text-secondary"
+                    className="rounded-full border border-black/10 px-3 py-1.5 text-sm text-text-secondary"
                   >
                     Tolak
                   </button>

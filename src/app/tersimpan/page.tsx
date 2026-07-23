@@ -14,12 +14,12 @@ export default async function TersimpanPage() {
       <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-8">
         <Link
           href="/jelajahi"
-          className="mb-4 inline-flex items-center gap-1 text-sm font-medium text-text-secondary hover:text-primary"
+          className="mb-4 inline-flex items-center gap-1 text-sm font-medium text-text-secondary hover:text-accent"
         >
           ← Kembali ke Jelajahi Iklan Jasa
         </Link>
 
-        <section className="bg-white p-6 border border-black/10 sm:p-8">
+        <section className="rounded-3xl bg-white p-6 border border-black/10 sm:p-8">
           <h1 className="font-display text-2xl font-semibold text-text">Jasa Tersimpan</h1>
           <p className="mt-2 mb-6 text-text-secondary">
             Iklan yang kamu tandai untuk dihubungi lagi nanti.

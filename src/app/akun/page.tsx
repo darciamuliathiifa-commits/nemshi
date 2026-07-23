@@ -110,7 +110,7 @@ export default function AkunSayaPage() {
           </div>
         </header>
 
-      <section className="mb-6 border border-black/5 bg-white p-6">
+      <section className="rounded-3xl mb-6 border border-black/5 bg-white p-6">
         <h2 className="mb-4 font-semibold text-text">Data Diri</h2>
         <div className="flex flex-col gap-3">
           <label className="flex flex-col gap-1 text-sm text-text-secondary">
@@ -119,7 +119,7 @@ export default function AkunSayaPage() {
               type="text"
               value={form.fullName}
               onChange={(e) => setForm({ ...form, fullName: e.target.value })}
-              className="border border-black/10 px-3 py-2 text-text outline-none focus:border-accent"
+              className="rounded-lg border border-black/10 px-3 py-2 text-text outline-none focus:border-accent focus:ring-4 focus:ring-accent/10"
             />
           </label>
           <div className="flex flex-col gap-1 text-sm text-text-secondary">
@@ -141,7 +141,7 @@ export default function AkunSayaPage() {
               value={form.whatsappLink}
               onChange={(e) => setForm({ ...form, whatsappLink: e.target.value })}
               placeholder="https://wa.me/20XXXXXXXXXX"
-              className="border border-black/10 px-3 py-2 text-text outline-none focus:border-accent"
+              className="rounded-lg border border-black/10 px-3 py-2 text-text outline-none focus:border-accent focus:ring-4 focus:ring-accent/10"
             />
           </label>
           <label className="flex flex-col gap-1 text-sm text-text-secondary">
@@ -151,7 +151,7 @@ export default function AkunSayaPage() {
               value={form.phoneNumber}
               onChange={(e) => setForm({ ...form, phoneNumber: e.target.value })}
               placeholder="081234567890"
-              className="border border-black/10 px-3 py-2 text-text outline-none focus:border-accent"
+              className="rounded-lg border border-black/10 px-3 py-2 text-text outline-none focus:border-accent focus:ring-4 focus:ring-accent/10"
             />
             <span className="text-xs text-text-secondary">
               Wajib diisi sebelum checkout pembayaran (dipakai oleh payment gateway).
@@ -161,7 +161,7 @@ export default function AkunSayaPage() {
             <button
               onClick={handleSave}
               disabled={saving}
-              className="w-fit bg-primary px-5 py-2 text-sm font-semibold text-white disabled:opacity-60"
+              className="rounded-full w-fit bg-primary px-5 py-2 text-sm font-semibold text-white disabled:opacity-60"
             >
               {saving ? "Menyimpan..." : "Simpan Perubahan"}
             </button>
@@ -170,7 +170,7 @@ export default function AkunSayaPage() {
         </div>
       </section>
 
-      <section className="mb-6 border border-black/5 bg-white p-6">
+      <section className="rounded-3xl mb-6 border border-black/5 bg-white p-6">
         <h2 className="mb-4 font-semibold text-text">Sisa Kuota</h2>
         {activity.quotas.length === 0 ? (
           <p className="text-sm text-text-secondary">Belum ada kuota Paket Plus.</p>
@@ -194,7 +194,7 @@ export default function AkunSayaPage() {
         )}
       </section>
 
-      <section className="border border-black/5 bg-white p-6">
+      <section className="rounded-3xl border border-black/5 bg-white p-6">
         <h2 className="mb-4 font-semibold text-text">Riwayat Iklan & Permintaan</h2>
         {activity.listings.length === 0 ? (
           <p className="text-sm text-text-secondary">Belum ada iklan atau permintaan.</p>

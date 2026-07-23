@@ -25,7 +25,7 @@ export default async function IklanDetailPage({
       <div className="mx-auto max-w-5xl px-4 py-6 sm:px-6 lg:px-8">
         <Link
           href="/jelajahi"
-          className="mb-4 inline-flex items-center gap-1 text-sm font-medium text-text-secondary hover:text-primary"
+          className="mb-4 inline-flex items-center gap-1 text-sm font-medium text-text-secondary hover:text-accent"
         >
           ← Kembali ke Jelajahi Iklan Jasa
         </Link>

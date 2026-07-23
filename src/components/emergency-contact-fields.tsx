@@ -34,7 +34,7 @@ export function EmergencyContactFields({
       {contacts.map((contact, index) => (
         <div
           key={index}
-          className="flex flex-col gap-2 border border-black/10 p-3"
+          className="flex flex-col gap-2 rounded-xl border border-black/10 p-3"
         >
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-text-secondary">
@@ -56,7 +56,7 @@ export function EmergencyContactFields({
             placeholder="Nama lengkap kontak"
             value={contact.fullName}
             onChange={(e) => updateContact(index, "fullName", e.target.value)}
-            className="border border-black/10 px-3 py-2 text-sm text-text outline-none focus:border-accent"
+            className="rounded-lg border border-black/10 px-3 py-2 text-sm text-text outline-none focus:border-accent focus:ring-4 focus:ring-accent/10"
           />
           <input
             type="tel"
@@ -64,7 +64,7 @@ export function EmergencyContactFields({
             placeholder="Nomor telepon aktif"
             value={contact.phoneNumber}
             onChange={(e) => updateContact(index, "phoneNumber", e.target.value)}
-            className="border border-black/10 px-3 py-2 text-sm text-text outline-none focus:border-accent"
+            className="rounded-lg border border-black/10 px-3 py-2 text-sm text-text outline-none focus:border-accent focus:ring-4 focus:ring-accent/10"
           />
         </div>
       ))}
@@ -73,7 +73,7 @@ export function EmergencyContactFields({
         <button
           type="button"
           onClick={addContact}
-          className="w-fit text-sm font-medium text-primary hover:underline"
+          className="w-fit text-sm font-medium text-accent hover:underline"
         >
           + Tambah Kontak Cadangan
         </button>

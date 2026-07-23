@@ -65,7 +65,7 @@ export default function KategoriRefundPage() {
   }
 
   return (
-    <div className="bg-white p-6 border border-black/10 sm:p-8">
+    <div className="rounded-3xl bg-white p-6 border border-black/10 sm:p-8">
       <h1 className="mb-6 text-2xl font-bold text-text">Manajemen Kategori & Refund</h1>
 
       <section className="mb-8">
@@ -77,18 +77,18 @@ export default function KategoriRefundPage() {
             value={icon}
             onChange={(e) => setIcon(e.target.value)}
             placeholder="Ikon (emoji)"
-            className="w-24 border border-black/10 px-3 py-2 text-sm outline-none focus:border-accent"
+            className="w-24 rounded-lg border border-black/10 px-3 py-2 text-sm outline-none focus:border-accent focus:ring-4 focus:ring-accent/10"
           />
           <input
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Nama kategori baru"
-            className="flex-1 border border-black/10 px-3 py-2 text-sm outline-none focus:border-accent"
+            className="flex-1 rounded-lg border border-black/10 px-3 py-2 text-sm outline-none focus:border-accent focus:ring-4 focus:ring-accent/10"
           />
           <button
             type="submit"
-            className="bg-primary px-4 py-2 text-sm font-semibold text-white"
+            className="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-white"
           >
             Tambah
           </button>
@@ -118,7 +118,7 @@ export default function KategoriRefundPage() {
                   </span>
                   <button
                     onClick={() => handleToggleActive(category)}
-                    className="text-sm font-medium text-primary hover:underline"
+                    className="text-sm font-medium text-accent hover:underline"
                   >
                     {category.isActive ? "Nonaktifkan" : "Aktifkan"}
                   </button>
@@ -140,7 +140,7 @@ export default function KategoriRefundPage() {
             {refunds.map((refund) => (
               <li
                 key={refund.orderId}
-                className="bg-surface p-4"
+                className="rounded-2xl bg-surface p-4"
               >
                 <div className="mb-1 flex items-center justify-between">
                   <span className="font-medium text-text">{refund.listingTitle}</span>
@@ -154,7 +154,7 @@ export default function KategoriRefundPage() {
                 </p>
                 <button
                   onClick={() => handleConfirmRefund(refund.orderId)}
-                  className="bg-primary px-4 py-2 text-sm font-semibold text-white"
+                  className="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-white"
                 >
                   Konfirmasi Refund Selesai
                 </button>

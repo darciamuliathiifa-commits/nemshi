@@ -29,12 +29,12 @@ export default async function PublicProfilePage({
       <div className="mx-auto max-w-3xl px-4 py-6 sm:px-6 lg:px-8">
         <Link
           href="/jelajahi"
-          className="mb-4 inline-flex items-center gap-1 text-sm font-medium text-text-secondary hover:text-primary"
+          className="mb-4 inline-flex items-center gap-1 text-sm font-medium text-text-secondary hover:text-accent"
         >
           ← Kembali ke Jelajahi Iklan Jasa
         </Link>
 
-        <section className="bg-white p-6 border border-black/10 sm:p-8">
+        <section className="rounded-3xl bg-white p-6 border border-black/10 sm:p-8">
           <div className="flex items-center gap-4">
             <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-full bg-surface">
               {profile.avatarUrl ? (
@@ -56,7 +56,7 @@ export default async function PublicProfilePage({
                 href={profile.whatsappLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="ml-auto shrink-0 bg-primary px-5 py-2.5 text-sm font-semibold text-white transition-transform hover:scale-[1.02]"
+                className="rounded-full ml-auto shrink-0 bg-primary px-5 py-2.5 text-sm font-semibold text-white transition-transform hover:scale-[1.02]"
               >
                 Hubungi via WhatsApp
               </a>
@@ -71,7 +71,7 @@ export default async function PublicProfilePage({
                   <li key={listing.id}>
                     <Link
                       href={`/iklan/${listing.id}`}
-                      className="block bg-surface p-4 transition-colors hover:bg-surface-tint"
+                      className="block rounded-2xl bg-surface p-4 transition-colors hover:bg-surface-tint"
                     >
                       {listing.title}
                     </Link>
@@ -91,7 +91,7 @@ export default async function PublicProfilePage({
                   <li key={listing.id}>
                     <Link
                       href={`/iklan/${listing.id}`}
-                      className="block bg-surface p-4 transition-colors hover:bg-surface-tint"
+                      className="block rounded-2xl bg-surface p-4 transition-colors hover:bg-surface-tint"
                     >
                       {listing.title}
                     </Link>

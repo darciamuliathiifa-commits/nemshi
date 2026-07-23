@@ -41,7 +41,7 @@ function FeaturedListingsCarousel({
   if (listings.length === 0) return null;
 
   return (
-    <section className="mt-6 bg-white p-6 border border-black/10 sm:p-8">
+    <section className="rounded-3xl mt-6 bg-white p-6 border border-black/10 sm:p-8">
       <div className="flex items-center justify-between gap-4">
         <div>
           <p className="text-xs font-semibold uppercase tracking-wide text-primary">
@@ -77,7 +77,7 @@ function FeaturedListingsCarousel({
             <Link
               key={listing.id}
               href={`/iklan/${listing.id}`}
-              className="group relative flex w-64 shrink-0 snap-start flex-col overflow-hidden shadow-sm transition-shadow hover:shadow-lg sm:w-72"
+              className="group relative flex w-64 shrink-0 snap-start flex-col overflow-hidden rounded-2xl transition-shadow hover:shadow-sm sm:w-72"
             >
               <SaveButton listingId={listing.id} initialSaved={savedSet.has(listing.id)} />
               <div className={`flex flex-1 flex-col p-5 text-white ${tint}`}>
@@ -107,7 +107,7 @@ function FeaturedListingsCarousel({
                     Tidak ada foto
                   </div>
                 )}
-                <span className="absolute bottom-3 left-3 inline-flex items-center gap-1.5 bg-white px-3 py-1.5 text-xs font-semibold text-text shadow-sm">
+                <span className="absolute bottom-3 left-3 inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 text-xs font-semibold text-text shadow-sm">
                   Lihat Detail
                   <span aria-hidden className="transition-transform group-hover:translate-x-0.5">
                     →
@@ -124,7 +124,7 @@ function FeaturedListingsCarousel({
           <motion.span
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
-            className="inline-flex items-center gap-2 bg-primary px-6 py-3 text-sm font-semibold text-white"
+            className="rounded-full inline-flex items-center gap-2 bg-primary px-6 py-3 text-sm font-semibold text-white"
           >
             Lihat Semua Penawaran
             <span aria-hidden>→</span>
@@ -184,7 +184,7 @@ export function LandingPage({
     <div className="bg-surface-tint">
       <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-8">
         {/* Hero panel */}
-        <section className="overflow-hidden bg-white border border-black/10">
+        <section className="overflow-hidden rounded-3xl bg-white border border-black/10">
           <div className="grid gap-6 p-8 sm:p-10 lg:grid-cols-2 lg:items-center lg:gap-10 lg:p-14">
             <motion.div
               initial="hidden"
@@ -213,7 +213,7 @@ export function LandingPage({
                   <motion.span
                     whileHover={{ scale: 1.03 }}
                     whileTap={{ scale: 0.97 }}
-                    className="inline-flex items-center gap-2 bg-primary px-6 py-3 text-sm font-semibold text-white"
+                    className="rounded-full inline-flex items-center gap-2 bg-primary px-6 py-3 text-sm font-semibold text-white"
                   >
                     <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white/20 transition-transform group-hover:translate-x-0.5">
                       →
@@ -274,7 +274,7 @@ export function LandingPage({
               <Link href={card.href}>
                 <motion.div
                   whileHover={{ y: -4 }}
-                  className={`p-5 transition-shadow hover:shadow-lg ${card.className}`}
+                  className={`rounded-2xl p-5 transition-shadow hover:shadow-sm ${card.className}`}
                 >
                   <span className="text-2xl">{card.icon}</span>
                   <p className="mt-3 font-semibold">{card.title}</p>
@@ -294,7 +294,7 @@ export function LandingPage({
             initial="hidden"
             animate="show"
             variants={{ show: { transition: { staggerChildren: 0.06 } } }}
-            className="mt-6 bg-white p-6 border border-black/10 sm:p-8"
+            className="rounded-3xl mt-6 bg-white p-6 border border-black/10 sm:p-8"
           >
             <h2 className="font-display text-2xl font-semibold text-text">Kata Mereka</h2>
             <p className="mt-1 text-sm text-text-secondary">
@@ -305,7 +305,7 @@ export function LandingPage({
                 <motion.div
                   key={t.id}
                   variants={fadeUp}
-                  className="flex flex-col gap-3 bg-surface p-5"
+                  className="flex flex-col gap-3 rounded-2xl bg-surface p-5"
                 >
                   <div className="flex gap-0.5 text-accent">
                     {Array.from({ length: 5 }).map((_, i) => (
@@ -330,7 +330,7 @@ export function LandingPage({
           initial={{ opacity: 0, y: 18 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.4 }}
-          className="mt-6 overflow-hidden bg-text px-8 py-10 text-center text-white sm:px-12"
+          className="mt-6 overflow-hidden rounded-3xl bg-text px-8 py-10 text-center text-white sm:px-12"
         >
           <h2 className="font-display text-2xl font-semibold sm:text-3xl">
             Siap cari jasa terpercaya di Mesir?
@@ -342,7 +342,7 @@ export function LandingPage({
             <motion.span
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
-              className="inline-flex items-center gap-2 bg-white px-6 py-3 text-sm font-semibold text-text shadow-sm"
+              className="rounded-full inline-flex items-center gap-2 bg-white px-6 py-3 text-sm font-semibold text-text shadow-sm"
             >
               Mulai Jelajahi
             </motion.span>

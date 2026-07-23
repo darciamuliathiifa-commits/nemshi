@@ -13,7 +13,7 @@ export default function AkunDitangguhkanPage() {
         Jika menurutmu ini adalah kekeliruan, silakan hubungi admin Nemshi untuk mengajukan
         peninjauan ulang.
       </p>
-      <Link href="/" className="font-medium text-primary hover:underline">
+      <Link href="/" className="font-medium text-accent hover:underline">
         ← Kembali ke Beranda
       </Link>
     </main>

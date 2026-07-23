@@ -20,8 +20,8 @@ export function ListingCard({
 
   const body = (
     <div
-      className={`group flex h-full flex-col overflow-hidden border border-black/10 bg-white transition-all duration-200 ${
-        isClickable ? "hover:shadow-lg hover:shadow-black/10" : ""
+      className={`group flex h-full flex-col overflow-hidden rounded-2xl border border-black/10 bg-white transition-all duration-200 ${
+        isClickable ? "hover:shadow-sm" : ""
       } ${isExpired ? "opacity-60" : ""}`}
     >
       <div className="relative aspect-[4/3] w-full overflow-hidden bg-surface">
@@ -44,7 +44,7 @@ export function ListingCard({
           </span>
         ) : (
           listing.isPriority && (
-            <span className="absolute left-2 top-2 rounded bg-primary px-2 py-0.5 text-xs font-semibold text-white">
+            <span className="absolute left-2 top-2 rounded bg-accent px-2 py-0.5 text-xs font-semibold text-white">
               Prioritas
             </span>
           )

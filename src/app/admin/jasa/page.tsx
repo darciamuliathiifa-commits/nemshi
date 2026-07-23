@@ -89,7 +89,7 @@ export default function KelolaJasaPage() {
   }
 
   return (
-    <div className="bg-white p-6 border border-black/10 sm:p-8">
+    <div className="rounded-3xl bg-white p-6 border border-black/10 sm:p-8">
       <h1 className="mb-2 text-2xl font-bold text-text">Kelola Jasa</h1>
       <p className="mb-6 text-sm text-text-secondary">
         Tinjau semua iklan dan permintaan jasa; tangguhkan atau hapus yang melanggar.
@@ -101,12 +101,12 @@ export default function KelolaJasaPage() {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Cari judul..."
-          className="w-full max-w-sm border border-black/10 px-3 py-2 text-sm outline-none focus:border-accent"
+          className="w-full max-w-sm rounded-lg border border-black/10 px-3 py-2 text-sm outline-none focus:border-accent focus:ring-4 focus:ring-accent/10"
         />
         <select
           value={status}
           onChange={(e) => setStatus(e.target.value)}
-          className="border border-black/10 px-3 py-2 text-sm outline-none focus:border-accent"
+          className="rounded-lg border border-black/10 px-3 py-2 text-sm outline-none focus:border-accent focus:ring-4 focus:ring-accent/10"
         >
           <option value="">Semua Status</option>
           {STATUS_OPTIONS.filter(Boolean).map((s) => (
@@ -145,7 +145,7 @@ export default function KelolaJasaPage() {
                   <td className="px-4 py-3">
                     <button
                       onClick={() => openDetail(listing.id)}
-                      className="text-sm font-medium text-primary hover:underline"
+                      className="text-sm font-medium text-accent hover:underline"
                     >
                       Detail
                     </button>
@@ -169,7 +169,7 @@ export default function KelolaJasaPage() {
             <div className="my-3 flex gap-2 overflow-x-auto">
               {detail.photos.map((url) => (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img key={url} src={url} alt="" className="h-24 w-32 object-cover" />
+                <img key={url} src={url} alt="" className="h-24 w-32 rounded-lg object-cover" />
               ))}
             </div>
           )}
@@ -191,7 +191,7 @@ export default function KelolaJasaPage() {
               value={reason}
               onChange={(e) => setReason(e.target.value)}
               rows={2}
-              className="border border-black/10 px-3 py-2 text-text outline-none focus:border-accent"
+              className="rounded-lg border border-black/10 px-3 py-2 text-text outline-none focus:border-accent focus:ring-4 focus:ring-accent/10"
             />
           </label>
 
@@ -206,7 +206,7 @@ export default function KelolaJasaPage() {
             <button
               onClick={handleDelete}
               disabled={actionLoading}
-              className="bg-red-600 px-4 py-2 text-sm font-semibold text-white disabled:opacity-60"
+              className="rounded-full bg-red-600 px-4 py-2 text-sm font-semibold text-white disabled:opacity-60"
             >
               Hapus
             </button>

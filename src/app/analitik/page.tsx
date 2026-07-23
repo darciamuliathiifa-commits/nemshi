@@ -29,7 +29,7 @@ export default function AnalitikExposurePage() {
 
   return (
     <main className="mx-auto max-w-2xl px-4 py-8 sm:px-6 lg:px-8">
-      <Link href="/iklan-saya" className="mb-6 inline-block text-sm font-medium text-primary hover:underline">
+      <Link href="/iklan-saya" className="mb-6 inline-block text-sm font-medium text-accent hover:underline">
         ← Kembali ke Iklan Saya
       </Link>
 
@@ -43,14 +43,14 @@ export default function AnalitikExposurePage() {
       ) : analytics.length === 0 ? (
         <p className="text-text-secondary">
           Belum ada iklan aktif.{" "}
-          <Link href="/pasang-iklan" className="font-medium text-primary hover:underline">
+          <Link href="/pasang-iklan" className="font-medium text-accent hover:underline">
             Pasang iklan sekarang →
           </Link>
         </p>
       ) : (
         <ul className="flex flex-col gap-3">
           {analytics.map((item) => (
-            <li key={item.id} className="border border-black/5 bg-white p-4">
+            <li key={item.id} className="rounded-3xl border border-black/5 bg-white p-4">
               <Link
                 href={`/iklan/${item.id}`}
                 className="mb-3 block font-medium text-text hover:underline"

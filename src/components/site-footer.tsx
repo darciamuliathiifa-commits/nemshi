@@ -6,7 +6,7 @@ export function SiteFooter() {
       <div className="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-10 sm:flex-row sm:items-start sm:justify-between sm:px-6 lg:px-8">
         <div className="max-w-sm">
           <div className="flex items-center gap-2">
-            <span className="flex h-7 w-7 items-center justify-center bg-primary text-xs font-bold text-white">
+            <span className="flex h-7 w-7 items-center justify-center rounded-full bg-primary text-xs font-bold text-white">
               N
             </span>
             <span className="text-lg font-extrabold text-text">Nemshi</span>
@@ -21,22 +21,22 @@ export function SiteFooter() {
         <nav className="flex gap-8 text-sm">
           <div className="flex flex-col gap-2">
             <span className="font-semibold text-text">Jelajahi</span>
-            <Link href="/jelajahi" className="text-text-secondary hover:text-primary">
+            <Link href="/jelajahi" className="text-text-secondary hover:text-accent">
               Iklan Jasa
             </Link>
-            <Link href="/sayembara" className="text-text-secondary hover:text-primary">
+            <Link href="/sayembara" className="text-text-secondary hover:text-accent">
               Cari Jasa
             </Link>
-            <Link href="/kategori" className="text-text-secondary hover:text-primary">
+            <Link href="/kategori" className="text-text-secondary hover:text-accent">
               Kategori
             </Link>
           </div>
           <div className="flex flex-col gap-2">
             <span className="font-semibold text-text">Akun</span>
-            <Link href="/pasang-iklan" className="text-text-secondary hover:text-primary">
+            <Link href="/pasang-iklan" className="text-text-secondary hover:text-accent">
               Pasang Iklan
             </Link>
-            <Link href="/bayar" className="text-text-secondary hover:text-primary">
+            <Link href="/bayar" className="text-text-secondary hover:text-accent">
               Paket Plus
             </Link>
           </div>

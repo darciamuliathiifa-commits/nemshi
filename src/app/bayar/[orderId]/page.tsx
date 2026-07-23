@@ -69,7 +69,7 @@ export default function RingkasanPesananPage() {
     return (
       <div className="bg-surface-tint">
         <div className="mx-auto max-w-xl px-4 py-6 sm:px-6 lg:px-8">
-          <div className="bg-white p-8 text-center border border-black/10">
+          <div className="rounded-3xl bg-white p-8 text-center border border-black/10">
             <p className="text-text-secondary">Memuat pesanan...</p>
           </div>
         </div>
@@ -82,15 +82,15 @@ export default function RingkasanPesananPage() {
       <div className="mx-auto max-w-xl px-4 py-6 sm:px-6 lg:px-8">
         <Link
           href="/bayar"
-          className="mb-4 inline-flex items-center gap-1 text-sm font-medium text-text-secondary hover:text-primary"
+          className="mb-4 inline-flex items-center gap-1 text-sm font-medium text-text-secondary hover:text-accent"
         >
           ← Kembali ke Pilihan Produk
         </Link>
 
-        <section className="bg-white p-6 border border-black/10 sm:p-8">
+        <section className="rounded-3xl bg-white p-6 border border-black/10 sm:p-8">
           <h1 className="font-display text-2xl font-semibold text-text">Ringkasan Pesanan</h1>
 
-          <div className="mt-6 bg-surface p-5">
+          <div className="mt-6 rounded-2xl bg-surface p-5">
             <div className="mb-4 flex items-center justify-between">
               <span className="text-text-secondary">Produk</span>
               <span className="font-medium text-text">{PRODUCT_LABELS[order.productType]}</span>
@@ -132,7 +132,7 @@ export default function RingkasanPesananPage() {
               <button
                 onClick={handleBayar}
                 disabled={redirecting}
-                className="w-full bg-primary px-5 py-3 font-semibold text-white transition-transform hover:scale-[1.01] disabled:opacity-60"
+                className="rounded-full w-full bg-primary px-5 py-3 font-semibold text-white transition-transform hover:scale-[1.01] disabled:opacity-60"
               >
                 {redirecting ? "Mengarahkan ke Mayar..." : `Bayar ${formatRupiah(order.amount)}`}
               </button>
@@ -163,7 +163,7 @@ export default function RingkasanPesananPage() {
               {order.fundStatus === "Ditahan"
                 ? "Iklanmu berstatus Menunggu Moderasi — dana ditahan sampai admin menyetujui."
                 : "Lihat riwayat transaksi dan akunmu untuk detail lebih lanjut."}{" "}
-              <Link href="/akun/transaksi" className="font-medium text-primary hover:underline">
+              <Link href="/akun/transaksi" className="font-medium text-accent hover:underline">
                 Lihat Riwayat Transaksi →
               </Link>
             </p>

@@ -65,7 +65,7 @@ export function DaftarForm() {
             required
             value={fullName}
             onChange={(e) => setFullName(e.target.value)}
-            className="border border-black/10 px-3 py-2 text-text outline-none focus:border-accent"
+            className="rounded-lg border border-black/10 px-3 py-2 text-text outline-none focus:border-accent focus:ring-4 focus:ring-accent/10"
           />
         </label>
         <label className="flex flex-col gap-1 text-sm text-text-secondary">
@@ -75,7 +75,7 @@ export function DaftarForm() {
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="border border-black/10 px-3 py-2 text-text outline-none focus:border-accent"
+            className="rounded-lg border border-black/10 px-3 py-2 text-text outline-none focus:border-accent focus:ring-4 focus:ring-accent/10"
           />
         </label>
         <label className="flex flex-col gap-1 text-sm text-text-secondary">
@@ -86,14 +86,14 @@ export function DaftarForm() {
             minLength={6}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="border border-black/10 px-3 py-2 text-text outline-none focus:border-accent"
+            className="rounded-lg border border-black/10 px-3 py-2 text-text outline-none focus:border-accent focus:ring-4 focus:ring-accent/10"
           />
         </label>
 
         <div className="flex flex-col gap-1 text-sm text-text-secondary">
           Daftar sebagai
           <div className="flex gap-3">
-            <label className="flex items-center gap-2 border border-black/10 px-3 py-2">
+            <label className="flex items-center gap-2 rounded-xl border border-black/10 px-3 py-2">
               <input
                 type="radio"
                 name="role"
@@ -102,7 +102,7 @@ export function DaftarForm() {
               />
               Pelanggan
             </label>
-            <label className="flex items-center gap-2 border border-black/10 px-3 py-2">
+            <label className="flex items-center gap-2 rounded-xl border border-black/10 px-3 py-2">
               <input
                 type="radio"
                 name="role"
@@ -121,7 +121,7 @@ export function DaftarForm() {
         <button
           type="submit"
           disabled={submitting}
-          className="mt-2 bg-primary px-5 py-3 font-semibold text-white transition-colors hover:bg-primary-dark disabled:opacity-60"
+          className="rounded-full mt-2 bg-primary px-5 py-3 font-semibold text-white transition-colors hover:bg-primary-dark disabled:opacity-60"
         >
           {submitting ? "Mendaftar..." : "Daftar"}
         </button>
@@ -129,7 +129,7 @@ export function DaftarForm() {
 
       <p className="mt-5 text-center text-sm text-text-secondary">
         Sudah punya akun?{" "}
-        <Link href="/masuk" className="font-medium text-primary hover:underline">
+        <Link href="/masuk" className="font-medium text-accent hover:underline">
           Masuk di sini
         </Link>
       </p>
