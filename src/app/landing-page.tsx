@@ -41,7 +41,7 @@ function FeaturedListingsCarousel({
   if (listings.length === 0) return null;
 
   return (
-    <section className="rounded-3xl mt-6 bg-white p-6 border border-black/10 sm:p-8">
+    <section className="mt-10">
       <div className="flex items-center justify-between gap-4">
         <div>
           <p className="text-xs font-semibold uppercase tracking-wide text-primary">
@@ -280,7 +280,7 @@ export function LandingPage({
             initial="hidden"
             animate="show"
             variants={{ show: { transition: { staggerChildren: 0.06 } } }}
-            className="rounded-3xl mt-6 bg-white p-6 border border-black/10 sm:p-8"
+            className="mt-10"
           >
             <h2 className="font-display text-2xl font-semibold text-text">Kata Mereka</h2>
             <p className="mt-1 text-sm text-text-secondary">
@@ -316,7 +316,7 @@ export function LandingPage({
           initial={{ opacity: 0, y: 18 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.4 }}
-          className="mt-6 overflow-hidden rounded-3xl bg-text px-8 py-10 text-center text-white sm:px-12"
+          className="mt-10 overflow-hidden rounded-3xl bg-text px-8 py-10 text-center text-white sm:px-12"
         >
           <h2 className="font-display text-2xl font-semibold sm:text-3xl">
             Siap cari jasa terpercaya di Mesir?
