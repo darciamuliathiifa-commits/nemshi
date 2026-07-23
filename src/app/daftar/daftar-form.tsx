@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { EmergencyContactFields, type EmergencyContact } from "@/components/emergency-contact-fields";
-import { AuthShell } from "@/components/auth-shell";
+import { AuthBenefitsPanel } from "@/components/auth-benefits-panel";
 
 export function DaftarForm() {
   const router = useRouter();
@@ -56,8 +56,21 @@ export function DaftarForm() {
   }
 
   return (
-    <AuthShell title="Daftar Akun Nemshi" subtitle="Gratis, hanya butuh beberapa menit">
-      <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+    <main className="grid min-h-[calc(100vh-64px)] lg:grid-cols-2">
+      {/* Form */}
+      <div className="order-1 flex items-center justify-center px-6 py-12 lg:order-2">
+        <div className="w-full max-w-sm">
+          <div className="mb-6 flex flex-col items-center text-center">
+            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-lg font-bold text-white">
+              N
+            </span>
+            <h1 className="mt-3 text-xl font-bold text-text">Daftar Akun Nemshi</h1>
+            <p className="mt-1 text-sm text-text-secondary">
+              Gratis, hanya butuh beberapa menit.
+            </p>
+          </div>
+
+          <form onSubmit={handleSubmit} className="flex flex-col gap-3">
         <label className="flex flex-col gap-1 text-sm text-text-secondary">
           Nama Lengkap
           <input
@@ -120,21 +133,26 @@ export function DaftarForm() {
 
         {error && <p className="text-sm text-red-600">{error}</p>}
 
-        <button
-          type="submit"
-          disabled={submitting}
-          className="rounded-full mt-2 bg-primary px-5 py-3 font-semibold text-white transition-colors hover:bg-primary-dark disabled:opacity-60"
-        >
-          {submitting ? "Mendaftar..." : "Daftar"}
-        </button>
-      </form>
+            <button
+              type="submit"
+              disabled={submitting}
+              className="rounded-full mt-2 bg-primary px-5 py-3 font-semibold text-white transition-colors hover:bg-primary-dark disabled:opacity-60"
+            >
+              {submitting ? "Mendaftar..." : "Daftar"}
+            </button>
+          </form>
 
-      <p className="mt-5 text-center text-sm text-text-secondary">
-        Sudah punya akun?{" "}
-        <Link href="/masuk" className="font-medium text-accent hover:underline">
-          Masuk di sini
-        </Link>
-      </p>
-    </AuthShell>
+          <p className="mt-5 text-center text-sm text-text-secondary">
+            Sudah punya akun?{" "}
+            <Link href="/masuk" className="font-medium text-accent hover:underline">
+              Masuk di sini
+            </Link>
+          </p>
+        </div>
+      </div>
+
+      {/* Benefit panel */}
+      <AuthBenefitsPanel className="order-2 lg:order-1" />
+    </main>
   );
 }
