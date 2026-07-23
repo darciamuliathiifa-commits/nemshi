@@ -3,15 +3,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-function HomeIcon({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="1.8">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M4 11.5 12 4l8 7.5" />
-      <path strokeLinecap="round" strokeLinejoin="round" d="M6 9.5V20h12V9.5" />
-    </svg>
-  );
-}
-
 function SearchIcon({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="1.8">
@@ -63,7 +54,6 @@ function PlusIcon({ className }: { className?: string }) {
 }
 
 const NAV_ITEMS = [
-  { href: "/", label: "Beranda", icon: HomeIcon },
   { href: "/jelajahi", label: "Jelajahi Jasa", icon: SearchIcon },
   { href: "/sayembara", label: "Cari Jasa", icon: ClipboardIcon },
   { href: "/kategori", label: "Kategori", icon: GridIcon },

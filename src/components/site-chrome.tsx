@@ -3,17 +3,45 @@
 import { usePathname } from "next/navigation";
 import { AppSidebar } from "@/components/app-sidebar";
 import { AppTopbar } from "@/components/app-topbar";
+import { LandingHeader } from "@/components/landing-header";
 import { SiteFooter } from "@/components/site-footer";
 
-/** Admin punya app-shell sendiri (sidebar) — jangan tumpuk sidebar/topbar publik di atasnya. */
-export function SiteChrome({ children }: { children: React.ReactNode }) {
-  const pathname = usePathname();
-  const isAdmin = pathname?.startsWith("/admin");
+const AUTH_ROUTES = ["/masuk", "/daftar", "/lupa-password", "/reset-password"];
 
-  if (isAdmin) {
+/**
+ * Landing (`/`) dan halaman auth pakai header atas biasa tanpa sidebar —
+ * sidebar aplikasi baru muncul setelah user masuk ke halaman pencarian/
+ * penawaran jasa. Admin punya app-shell sendiri.
+ */
+export function SiteChrome({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname() ?? "";
+
+  if (pathname.startsWith("/admin")) {
     return <>{children}</>;
   }
 
+  // Halaman landing: header marketing biasa, tanpa sidebar.
+  if (pathname === "/") {
+    return (
+      <div className="flex min-h-screen flex-col">
+        <LandingHeader />
+        <div className="flex-1">{children}</div>
+        <SiteFooter />
+      </div>
+    );
+  }
+
+  // Halaman auth: header marketing, tanpa sidebar & footer (form fokus).
+  if (AUTH_ROUTES.includes(pathname)) {
+    return (
+      <div className="flex min-h-screen flex-col">
+        <LandingHeader />
+        <div className="flex-1">{children}</div>
+      </div>
+    );
+  }
+
+  // Halaman aplikasi (jelajahi, sayembara, akun, dll): sidebar + topbar.
   return (
     <div className="min-h-screen">
       <AppSidebar />
