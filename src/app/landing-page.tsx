@@ -120,7 +120,7 @@ function FeaturedListingsCarousel({
       </div>
 
       <div className="mt-6 flex justify-center">
-        <Link href="/jelajahi">
+        <Link href="/masuk?redirectTo=/jelajahi">
           <motion.span
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
@@ -211,7 +211,7 @@ export function LandingPage({
         </motion.p>
 
         <motion.div variants={fadeUp} className="mt-8 flex flex-wrap items-center justify-center gap-3">
-          <Link href="/jelajahi">
+          <Link href="/masuk?redirectTo=/jelajahi">
             <motion.span
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
@@ -324,7 +324,7 @@ export function LandingPage({
           <p className="mx-auto mt-3 max-w-md text-text-secondary">
             Jelajahi ratusan iklan jasa dari sesama Masisir, hubungi langsung via WhatsApp.
           </p>
-          <Link href="/jelajahi" className="mt-6 inline-block">
+          <Link href="/masuk?redirectTo=/jelajahi" className="mt-6 inline-block">
             <motion.span
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
