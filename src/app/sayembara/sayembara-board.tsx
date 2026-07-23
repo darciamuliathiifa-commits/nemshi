@@ -83,57 +83,57 @@ export function SayembaraBoard({
 
   return (
     <div className="bg-surface-tint">
-      <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-8">
-        {/* Promo banner */}
-        <section className="overflow-hidden rounded-3xl bg-accent text-white">
-          <div className="grid gap-6 p-8 sm:p-10 lg:grid-cols-[1.3fr_1fr] lg:items-center lg:gap-8 lg:p-12">
-            <div>
-              <span className="inline-block rounded bg-white/15 px-3 py-1 text-xs font-semibold tracking-wide">
-                Papan Permintaan
-              </span>
-              <h1 className="mt-4 font-display text-3xl font-semibold leading-[1.1] tracking-tight sm:text-4xl">
-                Belum nemu jasanya? <span className="italic">Pasang permintaanmu</span>
-              </h1>
-              <p className="mt-3 max-w-md text-white/80">
-                Sesama Masisir yang relevan akan menghubungimu langsung lewat WhatsApp — tanpa
-                perantara.
-              </p>
-              <div className="mt-6 flex flex-wrap gap-3">
-                <Link
-                  href="/sayembara/buat"
-                  className="rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-accent transition-transform hover:scale-[1.02]"
-                >
-                  Buat Sayembara
-                </Link>
-                <Link
-                  href="/sayembara/saya"
-                  className="rounded-full border border-white/30 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-white/10"
-                >
-                  Sayembara Saya
-                </Link>
-              </div>
+      {/* Promo banner — full-bleed, not confined to the max-w container below */}
+      <section className="w-full bg-accent text-white">
+        <div className="mx-auto grid max-w-6xl gap-6 px-4 py-10 sm:px-6 sm:py-12 lg:grid-cols-[1.3fr_1fr] lg:items-center lg:gap-8 lg:px-8 lg:py-16">
+          <div>
+            <span className="inline-block rounded bg-white/15 px-3 py-1 text-xs font-semibold tracking-wide">
+              Papan Permintaan
+            </span>
+            <h1 className="mt-4 font-display text-3xl font-semibold leading-[1.1] tracking-tight sm:text-4xl">
+              Belum nemu jasanya? <span className="italic">Pasang permintaanmu</span>
+            </h1>
+            <p className="mt-3 max-w-md text-white/80">
+              Sesama Masisir yang relevan akan menghubungimu langsung lewat WhatsApp — tanpa
+              perantara.
+            </p>
+            <div className="mt-6 flex flex-wrap gap-3">
               <Link
-                href="/jelajahi"
-                className="mt-4 inline-block text-sm font-medium text-white/80 hover:text-white"
+                href="/sayembara/buat"
+                className="rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-accent transition-transform hover:scale-[1.02]"
               >
-                ← Jelajahi Iklan Jasa
+                Buat Sayembara
+              </Link>
+              <Link
+                href="/sayembara/saya"
+                className="rounded-full border border-white/30 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-white/10"
+              >
+                Sayembara Saya
               </Link>
             </div>
-
-            <div className="relative mx-auto hidden w-full max-w-xs sm:block">
-              <Image
-                src="/hero-illustration.png"
-                alt="Ilustrasi papan permintaan jasa Nemshi"
-                width={600}
-                height={450}
-                className="w-full"
-              />
-            </div>
+            <Link
+              href="/jelajahi"
+              className="mt-4 inline-block text-sm font-medium text-white/80 hover:text-white"
+            >
+              ← Jelajahi Iklan Jasa
+            </Link>
           </div>
-        </section>
 
+          <div className="relative mx-auto hidden w-full max-w-xs sm:block">
+            <Image
+              src="/hero-illustration.png"
+              alt="Ilustrasi papan permintaan jasa Nemshi"
+              width={600}
+              height={450}
+              className="w-full"
+            />
+          </div>
+        </div>
+      </section>
+
+      <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-8">
         {/* Catalog panel */}
-        <section className="rounded-3xl mt-6 bg-white p-6 border border-black/10 sm:p-8">
+        <section className="rounded-3xl bg-white p-6 border border-black/10 sm:p-8">
           <h2 className="font-display text-2xl font-semibold text-text">Semua Permintaan</h2>
 
           <div className="mt-4 flex flex-col gap-3 rounded-2xl bg-surface p-4 sm:flex-row sm:items-center">
