@@ -182,72 +182,72 @@ export function LandingPage({
 
   return (
     <div className="bg-surface-tint">
-      <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-8">
-        {/* Hero */}
-        <motion.section
-          initial="hidden"
-          animate="show"
-          variants={{ show: { transition: { staggerChildren: 0.08 } } }}
-          className="flex flex-col items-center px-4 pb-12 pt-16 text-center sm:pt-24"
+      {/* Hero — full-bleed, not confined to the max-w container below */}
+      <motion.section
+        initial="hidden"
+        animate="show"
+        variants={{ show: { transition: { staggerChildren: 0.08 } } }}
+        className="flex w-full flex-col items-center px-4 pb-12 pt-16 text-center sm:pt-24"
+      >
+        <motion.div variants={fadeUp} className="relative h-20 w-20">
+          <span className="absolute inset-0 translate-x-1.5 translate-y-1.5 rotate-6 rounded-2xl bg-primary/10" />
+          <span className="absolute inset-0 -translate-x-1.5 translate-y-2.5 -rotate-6 rounded-2xl bg-primary/10" />
+          <span className="relative flex h-20 w-20 items-center justify-center rounded-2xl bg-primary text-2xl font-bold text-white">
+            N
+          </span>
+        </motion.div>
+
+        <motion.h1
+          variants={fadeUp}
+          className="mt-8 max-w-3xl font-display text-5xl font-bold leading-[1.05] tracking-tight text-text sm:text-6xl lg:text-7xl"
         >
-          <motion.div variants={fadeUp} className="relative h-20 w-20">
-            <span className="absolute inset-0 translate-x-1.5 translate-y-1.5 rotate-6 rounded-2xl bg-primary/10" />
-            <span className="absolute inset-0 -translate-x-1.5 translate-y-2.5 -rotate-6 rounded-2xl bg-primary/10" />
-            <span className="relative flex h-20 w-20 items-center justify-center rounded-2xl bg-primary text-2xl font-bold text-white">
-              N
-            </span>
-          </motion.div>
+          Kami hubungkan kamu dengan{" "}
+          <span className="italic text-accent">jasa terpercaya</span>.
+        </motion.h1>
 
-          <motion.h1
-            variants={fadeUp}
-            className="mt-8 max-w-3xl font-display text-5xl font-bold leading-[1.05] tracking-tight text-text sm:text-6xl lg:text-7xl"
-          >
-            Kami hubungkan kamu dengan{" "}
-            <span className="italic text-accent">jasa terpercaya</span>.
-          </motion.h1>
+        <motion.p variants={fadeUp} className="mt-6 max-w-xl text-lg text-text-secondary">
+          Direktori iklan jasa untuk Mahasiswa Indonesia di Mesir — temukan penyedia jasa dan
+          hubungi langsung via WhatsApp, tanpa perantara.
+        </motion.p>
 
-          <motion.p variants={fadeUp} className="mt-6 max-w-xl text-lg text-text-secondary">
-            Direktori iklan jasa untuk Mahasiswa Indonesia di Mesir — temukan penyedia jasa dan
-            hubungi langsung via WhatsApp, tanpa perantara.
-          </motion.p>
+        <motion.div variants={fadeUp} className="mt-8 flex flex-wrap items-center justify-center gap-3">
+          <Link href="/jelajahi">
+            <motion.span
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+              className="inline-block rounded-full bg-primary px-6 py-3 text-sm font-semibold text-white"
+            >
+              Mulai Jelajahi
+            </motion.span>
+          </Link>
+          <Link href="/sayembara">
+            <motion.span
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+              className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white px-6 py-3 text-sm font-semibold text-text"
+            >
+              Cari Jasa
+              <span aria-hidden>→</span>
+            </motion.span>
+          </Link>
+        </motion.div>
 
-          <motion.div variants={fadeUp} className="mt-8 flex flex-wrap items-center justify-center gap-3">
-            <Link href="/jelajahi">
-              <motion.span
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}
-                className="inline-block rounded-full bg-primary px-6 py-3 text-sm font-semibold text-white"
-              >
-                Mulai Jelajahi
-              </motion.span>
-            </Link>
-            <Link href="/sayembara">
-              <motion.span
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}
-                className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white px-6 py-3 text-sm font-semibold text-text"
-              >
-                Cari Jasa
-                <span aria-hidden>→</span>
-              </motion.span>
-            </Link>
-          </motion.div>
+        <motion.div variants={fadeUp} className="mt-16 flex flex-col items-center gap-4">
+          <p className="text-xs font-semibold uppercase tracking-wide text-text-secondary">
+            Dipercaya Masisir di seluruh Mesir
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-3">
+            {stats.map((stat) => (
+              <div key={stat.label}>
+                <span className="font-display text-2xl font-bold text-text">{stat.value}</span>{" "}
+                <span className="text-sm text-text-secondary">{stat.label}</span>
+              </div>
+            ))}
+          </div>
+        </motion.div>
+      </motion.section>
 
-          <motion.div variants={fadeUp} className="mt-16 flex flex-col items-center gap-4">
-            <p className="text-xs font-semibold uppercase tracking-wide text-text-secondary">
-              Dipercaya Masisir di seluruh Mesir
-            </p>
-            <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-3">
-              {stats.map((stat) => (
-                <div key={stat.label}>
-                  <span className="font-display text-2xl font-bold text-text">{stat.value}</span>{" "}
-                  <span className="text-sm text-text-secondary">{stat.label}</span>
-                </div>
-              ))}
-            </div>
-          </motion.div>
-        </motion.section>
-
+      <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-8">
         {/* Quick actions */}
         <motion.section
           initial="hidden"
