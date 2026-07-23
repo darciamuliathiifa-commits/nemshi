@@ -86,10 +86,9 @@ export function JelajahiCatalog({
 
   return (
     <div className="bg-surface-tint">
-      <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-8">
-        {/* Promo banner */}
-        <section className="overflow-hidden rounded-3xl bg-primary text-white">
-          <div className="grid gap-6 p-8 sm:p-10 lg:grid-cols-[1.3fr_1fr] lg:items-center lg:gap-8 lg:p-12">
+      {/* Promo banner — full-bleed, not confined to the max-w container below */}
+      <section className="w-full bg-primary text-white">
+        <div className="mx-auto grid max-w-6xl gap-6 px-4 py-10 sm:px-6 sm:py-12 lg:grid-cols-[1.3fr_1fr] lg:items-center lg:gap-8 lg:px-8 lg:py-16">
             <motion.div
               initial="hidden"
               animate="show"
@@ -143,10 +142,10 @@ export function JelajahiCatalog({
               />
             </motion.div>
           </div>
-        </section>
+      </section>
 
-        {/* Catalog panel */}
-        <section className="rounded-3xl mt-6 bg-white p-6 border border-black/10 sm:p-8">
+      {/* Catalog panel — full-bleed, no boxed card */}
+      <div className="px-4 py-8 sm:px-6 sm:py-10 lg:px-8">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <h2 className="font-display text-2xl font-semibold text-text">Semua Iklan</h2>
             <div className="flex flex-1 flex-col gap-2 sm:max-w-lg sm:flex-row">
@@ -268,7 +267,6 @@ export function JelajahiCatalog({
               </motion.div>
             )}
           </div>
-        </section>
       </div>
     </div>
   );

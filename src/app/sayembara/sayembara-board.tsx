@@ -131,10 +131,9 @@ export function SayembaraBoard({
         </div>
       </section>
 
-      <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-8">
-        {/* Catalog panel */}
-        <section className="rounded-3xl bg-white p-6 border border-black/10 sm:p-8">
-          <h2 className="font-display text-2xl font-semibold text-text">Semua Permintaan</h2>
+      {/* Catalog panel — full-bleed, no boxed card */}
+      <div className="px-4 py-8 sm:px-6 sm:py-10 lg:px-8">
+        <h2 className="font-display text-2xl font-semibold text-text">Semua Permintaan</h2>
 
           <div className="mt-4 flex flex-col gap-3 rounded-2xl bg-surface p-4 sm:flex-row sm:items-center">
             <input
@@ -254,7 +253,6 @@ export function SayembaraBoard({
               </motion.div>
             )}
           </div>
-        </section>
       </div>
     </div>
   );
