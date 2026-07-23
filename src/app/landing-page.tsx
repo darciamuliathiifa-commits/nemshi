@@ -247,7 +247,7 @@ export function LandingPage({
         </motion.div>
       </motion.section>
 
-      <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
         {/* Quick actions */}
         <motion.section
           initial="hidden"
@@ -311,24 +311,24 @@ export function LandingPage({
           </motion.section>
         )}
 
-        {/* Final CTA */}
+        {/* Final CTA — teks tengah tanpa kotak */}
         <motion.section
           initial={{ opacity: 0, y: 18 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.4 }}
-          className="mt-10 overflow-hidden rounded-3xl bg-text px-8 py-10 text-center text-white sm:px-12"
+          className="mt-20 px-4 pb-8 text-center"
         >
-          <h2 className="font-display text-2xl font-semibold sm:text-3xl">
+          <h2 className="font-display text-3xl font-semibold text-text sm:text-4xl">
             Siap cari jasa terpercaya di Mesir?
           </h2>
-          <p className="mx-auto mt-2 max-w-md text-white/70">
+          <p className="mx-auto mt-3 max-w-md text-text-secondary">
             Jelajahi ratusan iklan jasa dari sesama Masisir, hubungi langsung via WhatsApp.
           </p>
           <Link href="/jelajahi" className="mt-6 inline-block">
             <motion.span
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
-              className="rounded-full inline-flex items-center gap-2 bg-white px-6 py-3 text-sm font-semibold text-text"
+              className="rounded-full inline-flex items-center gap-2 bg-primary px-6 py-3 text-sm font-semibold text-white"
             >
               Mulai Jelajahi
             </motion.span>
