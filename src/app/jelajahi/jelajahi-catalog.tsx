@@ -59,7 +59,7 @@ export function JelajahiCatalog({
   const areas = initialAreas;
   const savedSet = useMemo(() => new Set(savedListingIds), [savedListingIds]);
 
-  const [keyword, setKeyword] = useState("");
+  const [keyword, setKeyword] = useState(searchParams.get("q") ?? "");
   const [categorySlug, setCategorySlug] = useState(searchParams.get("category") ?? "");
   const [areaSlug, setAreaSlug] = useState(searchParams.get("area") ?? "");
   const [sortBy, setSortBy] = useState<SortBy>("terbaru");
