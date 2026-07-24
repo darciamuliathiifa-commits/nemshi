@@ -112,6 +112,7 @@ export default async function AdDetailPage({
     scope: row.scope,
     estimatedDuration: row.estimated_duration,
     whatsappNumber: row.whatsapp_number ?? profile?.whatsapp_number ?? "",
+    sellerId: row.owner_id,
     sellerName: profile?.name ?? "Pengguna Nemshi",
     sellerJoinedYear: profile
       ? new Date(profile.created_at).getFullYear()
@@ -238,7 +239,7 @@ export default async function AdDetailPage({
                 Pengiklan
               </p>
               <Link
-                href={`/profil/${encodeURIComponent(ad.sellerName)}`}
+                href={`/profil/${ad.sellerId}`}
                 className="mt-3 flex items-center gap-3 rounded-input p-2 -m-2 transition-colors hover:bg-surface"
               >
                 <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border-2 border-ink bg-cream text-ink">
