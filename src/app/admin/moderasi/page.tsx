@@ -9,6 +9,7 @@ interface ModerationItem {
   kind: AdKind;
   category: AdCategory;
   submittedBy: string | null;
+  flagReason: string | null;
   createdAt: string;
 }
 
@@ -122,6 +123,11 @@ export default function AdminModerasiPage() {
                             year: "numeric",
                           })}
                         </p>
+                        {item.flagReason && (
+                          <p className="mt-1 text-[12px] font-normal text-error">
+                            Terdeteksi: {item.flagReason}
+                          </p>
+                        )}
                       </div>
 
                       {isPending ? (

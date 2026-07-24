@@ -4,7 +4,14 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 const DEFAULT_LIMIT = 20;
 const MAX_LIMIT = 50;
 
-const VALID_STATUSES = ["Aktif", "Terjual", "Selesai", "Kedaluwarsa", "Ditutup"];
+const VALID_STATUSES = [
+  "Aktif",
+  "Terjual",
+  "Selesai",
+  "Kedaluwarsa",
+  "Ditutup",
+  "Menunggu Validasi",
+];
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);

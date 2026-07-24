@@ -23,8 +23,11 @@ export default function PasangSayembaraPage() {
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState<AdCategory | "">("");
   const [location, setLocation] = useState("");
+  const [priceLabel, setPriceLabel] = useState("");
+  const [waNego, setWaNego] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const canSubmit =
     title.trim() !== "" &&
@@ -34,9 +37,36 @@ export default function PasangSayembaraPage() {
 
   async function handleSubmit() {
     setSubmitting(true);
-    await new Promise((resolve) => setTimeout(resolve, 600));
-    setSubmitting(false);
-    setSubmitted(true);
+    setSubmitError(null);
+
+    try {
+      const res = await fetch("/api/sayembara", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title,
+          description,
+          category,
+          location,
+          priceLabel: priceLabel.trim() || undefined,
+          waNego,
+        }),
+      });
+
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        throw new Error(data.error ?? "Gagal memasang sayembara.");
+      }
+
+      setSubmitted(true);
+    } catch (err) {
+      setSubmitError(
+        err instanceof Error ? err.message : "Gagal memasang sayembara.",
+      );
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   if (submitted) {
@@ -125,6 +155,41 @@ export default function PasangSayembaraPage() {
             </div>
 
             <div>
+              <label className={labelClass} htmlFor="priceLabel">
+                Harga (opsional)
+              </label>
+              <input
+                id="priceLabel"
+                className={`mt-1 ${inputClass}`}
+                placeholder="Contoh: Rp 100.000 atau Nego"
+                value={priceLabel}
+                onChange={(event) => setPriceLabel(event.target.value)}
+              />
+            </div>
+
+            <label
+              htmlFor="waNego"
+              className="flex cursor-pointer items-center justify-between gap-3 rounded-input border border-border-subtle px-4 py-3"
+            >
+              <div>
+                <p className="text-[14px] font-bold text-charcoal">
+                  Nego pembayaran via WA
+                </p>
+                <p className="mt-0.5 text-[12px] font-normal text-muted-foreground">
+                  Biarkan calon penyedia jasa tahu harga masih bisa dinego lewat
+                  WhatsApp.
+                </p>
+              </div>
+              <input
+                id="waNego"
+                type="checkbox"
+                checked={waNego}
+                onChange={(event) => setWaNego(event.target.checked)}
+                className="h-5 w-5 shrink-0 accent-charcoal"
+              />
+            </label>
+
+            <div>
               <p className={labelClass}>Kategori</p>
               <div className="mt-2 flex flex-wrap gap-2">
                 {categoryOptions.map((option) => {
@@ -148,6 +213,12 @@ export default function PasangSayembaraPage() {
               </div>
             </div>
           </form>
+
+          {submitError && (
+            <div className="mt-4 rounded-card border border-error/40 bg-error/5 px-4 py-3">
+              <p className="text-[14px] font-normal text-error">{submitError}</p>
+            </div>
+          )}
 
           <button
             type="button"

@@ -18,14 +18,33 @@ export function RegisterForm({
   const [contact, setContact] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const canSubmit = name.trim() !== "" && contact.trim() !== "";
 
   async function handleSubmit() {
     setSubmitting(true);
-    await new Promise((resolve) => setTimeout(resolve, 600));
-    setSubmitting(false);
-    setSubmitted(true);
+    setSubmitError(null);
+
+    try {
+      const res = await fetch(`/api/sayembara/${sayembaraId}/applicants`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, contact }),
+      });
+
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        throw new Error(data.error ?? "Gagal mendaftar.");
+      }
+
+      setSubmitted(true);
+    } catch (err) {
+      setSubmitError(err instanceof Error ? err.message : "Gagal mendaftar.");
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   if (submitted) {
@@ -87,6 +106,10 @@ export function RegisterForm({
           />
         </div>
       </form>
+
+      {submitError && (
+        <p className="mt-3 text-[14px] font-normal text-error">{submitError}</p>
+      )}
 
       <button
         type="button"

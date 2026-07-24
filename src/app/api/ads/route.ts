@@ -1,5 +1,8 @@
 import { NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { AD_CATEGORIES } from "@/lib/types";
+import { evaluateAdSubmission } from "@/lib/server/ad-filter";
+import { consumeAdSlot, getQuota, hasAdSlotAvailable } from "@/lib/server/quota-store";
 
 const DEFAULT_LIMIT = 12;
 const MAX_LIMIT = 50;
@@ -141,4 +144,153 @@ export async function GET(request: Request) {
       totalPages: Math.max(1, Math.ceil(total / limit)),
     },
   });
+}
+
+interface CreateAdBody {
+  kind?: string;
+  title?: string;
+  description?: string;
+  category?: string;
+  location?: string;
+  priceLabel?: string;
+  condition?: string;
+  deliveryMethod?: string;
+  scope?: string;
+  estimatedDuration?: string;
+  photos?: string[];
+}
+
+export async function POST(request: Request) {
+  let body: CreateAdBody;
+  try {
+    body = await request.json();
+  } catch {
+    return NextResponse.json({ error: "Body tidak valid." }, { status: 400 });
+  }
+
+  const kind = body.kind === "produk" || body.kind === "jasa" ? body.kind : null;
+  const title = body.title?.trim();
+  const description = body.description?.trim();
+  const location = body.location?.trim();
+  const priceLabel = body.priceLabel?.trim();
+
+  if (!kind) {
+    return NextResponse.json({ error: "Tipe iklan tidak valid." }, { status: 400 });
+  }
+  if (!title) {
+    return NextResponse.json({ error: "Judul wajib diisi." }, { status: 400 });
+  }
+  if (!description) {
+    return NextResponse.json({ error: "Deskripsi wajib diisi." }, { status: 400 });
+  }
+  if (!location) {
+    return NextResponse.json({ error: "Lokasi wajib diisi." }, { status: 400 });
+  }
+  if (!priceLabel) {
+    return NextResponse.json({ error: "Harga wajib diisi." }, { status: 400 });
+  }
+  if (!body.category || !AD_CATEGORIES.includes(body.category as (typeof AD_CATEGORIES)[number])) {
+    return NextResponse.json(
+      { error: `Kategori harus salah satu dari: ${AD_CATEGORIES.join(", ")}.` },
+      { status: 400 },
+    );
+  }
+
+  const condition = body.condition?.trim();
+  const deliveryMethod = body.deliveryMethod?.trim();
+  const scope = body.scope?.trim();
+  const estimatedDuration = body.estimatedDuration?.trim();
+
+  if (kind === "produk") {
+    if (condition !== "Baru" && condition !== "Bekas") {
+      return NextResponse.json({ error: "Kondisi wajib diisi untuk produk." }, { status: 400 });
+    }
+    if (!deliveryMethod) {
+      return NextResponse.json(
+        { error: "Metode penyerahan wajib diisi untuk produk." },
+        { status: 400 },
+      );
+    }
+  } else {
+    if (!scope) {
+      return NextResponse.json(
+        { error: "Cakupan layanan wajib diisi untuk jasa." },
+        { status: 400 },
+      );
+    }
+    if (!estimatedDuration) {
+      return NextResponse.json(
+        { error: "Estimasi pengerjaan wajib diisi untuk jasa." },
+        { status: 400 },
+      );
+    }
+  }
+
+  const supabase = await createSupabaseServerClient();
+  if (!supabase) {
+    return NextResponse.json(
+      { error: "Supabase belum dikonfigurasi." },
+      { status: 500 },
+    );
+  }
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return NextResponse.json({ error: "Belum masuk akun." }, { status: 401 });
+  }
+
+  const quota = await getQuota(supabase, user.id);
+  if (!hasAdSlotAvailable(quota)) {
+    return NextResponse.json(
+      {
+        error:
+          "Slot iklan gratis sudah terpakai. Upgrade ke Paket Plus untuk menambah slot.",
+      },
+      { status: 402 },
+    );
+  }
+
+  const { flagged, reasons } = evaluateAdSubmission({ title, description, priceLabel });
+  const status = flagged ? "Menunggu Validasi" : "Aktif";
+
+  const { data: ad, error } = await supabase
+    .from("ads")
+    .insert({
+      owner_id: user.id,
+      kind,
+      title,
+      description,
+      category: body.category,
+      price_label: priceLabel,
+      location,
+      status,
+      condition: kind === "produk" ? condition : null,
+      delivery_method: kind === "produk" ? deliveryMethod : null,
+      scope: kind === "jasa" ? scope : null,
+      estimated_duration: kind === "jasa" ? estimatedDuration : null,
+      flag_reason: flagged ? reasons.join("; ") : null,
+    })
+    .select("id, status")
+    .single();
+
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+
+  const photos = Array.isArray(body.photos)
+    ? body.photos.filter((url): url is string => typeof url === "string" && url.length > 0)
+    : [];
+
+  if (photos.length > 0) {
+    await supabase.from("ad_photos").insert(
+      photos.map((url, index) => ({ ad_id: ad.id, url, position: index })),
+    );
+  }
+
+  await consumeAdSlot(supabase, user.id, quota);
+
+  return NextResponse.json({ id: ad.id, status: ad.status }, { status: 201 });
 }

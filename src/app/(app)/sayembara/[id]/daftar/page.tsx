@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Header } from "@/components/layout/header";
 import { RegisterForm } from "@/components/sayembara/register-form";
-import { getSayembaraById } from "@/lib/mock-sayembara";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export default async function DaftarSayembaraPage({
   params,
@@ -10,9 +10,19 @@ export default async function DaftarSayembaraPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const item = getSayembaraById(id);
 
-  if (!item) {
+  const supabase = await createSupabaseServerClient();
+  if (!supabase) {
+    notFound();
+  }
+
+  const { data } = await supabase
+    .from("sayembara")
+    .select("id, title")
+    .eq("id", id)
+    .maybeSingle();
+
+  if (!data) {
     notFound();
   }
 
@@ -22,7 +32,7 @@ export default async function DaftarSayembaraPage({
 
       <main className="flex-1 px-6 py-8">
         <Link
-          href={`/sayembara/${item.id}`}
+          href={`/sayembara/${data.id}`}
           className="mb-6 inline-flex items-center text-[14px] font-bold text-cta hover:text-highlight"
         >
           ← Kembali ke Detail Sayembara
@@ -38,7 +48,7 @@ export default async function DaftarSayembaraPage({
           </p>
 
           <div className="mt-6">
-            <RegisterForm sayembaraId={item.id} sayembaraTitle={item.title} />
+            <RegisterForm sayembaraId={data.id} sayembaraTitle={data.title} />
           </div>
         </div>
       </main>

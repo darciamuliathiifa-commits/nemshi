@@ -8,6 +8,7 @@ interface AdminAdRow {
   kind: "produk" | "jasa";
   category: string;
   status: string;
+  flag_reason: string | null;
   created_at: string;
   profiles: { name: string } | { name: string }[] | null;
 }
@@ -37,7 +38,7 @@ export async function GET(request: Request) {
 
   const { data, error } = await supabase
     .from("ads")
-    .select(`id, title, kind, category, status, created_at, profiles ( name )`)
+    .select(`id, title, kind, category, status, flag_reason, created_at, profiles ( name )`)
     .eq("status", status)
     .order("created_at", { ascending: true });
 
@@ -55,6 +56,7 @@ export async function GET(request: Request) {
       kind: row.kind,
       category: row.category,
       status: row.status,
+      flagReason: row.flag_reason,
       createdAt: row.created_at,
       submittedBy: profile?.name ?? null,
     };

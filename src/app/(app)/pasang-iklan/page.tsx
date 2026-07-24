@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Header } from "@/components/layout/header";
 import { PhotoUploader } from "@/components/forms/photo-uploader";
 import { uploadPhotos, type UploadedPhoto } from "@/lib/upload";
@@ -30,7 +31,30 @@ const categoryOptions: AdCategory[] = [
 ];
 
 const conditionOptions: AdCondition[] = ["Baru", "Bekas"];
-const deliveryOptions = ["COD", "Antar Jemput", "Lainnya"];
+const deliveryOptions = ["Via WA", "COD", "Pickup Sendiri"];
+
+const locationOptions = [
+  "Online",
+  "Hay Asyir",
+  "Hay Sabi",
+  "Tabbah",
+  "Darrasah",
+  "Hay Tsamin",
+  "Saqr Quraisy",
+  "Zahraa",
+  "Buust",
+  "Gamaliyah",
+  "Tahrir",
+];
+const CUSTOM_LOCATION_VALUE = "__lainnya__";
+
+type CurrencyCode = "IDR" | "EGP" | "USD";
+
+const currencyOptions: { value: CurrencyCode; label: string; prefix: string }[] = [
+  { value: "IDR", label: "Rupiah", prefix: "Rp " },
+  { value: "EGP", label: "EGP", prefix: "EGP " },
+  { value: "USD", label: "Dollar USD", prefix: "$" },
+];
 
 const inputClass =
   "h-11 w-full rounded-input border border-border bg-white px-4 text-[14px] text-charcoal placeholder:text-muted focus:border-cta focus:outline-none focus:ring-3 focus:ring-cta/10";
@@ -40,7 +64,9 @@ interface FormState {
   title: string;
   description: string;
   location: string;
-  price: string;
+  customLocation: string;
+  priceAmount: string;
+  currency: CurrencyCode;
   condition: AdCondition | "";
   deliveryMethod: string;
   scope: string;
@@ -52,7 +78,9 @@ const initialForm: FormState = {
   title: "",
   description: "",
   location: "",
-  price: "",
+  customLocation: "",
+  priceAmount: "",
+  currency: "IDR",
   condition: "",
   deliveryMethod: "",
   scope: "",
@@ -61,25 +89,79 @@ const initialForm: FormState = {
 };
 
 export default function PasangIklanPage() {
+  const router = useRouter();
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [published, setPublished] = useState(false);
-  const [publishedPhotoUrls, setPublishedPhotoUrls] = useState<string[]>([]);
+  const [publishedStatus, setPublishedStatus] = useState<string | null>(null);
+  const [publishing, setPublishing] = useState(false);
+  const [publishError, setPublishError] = useState<string | null>(null);
   const [selectedKind, setSelectedKind] = useState<AdKind | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<AdCategory | null>(null);
   const [form, setForm] = useState<FormState>(initialForm);
 
   const canContinueStep1 = selectedKind !== null && selectedCategory !== null;
 
+  const resolvedLocation =
+    form.location === CUSTOM_LOCATION_VALUE ? form.customLocation.trim() : form.location;
+
   const canContinueStep2 =
     form.title.trim() !== "" &&
     form.description.trim() !== "" &&
-    form.location.trim() !== "" &&
+    resolvedLocation !== "" &&
     (selectedKind === "produk"
-      ? form.price.trim() !== "" && form.condition !== "" && form.deliveryMethod !== ""
-      : form.price.trim() !== "" && form.scope.trim() !== "" && form.estimatedDuration.trim() !== "");
+      ? form.priceAmount.trim() !== "" && form.condition !== "" && form.deliveryMethod !== ""
+      : form.priceAmount.trim() !== "" && form.scope.trim() !== "" && form.estimatedDuration.trim() !== "");
 
   function updateForm<K extends keyof FormState>(key: K, value: FormState[K]) {
     setForm((prev) => ({ ...prev, [key]: value }));
+  }
+
+  const currencyPrefix = currencyOptions.find((option) => option.value === form.currency)?.prefix ?? "";
+  const priceLabel = form.priceAmount.trim() ? `${currencyPrefix}${form.priceAmount.trim()}` : "";
+
+  async function handlePublish() {
+    if (!selectedKind || !selectedCategory) return;
+
+    setPublishing(true);
+    setPublishError(null);
+
+    try {
+      const photoUrls = await uploadPhotos(form.photos);
+
+      const res = await fetch("/api/ads", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          kind: selectedKind,
+          title: form.title,
+          description: form.description,
+          category: selectedCategory,
+          location: resolvedLocation,
+          priceLabel,
+          condition: selectedKind === "produk" ? form.condition : undefined,
+          deliveryMethod: selectedKind === "produk" ? form.deliveryMethod : undefined,
+          scope: selectedKind === "jasa" ? form.scope : undefined,
+          estimatedDuration: selectedKind === "jasa" ? form.estimatedDuration : undefined,
+          photos: photoUrls,
+        }),
+      });
+
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        throw new Error(data.error ?? "Gagal mempublikasikan iklan.");
+      }
+
+      setPublishedStatus(data.status ?? "Aktif");
+      setPublished(true);
+      router.refresh();
+    } catch (err) {
+      setPublishError(
+        err instanceof Error ? err.message : "Gagal mempublikasikan iklan.",
+      );
+    } finally {
+      setPublishing(false);
+    }
   }
 
   return (
@@ -225,30 +307,63 @@ export default function PasangIklanPage() {
                   <label className={labelClass} htmlFor="location">
                     Lokasi
                   </label>
-                  <input
+                  <select
                     id="location"
                     className={`mt-1 ${inputClass}`}
-                    placeholder="Contoh: Nasr City, Kairo"
                     value={form.location}
                     onChange={(event) => updateForm("location", event.target.value)}
-                  />
+                  >
+                    <option value="" disabled>
+                      Pilih lokasi
+                    </option>
+                    {locationOptions.map((option) => (
+                      <option key={option} value={option}>
+                        {option}
+                      </option>
+                    ))}
+                    <option value={CUSTOM_LOCATION_VALUE}>Lainnya (isi manual)</option>
+                  </select>
+                  {form.location === CUSTOM_LOCATION_VALUE && (
+                    <input
+                      className={`mt-2 ${inputClass}`}
+                      placeholder="Tulis lokasi kamu"
+                      value={form.customLocation}
+                      onChange={(event) => updateForm("customLocation", event.target.value)}
+                    />
+                  )}
+                </div>
+
+                <div>
+                  <label className={labelClass} htmlFor="price">
+                    {selectedKind === "produk" ? "Harga" : "Harga Awal / Estimasi Biaya"}
+                  </label>
+                  <div className="mt-1 flex gap-2">
+                    <select
+                      aria-label="Mata uang"
+                      className="h-11 w-32 shrink-0 rounded-input border border-border bg-white px-3 text-[14px] text-charcoal focus:border-cta focus:outline-none focus:ring-3 focus:ring-cta/10"
+                      value={form.currency}
+                      onChange={(event) =>
+                        updateForm("currency", event.target.value as CurrencyCode)
+                      }
+                    >
+                      {currencyOptions.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                    <input
+                      id="price"
+                      className={inputClass}
+                      placeholder={selectedKind === "produk" ? "350.000" : "Mulai 75.000"}
+                      value={form.priceAmount}
+                      onChange={(event) => updateForm("priceAmount", event.target.value)}
+                    />
+                  </div>
                 </div>
 
                 {selectedKind === "produk" ? (
                   <>
-                    <div>
-                      <label className={labelClass} htmlFor="price">
-                        Harga (EGP/Rp)
-                      </label>
-                      <input
-                        id="price"
-                        className={`mt-1 ${inputClass}`}
-                        placeholder="Contoh: Rp 350.000"
-                        value={form.price}
-                        onChange={(event) => updateForm("price", event.target.value)}
-                      />
-                    </div>
-
                     <div>
                       <p className={labelClass}>Kondisi</p>
                       <div className="mt-2 flex gap-2">
@@ -303,19 +418,6 @@ export default function PasangIklanPage() {
                   </>
                 ) : (
                   <>
-                    <div>
-                      <label className={labelClass} htmlFor="price">
-                        Harga Awal / Estimasi Biaya
-                      </label>
-                      <input
-                        id="price"
-                        className={`mt-1 ${inputClass}`}
-                        placeholder="Contoh: Mulai Rp 75.000"
-                        value={form.price}
-                        onChange={(event) => updateForm("price", event.target.value)}
-                      />
-                    </div>
-
                     <div>
                       <label className={labelClass} htmlFor="scope">
                         Cakupan Layanan
@@ -394,9 +496,9 @@ export default function PasangIklanPage() {
                 <h3 className="mt-4 text-xl font-normal leading-[26px] text-charcoal">
                   {form.title}
                 </h3>
-                <p className="mt-1 text-base font-bold text-cta">{form.price}</p>
+                <p className="mt-1 text-base font-bold text-cta">{priceLabel}</p>
                 <p className="mt-3 text-[14px] font-normal text-muted-foreground">
-                  {form.location}
+                  {resolvedLocation}
                 </p>
 
                 <div className="mt-4 grid grid-cols-1 gap-3 border-t border-border-subtle pt-4 sm:grid-cols-2">
@@ -453,29 +555,35 @@ export default function PasangIklanPage() {
 
               <div className="mt-4 rounded-card border border-border-subtle bg-surface/50 px-4 py-3">
                 <p className="text-[14px] font-normal text-charcoal">
-                  Iklan ini akan menggunakan slot posting gratis pertamamu. Iklan akan
-                  tayang setelah divalidasi oleh admin.
+                  Iklan ini akan menggunakan slot posting gratis pertamamu. Iklan
+                  akan langsung tayang setelah dipublikasikan, kecuali sistem
+                  mendeteksi hal yang mencurigakan — dalam kasus itu iklan akan
+                  ditinjau otomatis oleh admin dulu.
                 </p>
               </div>
+
+              {publishError && (
+                <div className="mt-4 rounded-card border border-error/40 bg-error/5 px-4 py-3">
+                  <p className="text-[14px] font-normal text-error">{publishError}</p>
+                </div>
+              )}
 
               <div className="mt-6 flex gap-3">
                 <button
                   type="button"
                   onClick={() => setStep(2)}
-                  className="h-11 flex-1 rounded-pill border border-border-strong text-base font-bold text-charcoal transition-colors hover:bg-surface"
+                  disabled={publishing}
+                  className="h-11 flex-1 rounded-pill border border-border-strong text-base font-bold text-charcoal transition-colors hover:bg-surface disabled:opacity-60"
                 >
                   Edit
                 </button>
                 <button
                   type="button"
-                  onClick={async () => {
-                    const urls = await uploadPhotos(form.photos);
-                    setPublishedPhotoUrls(urls);
-                    setPublished(true);
-                  }}
-                  className="h-11 flex-1 rounded-pill bg-charcoal text-base font-bold text-white transition-colors hover:bg-black"
+                  disabled={publishing}
+                  onClick={handlePublish}
+                  className="h-11 flex-1 rounded-pill bg-charcoal text-base font-bold text-white transition-colors hover:bg-black disabled:opacity-60"
                 >
-                  Publikasikan
+                  {publishing ? "Mempublikasikan..." : "Publikasikan"}
                 </button>
               </div>
             </>
@@ -487,17 +595,13 @@ export default function PasangIklanPage() {
                 ✓
               </span>
               <h2 className="mt-4 text-xl font-bold text-charcoal">
-                Iklan Berhasil Dikirim
+                Iklan Berhasil Dipublikasikan
               </h2>
               <p className="mt-2 max-w-sm text-[14px] font-normal text-muted-foreground">
-                Iklanmu sedang menunggu validasi admin sebelum tayang di halaman
-                Eksplor. Kamu bisa memantau statusnya di Iklan Saya.
+                {publishedStatus === "Menunggu Validasi"
+                  ? "Iklanmu sedang ditinjau otomatis sebelum tayang di halaman Eksplor. Kamu bisa memantau statusnya di Iklan Saya."
+                  : "Iklanmu sudah tayang di halaman Eksplor sekarang."}
               </p>
-              {publishedPhotoUrls.length > 0 && (
-                <p className="mt-2 text-[12px] text-muted-foreground">
-                  {publishedPhotoUrls.length} foto berhasil diunggah.
-                </p>
-              )}
 
               <div className="mt-6 flex w-full max-w-xs gap-3">
                 <Link

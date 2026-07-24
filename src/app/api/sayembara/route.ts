@@ -7,6 +7,8 @@ interface CreateSayembaraBody {
   description?: string;
   category?: string;
   location?: string;
+  priceLabel?: string;
+  waNego?: boolean;
 }
 
 interface SayembaraRow {
@@ -15,12 +17,19 @@ interface SayembaraRow {
   description: string;
   category: string;
   location: string | null;
+  price_label: string | null;
+  wa_nego: boolean;
   status: string;
   created_at: string;
   profiles: { name: string } | { name: string }[] | null;
 }
 
-export async function GET() {
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const category = searchParams.get("category");
+  const excludeId = searchParams.get("excludeId");
+  const limit = Math.min(50, Math.max(1, Number(searchParams.get("limit")) || 100));
+
   const supabase = await createSupabaseServerClient();
   if (!supabase) {
     return NextResponse.json(
@@ -29,13 +38,23 @@ export async function GET() {
     );
   }
 
-  const { data, error } = await supabase
+  let query = supabase
     .from("sayembara")
     .select(
-      `id, title, description, category, location, status, created_at,
+      `id, title, description, category, location, price_label, wa_nego, status, created_at,
        profiles ( name )`,
     )
-    .order("created_at", { ascending: false });
+    .order("created_at", { ascending: false })
+    .limit(limit);
+
+  if (category) {
+    query = query.eq("category", category);
+  }
+  if (excludeId) {
+    query = query.neq("id", excludeId);
+  }
+
+  const { data, error } = await query;
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
@@ -67,6 +86,8 @@ export async function GET() {
       description: row.description,
       category: row.category,
       location: row.location,
+      priceLabel: row.price_label,
+      waNego: row.wa_nego,
       status: row.status,
       createdAt: row.created_at,
       ownerName: profile?.name ?? null,
@@ -121,6 +142,9 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Belum masuk akun." }, { status: 401 });
   }
 
+  const priceLabel = body.priceLabel?.trim() || null;
+  const waNego = body.waNego === true;
+
   const { data, error } = await supabase
     .from("sayembara")
     .insert({
@@ -129,8 +153,12 @@ export async function POST(request: Request) {
       description,
       category: body.category,
       location,
+      price_label: priceLabel,
+      wa_nego: waNego,
     })
-    .select("id, title, description, category, location, status, created_at")
+    .select(
+      "id, title, description, category, location, price_label, wa_nego, status, created_at",
+    )
     .single();
 
   if (error) {
@@ -144,6 +172,8 @@ export async function POST(request: Request) {
       description: data.description,
       category: data.category,
       location: data.location,
+      priceLabel: data.price_label,
+      waNego: data.wa_nego,
       status: data.status,
       createdAt: data.created_at,
     },

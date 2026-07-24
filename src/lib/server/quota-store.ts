@@ -113,3 +113,28 @@ export async function activatePlusPlan(
 
   return rowToQuota(data as UserQuotaRow);
 }
+
+export function hasAdSlotAvailable(quota: UserQuota): boolean {
+  return !quota.freeAdSlotUsed || quota.extraAdSlots > 0;
+}
+
+export async function consumeAdSlot(
+  supabase: SupabaseClient,
+  userId: string,
+  quota: UserQuota,
+): Promise<void> {
+  await supabase.from("user_quotas").upsert(
+    {
+      user_id: userId,
+      free_ad_slot_used: true,
+      free_sayembara_slot_used: quota.freeSayembaraSlotUsed,
+      extra_ad_slots: quota.freeAdSlotUsed
+        ? Math.max(0, quota.extraAdSlots - 1)
+        : quota.extraAdSlots,
+      extra_sayembara_slots: quota.extraSayembaraSlots,
+      plan: quota.plan,
+      plan_expires_at: quota.planExpiresAt,
+    },
+    { onConflict: "user_id" },
+  );
+}
