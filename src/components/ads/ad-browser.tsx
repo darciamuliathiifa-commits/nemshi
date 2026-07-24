@@ -1,11 +1,18 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Link from "next/link";
 import type { Ad, AdCategory } from "@/lib/types";
 import { AdCard } from "@/components/ads/ad-card";
 import { FeaturedCarousel } from "@/components/ads/featured-carousel";
 import { Header } from "@/components/layout/header";
-import { ChevronDownIcon, GridIcon, MapPinIcon } from "@/components/icons";
+import {
+  ChevronDownIcon,
+  ChevronRightIcon,
+  GridIcon,
+  MapPinIcon,
+  MegaphoneIcon,
+} from "@/components/icons";
 
 const categories: AdCategory[] = [
   "Pendidikan",
@@ -93,6 +100,30 @@ export function AdBrowser({ title, ads }: { title: string; ads: Ad[] }) {
 
       <main className="flex-1 px-6 py-8">
         <FeaturedCarousel ads={featuredAds} />
+
+        <Link
+          href="/sayembara"
+          className="mb-8 flex flex-col items-start justify-between gap-4 rounded-card border-[2.5px] border-ink bg-white p-6 shadow-[3px_3px_0_0_rgba(20,20,20,1)] transition-transform hover:-translate-y-1 sm:flex-row sm:items-center"
+        >
+          <div className="flex items-center gap-4">
+            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand text-charcoal">
+              <MegaphoneIcon width={22} height={22} />
+            </span>
+            <div>
+              <h3 className="text-base font-bold text-charcoal">
+                Butuh bantuan tapi belum nemu jasanya?
+              </h3>
+              <p className="mt-0.5 text-[14px] font-normal text-muted-foreground">
+                Pasang Sayembara, biarkan komunitas Masisir yang menawarkan
+                bantuan ke kamu.
+              </p>
+            </div>
+          </div>
+          <span className="flex h-10 shrink-0 items-center gap-1.5 rounded-pill bg-charcoal px-5 text-[14px] font-bold text-white">
+            Lihat Sayembara
+            <ChevronRightIcon width={16} height={16} />
+          </span>
+        </Link>
 
         <div className="mb-6">
           <h2 className="text-xl font-bold text-charcoal">Iklan Terbaru</h2>
