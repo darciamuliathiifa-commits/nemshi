@@ -34,28 +34,19 @@ const features = [
 export default function LandingPage() {
   return (
     <div className="flex h-screen flex-col overflow-hidden bg-white">
-      <div className="relative overflow-hidden bg-brand bg-dot-pattern pb-8 sm:pb-12">
+      <div className="relative overflow-hidden bg-brand bg-dot-pattern pb-10 sm:pb-16">
         <PublicNav />
 
         <div className="flex flex-col items-center px-6 pb-4 pt-4 text-center">
           <div className="relative flex w-full max-w-2xl items-center justify-center">
-            <div className="pointer-events-none absolute -left-4 top-1/2 hidden -translate-y-1/2 select-none sm:-left-8 sm:block lg:-left-16">
-              <Image
-                src="/flag-indonesia.png"
-                alt=""
-                width={1161}
-                height={787}
-                aria-hidden
-                className="absolute -top-6 left-1/2 w-9 -translate-x-1/2 -rotate-6 animate-[float-c_5s_ease-in-out_infinite] sm:-top-7 sm:w-10 lg:-top-8 lg:w-12"
-              />
-              <Image
-                src="/nemsy-char-1-v3.png"
-                alt=""
-                width={1090}
-                height={1317}
-                className="w-[86px] animate-[float-a_6s_ease-in-out_infinite] sm:w-[100px] lg:w-[120px]"
-              />
-            </div>
+            <Image
+              src="/nemsy-char-1-v3.png"
+              alt=""
+              width={1090}
+              height={1317}
+              aria-hidden
+              className="pointer-events-none absolute -left-2 top-1/2 w-14 -translate-y-1/2 animate-[float-a_6s_ease-in-out_infinite] select-none sm:-left-8 sm:w-[100px] lg:-left-16 lg:w-[120px]"
+            />
 
             <Image
               src="/nemsy-logo-fix.png"
@@ -66,23 +57,14 @@ export default function LandingPage() {
               className="h-auto w-full max-w-md sm:max-w-lg"
             />
 
-            <div className="pointer-events-none absolute -right-4 top-1/2 hidden -translate-y-1/2 select-none sm:-right-8 sm:block lg:-right-14">
-              <Image
-                src="/flag-mesir.png"
-                alt=""
-                width={1161}
-                height={787}
-                aria-hidden
-                className="absolute -top-6 left-1/2 w-9 -translate-x-1/2 rotate-6 animate-[float-d_5.5s_ease-in-out_infinite] sm:-top-7 sm:w-10 lg:-top-8 lg:w-11"
-              />
-              <Image
-                src="/nemsy-char-2-v3.png"
-                alt=""
-                width={939}
-                height={1209}
-                className="w-[78px] animate-[float-b_7s_ease-in-out_infinite] sm:w-[90px] lg:w-[108px]"
-              />
-            </div>
+            <Image
+              src="/nemsy-char-2-v3.png"
+              alt=""
+              width={939}
+              height={1209}
+              aria-hidden
+              className="pointer-events-none absolute -right-2 top-1/2 w-12 -translate-y-1/2 animate-[float-b_7s_ease-in-out_infinite] select-none sm:-right-8 sm:w-[90px] lg:-right-14 lg:w-[108px]"
+            />
           </div>
 
           <p className="mt-4 max-w-xl text-base font-normal leading-6 text-charcoal/70">
@@ -97,17 +79,17 @@ export default function LandingPage() {
         </div>
 
         <svg
-          className="pointer-events-none absolute bottom-0 left-0 h-8 w-full sm:h-12"
-          viewBox="0 0 1440 120"
+          className="pointer-events-none absolute bottom-0 left-0 h-14 w-full sm:h-24"
+          viewBox="0 0 1440 140"
           preserveAspectRatio="none"
           fill="white"
           aria-hidden="true"
         >
-          <path d="M0,40 Q720,110 1440,40 L1440,120 L0,120 Z" />
+          <path d="M0,30 Q720,150 1440,30 L1440,140 L0,140 Z" />
         </svg>
       </div>
 
-      <div className="flex flex-1 items-center justify-center overflow-hidden px-6">
+      <div className="flex flex-1 flex-col items-center justify-center gap-4 overflow-hidden px-6 pb-2">
         <div className="grid w-full max-w-4xl grid-cols-2 gap-3 sm:grid-cols-4">
           {features.map((feature) => (
             <div
@@ -126,6 +108,10 @@ export default function LandingPage() {
             </div>
           ))}
         </div>
+
+        <p className="text-[12px] font-normal text-charcoal/40">
+          Product by Dar Dev
+        </p>
       </div>
     </div>
   );
