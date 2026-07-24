@@ -4,7 +4,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen bg-cream">
       <TopNav />
-      <div className="w-full">{children}</div>
+      <div className="mx-auto w-full max-w-[1800px]">{children}</div>
     </div>
   );
 }

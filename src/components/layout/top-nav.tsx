@@ -31,7 +31,7 @@ export function TopNav() {
       <TickerBar />
 
       <div className="px-6 py-3">
-        <div className="flex w-full items-center justify-between gap-3 rounded-pill bg-white/95 px-4 py-2.5 shadow-sm backdrop-blur">
+        <div className="mx-auto flex w-full max-w-[1800px] items-center justify-between gap-3 rounded-pill bg-white/95 px-4 py-2.5 shadow-sm backdrop-blur">
           <Link href="/jelajahi" className="shrink-0 text-lg font-bold tracking-tight text-charcoal">
             Nemshi
           </Link>
