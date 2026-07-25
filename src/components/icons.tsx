@@ -212,3 +212,48 @@ export function MapPinIcon(props: IconProps) {
     </svg>
   );
 }
+
+export function BookIcon(props: IconProps) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5v-15Z" />
+      <path d="M4 20.5A2.5 2.5 0 0 1 6.5 18H20" />
+    </svg>
+  );
+}
+
+export function UtensilsIcon(props: IconProps) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M6 2v8M4 2v5a2 2 0 0 0 4 0V2M6 10v12" />
+      <path d="M17 2c-1.7 0-3 2-3 5s1.3 5 3 5v10" />
+    </svg>
+  );
+}
+
+export function SparklesIcon(props: IconProps) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M12 3v4M12 17v4M4 12h4M16 12h4" />
+      <path d="m6 6 2.5 2.5M15.5 15.5 18 18M18 6l-2.5 2.5M8.5 15.5 6 18" />
+    </svg>
+  );
+}
+
+export function BoxIcon(props: IconProps) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M3.5 7.5 12 3l8.5 4.5V16.5L12 21l-8.5-4.5Z" />
+      <path d="M3.5 7.5 12 12l8.5-4.5M12 12v9" />
+    </svg>
+  );
+}
+
+export function TagIcon(props: IconProps) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M11 3H4v7l10 10 7-7L11 3Z" />
+      <circle cx="8" cy="7" r="1.2" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}

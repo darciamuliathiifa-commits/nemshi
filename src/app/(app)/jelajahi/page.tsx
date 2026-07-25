@@ -91,5 +91,5 @@ export default async function EksplorPage() {
     });
   }
 
-  return <AdBrowser title="Eksplor Iklan" ads={ads} />;
+  return <AdBrowser ads={ads} />;
 }
