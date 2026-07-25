@@ -134,3 +134,28 @@ export async function consumeAdSlot(
     { onConflict: "user_id" },
   );
 }
+
+export function hasSayembaraSlotAvailable(quota: UserQuota): boolean {
+  return !quota.freeSayembaraSlotUsed || quota.extraSayembaraSlots > 0;
+}
+
+export async function consumeSayembaraSlot(
+  supabase: SupabaseClient,
+  userId: string,
+  quota: UserQuota,
+): Promise<void> {
+  await supabase.from("user_quotas").upsert(
+    {
+      user_id: userId,
+      free_ad_slot_used: quota.freeAdSlotUsed,
+      free_sayembara_slot_used: true,
+      extra_ad_slots: quota.extraAdSlots,
+      extra_sayembara_slots: quota.freeSayembaraSlotUsed
+        ? Math.max(0, quota.extraSayembaraSlots - 1)
+        : quota.extraSayembaraSlots,
+      plan: quota.plan,
+      plan_expires_at: quota.planExpiresAt,
+    },
+    { onConflict: "user_id" },
+  );
+}

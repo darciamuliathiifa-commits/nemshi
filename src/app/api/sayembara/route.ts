@@ -1,6 +1,12 @@
 import { NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { AD_CATEGORIES } from "@/lib/types";
+import {
+  consumeSayembaraSlot,
+  getQuota,
+  hasSayembaraSlotAvailable,
+} from "@/lib/server/quota-store";
 
 interface CreateSayembaraBody {
   title?: string;
@@ -142,6 +148,17 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Belum masuk akun." }, { status: 401 });
   }
 
+  const quota = await getQuota(supabase, user.id);
+  if (!hasSayembaraSlotAvailable(quota)) {
+    return NextResponse.json(
+      {
+        error:
+          "Slot sayembara gratis sudah terpakai. Upgrade ke Paket Plus untuk menambah slot.",
+      },
+      { status: 402 },
+    );
+  }
+
   const priceLabel = body.priceLabel?.trim() || null;
   const waNego = body.waNego === true;
 
@@ -163,6 +180,11 @@ export async function POST(request: Request) {
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+
+  const adminClient = createSupabaseAdminClient();
+  if (adminClient) {
+    await consumeSayembaraSlot(adminClient, user.id, quota);
   }
 
   return NextResponse.json(
