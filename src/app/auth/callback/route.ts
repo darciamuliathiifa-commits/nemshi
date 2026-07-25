@@ -20,6 +20,7 @@ export async function GET(request: Request) {
             data.user.user_metadata?.name ??
             data.user.email ??
             "Pengguna Nemshi",
+          email: data.user.email,
         });
 
         return NextResponse.redirect(`${origin}${next}`);

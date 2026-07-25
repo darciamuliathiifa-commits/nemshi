@@ -53,19 +53,27 @@ export async function POST(request: Request) {
       { status: 400 },
     );
   }
-  if (!profile?.email) {
+
+  // profiles.email is backfilled on login (see auth/callback/route.ts), but
+  // existing sessions from before that fix won't have it yet — fall back to
+  // the verified session email so they aren't blocked until they relogin.
+  const email = profile?.email || user.email;
+  if (!email) {
     return NextResponse.json(
       { error: "Email akun kamu tidak ditemukan." },
       { status: 400 },
     );
   }
 
-  // Keep the profile in sync so the user doesn't have to re-enter it next time.
-  if (body.mobile?.trim() && body.mobile.trim() !== profile.whatsapp_number) {
-    await supabase
-      .from("profiles")
-      .update({ whatsapp_number: body.mobile.trim() })
-      .eq("id", user.id);
+  const updates: Record<string, string> = {};
+  if (body.mobile?.trim() && body.mobile.trim() !== profile?.whatsapp_number) {
+    updates.whatsapp_number = body.mobile.trim();
+  }
+  if (!profile?.email && user.email) {
+    updates.email = user.email;
+  }
+  if (Object.keys(updates).length > 0) {
+    await supabase.from("profiles").update(updates).eq("id", user.id);
   }
 
   const appUrl = process.env.NEXT_PUBLIC_APP_URL || new URL(request.url).origin;
@@ -75,8 +83,8 @@ export async function POST(request: Request) {
   let invoice;
   try {
     invoice = await createMayarInvoice({
-      name: profile.name,
-      email: profile.email,
+      name: profile?.name ?? "Pengguna Nemshi",
+      email,
       mobile,
       redirectUrl: `${appUrl}/paket-plus?status=return`,
       description: "Paket Plus Nemshi",
