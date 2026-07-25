@@ -5,6 +5,7 @@ import Link from "next/link";
 import type { Ad } from "@/lib/types";
 import { BookmarkIcon, MapPinIcon } from "@/components/icons";
 import { useSavedAds } from "@/lib/saved-ads-store";
+import { ShareButton } from "@/components/ads/share-button";
 
 const categoryAccent: Record<Ad["category"], string> = {
   Pendidikan: "from-blue-100 to-blue-50",
@@ -35,24 +36,27 @@ export const AdCard = memo(function AdCard({ ad }: { ad: Ad }) {
           className={`flex h-20 items-start justify-end bg-gradient-to-br px-2.5 py-2 sm:h-36 sm:px-4 sm:py-3 ${categoryAccent[ad.category]}`}
         >
           <div className="flex flex-col items-end gap-1 sm:gap-2">
-            <button
-              type="button"
-              onClick={(event) => {
-                event.preventDefault();
-                event.stopPropagation();
-                toggleSaved(ad.id);
-              }}
-              aria-pressed={saved}
-              aria-label={saved ? "Hapus dari tersimpan" : "Simpan iklan"}
-              className="flex h-6 w-6 items-center justify-center rounded-full bg-white/90 text-charcoal shadow-sm transition-colors hover:bg-white sm:h-8 sm:w-8"
-            >
-              <BookmarkIcon
-                width={13}
-                height={13}
-                fill={saved ? "currentColor" : "none"}
-                className={saved ? "text-cta" : "text-charcoal"}
-              />
-            </button>
+            <div className="flex items-center gap-1.5">
+              <ShareButton title={ad.title} path={`/jelajahi/${ad.id}`} compact />
+              <button
+                type="button"
+                onClick={(event) => {
+                  event.preventDefault();
+                  event.stopPropagation();
+                  toggleSaved(ad.id);
+                }}
+                aria-pressed={saved}
+                aria-label={saved ? "Hapus dari tersimpan" : "Simpan iklan"}
+                className="flex h-6 w-6 items-center justify-center rounded-full bg-white/90 text-charcoal shadow-sm transition-colors hover:bg-white sm:h-8 sm:w-8"
+              >
+                <BookmarkIcon
+                  width={13}
+                  height={13}
+                  fill={saved ? "currentColor" : "none"}
+                  className={saved ? "text-cta" : "text-charcoal"}
+                />
+              </button>
+            </div>
             <span className="hidden rounded-badge bg-charcoal/80 px-3 py-1 text-[12px] leading-4 font-bold text-white sm:inline-block">
               {ad.kind === "produk" ? "Produk" : "Jasa"}
             </span>

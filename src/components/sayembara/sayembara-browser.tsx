@@ -6,6 +6,7 @@ import { PlusCircleIcon, SearchIcon } from "@/components/icons";
 import { formatRelativeTime } from "@/lib/format-relative-time";
 import { Pagination } from "@/components/shared/pagination";
 import { SayembaraFeaturedCarousel } from "@/components/sayembara/sayembara-featured-carousel";
+import { ShareButton } from "@/components/ads/share-button";
 
 const PAGE_SIZE = 20;
 
@@ -38,7 +39,8 @@ const SayembaraCard = memo(function SayembaraCard({ item }: { item: SayembaraLis
       href={`/sayembara/${item.id}`}
       className="flex flex-col gap-1.5 rounded-card border-2 border-ink bg-white p-3 shadow-[2px_2px_0_0_rgba(20,20,20,1)] transition-transform hover:-translate-y-0.5 sm:gap-3 sm:border-[2.5px] sm:p-6 sm:shadow-[3px_3px_0_0_rgba(20,20,20,1)]"
     >
-      <div className="flex items-center justify-end gap-2">
+      <div className="flex items-center justify-between gap-2">
+        <ShareButton title={item.title} path={`/sayembara/${item.id}`} compact />
         {item.status === "Aktif" ? (
           <span
             className="h-2.5 w-2.5 shrink-0 rounded-full bg-success sm:h-3 sm:w-3"

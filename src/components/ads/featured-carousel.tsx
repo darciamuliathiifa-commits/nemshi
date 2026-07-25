@@ -4,6 +4,7 @@ import { memo, useRef } from "react";
 import Link from "next/link";
 import type { Ad } from "@/lib/types";
 import { ChevronLeftIcon, ChevronRightIcon, MapPinIcon, StarIcon } from "@/components/icons";
+import { ShareButton } from "@/components/ads/share-button";
 
 export const FeaturedCarousel = memo(function FeaturedCarousel({ ads }: { ads: Ad[] }) {
   const scrollerRef = useRef<HTMLDivElement>(null);
@@ -63,6 +64,10 @@ export const FeaturedCarousel = memo(function FeaturedCarousel({ ads }: { ads: A
               <StarIcon width={11} height={11} />
               Unggulan
             </span>
+
+            <div className="absolute left-3 top-3 z-10 sm:left-4 sm:top-4">
+              <ShareButton title={ad.title} path={`/jelajahi/${ad.id}`} compact />
+            </div>
 
             <div className="flex h-24 items-start bg-gradient-to-br from-brand/40 to-brand/10 px-3.5 py-3 sm:h-36 sm:px-5 sm:py-4">
               <span className="rounded-badge bg-charcoal px-2.5 py-1 text-[11px] leading-3 font-bold text-white sm:px-3.5 sm:py-1.5 sm:text-[13px] sm:leading-4">

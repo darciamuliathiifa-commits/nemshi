@@ -314,3 +314,14 @@ export function BellIcon(props: IconProps) {
     </svg>
   );
 }
+
+export function ShareIcon(props: IconProps) {
+  return (
+    <svg {...base} {...props}>
+      <circle cx="18" cy="6" r="2.5" />
+      <circle cx="6" cy="12" r="2.5" />
+      <circle cx="18" cy="18" r="2.5" />
+      <path d="m8.3 10.7 7.4-3.4M8.3 13.3l7.4 3.4" />
+    </svg>
+  );
+}

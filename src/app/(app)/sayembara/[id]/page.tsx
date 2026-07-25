@@ -7,6 +7,7 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { formatRelativeTime } from "@/lib/format-relative-time";
 import { SayembaraOwnerActions } from "@/components/sayembara/sayembara-owner-actions";
 import { TransactionDisclaimer } from "@/components/shared/transaction-disclaimer";
+import { ShareButton } from "@/components/ads/share-button";
 
 const statusAccent: Record<string, string> = {
   Aktif: "bg-success text-white",
@@ -169,6 +170,10 @@ export default async function SayembaraDetailPage({
               <p className="mt-2 text-base font-normal leading-6 text-charcoal">
                 {row.description}
               </p>
+            </div>
+
+            <div className="mt-6 flex border-t border-border-subtle pt-6">
+              <ShareButton title={row.title} path={`/sayembara/${row.id}`} />
             </div>
 
             <div className="mt-6 flex items-center gap-3 border-t border-border-subtle pt-6">
