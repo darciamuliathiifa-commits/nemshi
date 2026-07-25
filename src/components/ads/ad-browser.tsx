@@ -195,7 +195,7 @@ export function AdBrowser({ ads }: { ads: Ad[] }) {
       </div>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[240px_1fr] lg:items-start">
-        <aside className="flex flex-col gap-6 rounded-card border-[2.5px] border-ink bg-white p-5 shadow-[3px_3px_0_0_rgba(20,20,20,1)] lg:sticky lg:top-24">
+        <aside className="flex max-h-[500px] flex-col gap-6 overflow-y-auto rounded-card border-[2.5px] border-ink bg-white p-5 shadow-[3px_3px_0_0_rgba(20,20,20,1)] [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:sticky lg:top-24">
           <div>
             <p className="px-3 text-[12px] font-bold text-muted-foreground">Kategori</p>
             <div className="mt-2 flex flex-col gap-1">

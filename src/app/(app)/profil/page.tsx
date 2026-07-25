@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { Header } from "@/components/layout/header";
-import { UserIcon } from "@/components/icons";
+import { ChevronRightIcon, UserIcon } from "@/components/icons";
 import { supabase } from "@/lib/supabase/client";
 import type { UserQuota } from "@/lib/server/quota-store";
 
@@ -236,6 +237,26 @@ export default function ProfilPage() {
                       : "Paket Gratis"}
                   </span>
                 </div>
+
+                {quota?.plan !== "plus" && (
+                  <Link
+                    href="/paket-plus"
+                    className="mt-4 flex items-center justify-between gap-3 rounded-input border-2 border-ink bg-brand px-4 py-3 transition-transform hover:-translate-y-0.5"
+                  >
+                    <div>
+                      <p className="text-[14px] font-bold text-charcoal">
+                        Upgrade ke Paket Plus
+                      </p>
+                      <p className="mt-0.5 text-[12px] font-normal text-charcoal/70">
+                        Tambah slot iklan &amp; sayembara, plus promosi prioritas.
+                      </p>
+                    </div>
+                    <span className="flex h-9 shrink-0 items-center gap-1 rounded-pill bg-charcoal px-4 text-[13px] font-bold text-white">
+                      Lihat Paket
+                      <ChevronRightIcon width={14} height={14} />
+                    </span>
+                  </Link>
+                )}
               </div>
 
               {isEditing ? (
