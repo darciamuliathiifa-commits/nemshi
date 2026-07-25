@@ -38,7 +38,7 @@ export async function GET(request: Request) {
 
   const { data, error } = await supabase
     .from("ads")
-    .select(`id, title, kind, category, status, flag_reason, created_at, profiles ( name )`)
+    .select(`id, title, kind, category, status, flag_reason, created_at, profiles!owner_id ( name )`)
     .eq("status", status)
     .order("created_at", { ascending: true });
 

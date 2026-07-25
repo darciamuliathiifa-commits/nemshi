@@ -24,7 +24,7 @@ export default async function SayembaraPage() {
       .from("sayembara")
       .select(
         `id, title, description, category, location, price_label, wa_nego, status, created_at,
-         profiles ( name )`,
+         profiles!owner_id ( name )`,
       )
       .order("created_at", { ascending: false });
 

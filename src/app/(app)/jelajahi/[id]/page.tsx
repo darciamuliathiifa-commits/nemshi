@@ -70,7 +70,7 @@ export default async function AdDetailPage({
       `id, owner_id, kind, title, description, category, price_label, location,
        status, condition, delivery_method, scope, estimated_duration,
        whatsapp_number, created_at,
-       profiles ( id, name, whatsapp_number, location, created_at )`,
+       profiles!owner_id ( id, name, whatsapp_number, location, created_at )`,
     )
     .eq("id", id)
     .maybeSingle();

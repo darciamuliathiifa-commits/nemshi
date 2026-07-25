@@ -33,7 +33,7 @@ export async function GET(
     .from("sayembara")
     .select(
       `id, owner_id, title, description, category, location, price_label, wa_nego,
-       status, created_at, profiles ( name )`,
+       status, created_at, profiles!owner_id ( name )`,
     )
     .eq("id", id)
     .maybeSingle();
