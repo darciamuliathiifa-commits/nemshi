@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Header } from "@/components/layout/header";
@@ -50,6 +51,20 @@ interface AdDetailRow {
   whatsapp_number: string | null;
   created_at: string;
   profiles: SellerProfileRow | SellerProfileRow[] | null;
+  ad_photos: { url: string; position: number }[] | null;
+}
+
+async function ActiveAdsCount({ ownerId }: { ownerId: string }) {
+  const supabase = await createSupabaseServerClient();
+  if (!supabase) return <>0 iklan aktif</>;
+
+  const { count } = await supabase
+    .from("ads")
+    .select("id", { count: "exact", head: true })
+    .eq("owner_id", ownerId)
+    .eq("status", "Aktif");
+
+  return <>{count ?? 0} iklan aktif</>;
 }
 
 export default async function AdDetailPage({
@@ -70,7 +85,8 @@ export default async function AdDetailPage({
       `id, owner_id, kind, title, description, category, price_label, location,
        status, condition, delivery_method, scope, estimated_duration,
        whatsapp_number, created_at,
-       profiles!owner_id ( id, name, whatsapp_number, location, created_at )`,
+       profiles!owner_id ( id, name, whatsapp_number, location, created_at ),
+       ad_photos ( url, position )`,
     )
     .eq("id", id)
     .maybeSingle();
@@ -82,20 +98,10 @@ export default async function AdDetailPage({
   const row = data as unknown as AdDetailRow;
   const profile = Array.isArray(row.profiles) ? row.profiles[0] : row.profiles;
 
-  const [{ data: photoRows }, { count: activeAdsCount }] = await Promise.all([
-    supabase
-      .from("ad_photos")
-      .select("url")
-      .eq("ad_id", row.id)
-      .order("position", { ascending: true }),
-    supabase
-      .from("ads")
-      .select("id", { count: "exact", head: true })
-      .eq("owner_id", row.owner_id)
-      .eq("status", "Aktif"),
-  ]);
-
-  const photos = (photoRows ?? []).map((photo) => photo.url);
+  const photos = (row.ad_photos ?? [])
+    .slice()
+    .sort((a, b) => a.position - b.position)
+    .map((photo) => photo.url);
 
   const ad = {
     id: row.id,
@@ -117,7 +123,6 @@ export default async function AdDetailPage({
     sellerJoinedYear: profile
       ? new Date(profile.created_at).getFullYear()
       : new Date().getFullYear(),
-    sellerActiveAds: activeAdsCount ?? 0,
   };
 
   const detailItems =
@@ -251,7 +256,13 @@ export default async function AdDetailPage({
                   </p>
                   <p className="text-[13px] font-normal text-muted-foreground">
                     Bergabung sejak {ad.sellerJoinedYear} ·{" "}
-                    {ad.sellerActiveAds} iklan aktif
+                    <Suspense
+                      fallback={
+                        <span className="inline-block h-3 w-16 animate-pulse rounded bg-surface align-middle" />
+                      }
+                    >
+                      <ActiveAdsCount ownerId={ad.sellerId} />
+                    </Suspense>
                   </p>
                 </div>
               </Link>
