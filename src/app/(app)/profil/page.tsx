@@ -227,7 +227,7 @@ export default function ProfilPage() {
                   )}
                 </div>
 
-                <div className="mt-3 flex items-center justify-between">
+                <div className="mt-3 flex items-center justify-between border-b border-border-subtle pb-3">
                   <span className="text-[14px] font-normal text-muted-foreground">
                     Status Paket
                   </span>
@@ -235,6 +235,28 @@ export default function ProfilPage() {
                     {quota?.plan === "plus" && quota.planExpiresAt
                       ? `Plus aktif hingga ${new Date(quota.planExpiresAt).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" })}`
                       : "Paket Gratis"}
+                  </span>
+                </div>
+
+                <div className="mt-3 flex items-center justify-between border-b border-border-subtle pb-3">
+                  <span className="text-[14px] font-normal text-muted-foreground">
+                    Sisa Slot Iklan
+                  </span>
+                  <span className="text-base font-normal text-charcoal">
+                    {quota
+                      ? (quota.freeAdSlotUsed ? 0 : 1) + quota.extraAdSlots
+                      : "–"}
+                  </span>
+                </div>
+
+                <div className="mt-3 flex items-center justify-between">
+                  <span className="text-[14px] font-normal text-muted-foreground">
+                    Sisa Slot Sayembara
+                  </span>
+                  <span className="text-base font-normal text-charcoal">
+                    {quota
+                      ? (quota.freeSayembaraSlotUsed ? 0 : 1) + quota.extraSayembaraSlots
+                      : "–"}
                   </span>
                 </div>
 

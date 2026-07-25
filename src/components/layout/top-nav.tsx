@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   BookmarkIcon,
   CloseIcon,
@@ -14,6 +14,7 @@ import {
   UserIcon,
 } from "@/components/icons";
 import { TickerBar } from "@/components/layout/ticker-bar";
+import type { UserQuota } from "@/lib/server/quota-store";
 
 const navItems = [
   { href: "/jelajahi", label: "Eksplor" },
@@ -22,9 +23,27 @@ const navItems = [
   { href: "/tersimpan", label: "Tersimpan", icon: BookmarkIcon },
 ];
 
+function slotsLeft(quota: UserQuota | null) {
+  if (!quota) return null;
+  return {
+    ads: (quota.freeAdSlotUsed ? 0 : 1) + quota.extraAdSlots,
+    sayembara: (quota.freeSayembaraSlotUsed ? 0 : 1) + quota.extraSayembaraSlots,
+  };
+}
+
 export function TopNav() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [quota, setQuota] = useState<UserQuota | null>(null);
+
+  useEffect(() => {
+    fetch("/api/mayar/quota")
+      .then((res) => (res.ok ? res.json() : null))
+      .then(setQuota)
+      .catch(() => setQuota(null));
+  }, []);
+
+  const slots = slotsLeft(quota);
 
   return (
     <div className="sticky top-0 z-40 bg-brand">
@@ -56,6 +75,15 @@ export function TopNav() {
           </nav>
 
           <div className="flex items-center gap-2">
+            {slots && (
+              <Link
+                href="/profil"
+                className="hidden shrink-0 items-center gap-1.5 whitespace-nowrap rounded-pill bg-surface px-3 py-1.5 text-[12px] font-bold text-charcoal transition-colors hover:bg-brand/60 xl:flex"
+                title="Sisa jatah posting"
+              >
+                {slots.ads} Iklan · {slots.sayembara} Sayembara
+              </Link>
+            )}
             <Link
               href="/jelajahi"
               className="hidden h-10 w-10 items-center justify-center rounded-full text-charcoal transition-colors hover:bg-surface sm:flex"
@@ -111,6 +139,12 @@ export function TopNav() {
                 <CloseIcon width={20} height={20} />
               </button>
             </div>
+
+            {slots && (
+              <div className="mt-4 rounded-input bg-surface px-3 py-2.5 text-[13px] font-bold text-charcoal">
+                Jatah tersisa: {slots.ads} Iklan · {slots.sayembara} Sayembara
+              </div>
+            )}
 
             <nav className="mt-6 flex flex-col gap-1">
               {[...navItems, { href: "/pasang-iklan", label: "Pasang Iklan", icon: PlusCircleIcon }, { href: "/profil", label: "Profil", icon: UserIcon }].map(
