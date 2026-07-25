@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Header } from "@/components/layout/header";
 import { ZapIcon } from "@/components/icons";
@@ -19,36 +19,74 @@ const plusPlan = {
   ],
 };
 
-type CheckoutStep = "plans" | "checkout" | "processing" | "success";
+type CheckoutStep = "plans" | "checkout" | "redirecting" | "confirming" | "success" | "pending";
+
+const POLL_ATTEMPTS = 6;
+const POLL_INTERVAL_MS = 2000;
 
 export default function PaketPlusPage() {
   const [step, setStep] = useState<CheckoutStep>("plans");
   const [quota, setQuota] = useState<UserQuota | null>(null);
   const [error, setError] = useState<string | null>(null);
 
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("status") !== "return") return;
+
+    let cancelled = false;
+
+    async function pollQuota() {
+      setStep("confirming");
+
+      for (let attempt = 0; attempt < POLL_ATTEMPTS; attempt += 1) {
+        try {
+          const res = await fetch("/api/mayar/quota");
+          if (res.ok) {
+            const data: UserQuota = await res.json();
+            if (data.plan === "plus") {
+              if (!cancelled) {
+                setQuota(data);
+                setStep("success");
+              }
+              return;
+            }
+          }
+        } catch {
+          // keep polling — a transient failure isn't final
+        }
+        await new Promise((resolve) => setTimeout(resolve, POLL_INTERVAL_MS));
+      }
+      if (!cancelled) setStep("pending");
+    }
+
+    pollQuota();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   async function handlePay() {
-    setStep("processing");
+    setStep("redirecting");
     setError(null);
 
     try {
-      const response = await fetch("/api/mayar/webhook", {
+      const response = await fetch("/api/mayar/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          event: "payment.success",
-          data: { planId: plusPlan.id },
-        }),
+        body: JSON.stringify({ planId: plusPlan.id }),
       });
 
+      const result = await response.json().catch(() => ({}));
+
       if (!response.ok) {
-        throw new Error("Pembayaran gagal diproses");
+        throw new Error(result.error ?? "Gagal membuat invoice pembayaran.");
       }
 
-      const result = (await response.json()) as { quota: UserQuota };
-      setQuota(result.quota);
-      setStep("success");
-    } catch {
-      setError("Gagal menghubungkan ke Mayar. Coba lagi.");
+      window.location.href = result.link;
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "Gagal menghubungkan ke Mayar. Coba lagi.",
+      );
       setStep("checkout");
     }
   }
@@ -221,12 +259,56 @@ export default function PaketPlusPage() {
             </>
           )}
 
-          {step === "processing" && (
+          {step === "redirecting" && (
             <div className="flex flex-col items-center rounded-card border-[2.5px] border-ink bg-white p-10 text-center shadow-[3px_3px_0_0_rgba(20,20,20,1)]">
               <span className="h-10 w-10 animate-spin rounded-full border-4 border-surface border-t-cta" />
               <p className="mt-4 text-base font-normal text-charcoal">
                 Menghubungkan ke Mayar...
               </p>
+            </div>
+          )}
+
+          {step === "confirming" && (
+            <div className="flex flex-col items-center rounded-card border-[2.5px] border-ink bg-white p-10 text-center shadow-[3px_3px_0_0_rgba(20,20,20,1)]">
+              <span className="h-10 w-10 animate-spin rounded-full border-4 border-surface border-t-cta" />
+              <p className="mt-4 text-base font-normal text-charcoal">
+                Mengonfirmasi pembayaran...
+              </p>
+              <p className="mt-1 max-w-sm text-[14px] font-normal text-muted-foreground">
+                Kami sedang menunggu konfirmasi dari Mayar. Ini biasanya cuma
+                beberapa detik.
+              </p>
+            </div>
+          )}
+
+          {step === "pending" && (
+            <div className="flex flex-col items-center rounded-card border-[2.5px] border-ink bg-white p-10 text-center shadow-[3px_3px_0_0_rgba(20,20,20,1)]">
+              <span className="flex h-14 w-14 items-center justify-center rounded-full bg-highlight/10 text-2xl text-highlight">
+                ⏳
+              </span>
+              <h2 className="mt-4 text-xl font-bold text-charcoal">
+                Menunggu Konfirmasi Pembayaran
+              </h2>
+              <p className="mt-2 max-w-sm text-[14px] font-normal text-muted-foreground">
+                Belum ada konfirmasi dari Mayar. Kalau kamu sudah bayar, jatah
+                Paket Plus akan otomatis aktif begitu pembayaran terkonfirmasi
+                — cek lagi profilmu sebentar lagi.
+              </p>
+              <div className="mt-6 flex w-full max-w-xs gap-3">
+                <button
+                  type="button"
+                  onClick={() => window.location.reload()}
+                  className="flex h-11 flex-1 items-center justify-center rounded-pill bg-charcoal text-base font-bold text-white transition-colors hover:bg-black"
+                >
+                  Cek Lagi
+                </button>
+                <Link
+                  href="/profil"
+                  className="flex h-11 flex-1 items-center justify-center rounded-pill border-2 border-ink text-base font-bold text-charcoal transition-colors hover:bg-surface"
+                >
+                  Lihat Profil
+                </Link>
+              </div>
             </div>
           )}
 

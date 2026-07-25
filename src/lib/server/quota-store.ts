@@ -19,7 +19,7 @@ const PLAN_BENEFITS: Record<
   plus: { extraAdSlots: 3, extraSayembaraSlots: 2, durationMonths: 3 },
 };
 
-const PLAN_PRICE_IDR: Record<PlanId, number> = {
+export const PLAN_PRICE_IDR: Record<PlanId, number> = {
   plus: 150000,
 };
 
@@ -70,6 +70,9 @@ export async function getQuota(
   return data ? rowToQuota(data as UserQuotaRow) : defaultQuota(userId);
 }
 
+// Grants plan benefits only — the caller owns writing/updating the
+// mayar_transactions row (checkout inserts it 'pending', the webhook flips
+// it to 'success' right around calling this).
 export async function activatePlusPlan(
   supabase: SupabaseClient,
   planId: PlanId,
@@ -103,13 +106,6 @@ export async function activatePlusPlan(
     .single();
 
   if (error) throw error;
-
-  await supabase.from("mayar_transactions").insert({
-    user_id: userId,
-    plan_id: planId,
-    amount: PLAN_PRICE_IDR[planId],
-    status: "success",
-  });
 
   return rowToQuota(data as UserQuotaRow);
 }
