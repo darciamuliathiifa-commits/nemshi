@@ -122,7 +122,7 @@ export default async function AdDetailPage({
     estimatedDuration: row.estimated_duration,
     whatsappNumber: row.whatsapp_number ?? profile?.whatsapp_number ?? "",
     sellerId: row.owner_id,
-    sellerName: profile?.name ?? "Pengguna Nemshi",
+    sellerName: profile?.name ?? "Pengguna Nemsy!",
     sellerJoinedYear: profile
       ? new Date(profile.created_at).getFullYear()
       : new Date().getFullYear(),
@@ -140,7 +140,7 @@ export default async function AdDetailPage({
         ];
 
   const whatsappHref = `https://wa.me/${ad.whatsappNumber}?text=${encodeURIComponent(
-    `Halo, saya tertarik dengan iklan "${ad.title}" di Nemshi.`,
+    `Halo, saya tertarik dengan iklan "${ad.title}" di Nemsy!`,
   )}`;
 
   const { data: relatedRows } = await supabase

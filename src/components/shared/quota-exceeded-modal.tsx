@@ -25,13 +25,13 @@ export function QuotaExceededModal({
             href="/paket-plus"
             className="flex h-11 items-center justify-center rounded-pill border-2 border-ink text-[14px] font-bold text-charcoal transition-colors hover:bg-surface"
           >
-            Lihat Paket Hemat — Rp 99.000
+            Lihat Paket Hemat · Rp 99.000
           </Link>
           <Link
             href="/paket-plus"
             className="flex h-11 items-center justify-center rounded-pill bg-charcoal text-[14px] font-bold text-white transition-colors hover:bg-black"
           >
-            Lihat Paket Plus — Rp 150.000
+            Lihat Paket Plus · Rp 150.000
           </Link>
         </div>
 

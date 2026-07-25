@@ -51,7 +51,7 @@ function CheckoutBridgeContent() {
 
       <div className="mt-6 flex items-center gap-2 rounded-pill border-2 border-ink bg-white px-4 py-2 text-[12px] font-bold text-charcoal shadow-[2px_2px_0_0_rgba(20,20,20,1)]">
         <ShieldCheckIcon width={14} height={14} className="shrink-0 text-success" />
-        Diproses lewat Mayar, mitra pembayaran resmi Nemshi
+        Diproses lewat Mayar, mitra pembayaran resmi Nemsy!
       </div>
 
       {tooSlow && (

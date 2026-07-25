@@ -65,7 +65,7 @@ export function TopNav() {
       <div className="px-6 py-3">
         <div className="mx-auto flex w-full max-w-[1400px] items-center justify-between gap-3 rounded-pill bg-white/95 px-4 py-2.5 shadow-sm backdrop-blur">
           <Link href="/jelajahi" className="shrink-0 text-lg font-bold tracking-tight text-charcoal">
-            Nemshi
+            Nemsy!
           </Link>
 
           <nav className="hidden items-center gap-1 lg:flex">
@@ -179,7 +179,7 @@ export function TopNav() {
             <div className="relative overflow-hidden bg-gradient-to-br from-brand-dark to-brand bg-dot-pattern px-5 py-6">
               <div className="flex items-center justify-between">
                 <span className="text-xl font-bold tracking-tight text-charcoal">
-                  Nemshi
+                  Nemsy!
                 </span>
                 <button
                   type="button"

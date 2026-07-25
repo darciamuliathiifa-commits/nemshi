@@ -51,7 +51,7 @@ export default function LandingPage() {
 
             <Image
               src="/nemsy-logo-fix.png"
-              alt="Nemsy — Satu Portal Untuk Usaha Masisir"
+              alt="Nemsy: Satu Portal Untuk Usaha Masisir"
               width={2964}
               height={1122}
               priority

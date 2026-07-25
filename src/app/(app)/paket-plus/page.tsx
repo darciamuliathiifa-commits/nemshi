@@ -530,7 +530,7 @@ export default function PaketPlusPage() {
               </h2>
               <p className="mt-2 max-w-sm text-[14px] font-normal text-muted-foreground">
                 Belum ada konfirmasi dari Mayar. Kalau kamu sudah bayar, jatah
-                akan otomatis aktif begitu pembayaran terkonfirmasi — cek lagi
+                akan otomatis aktif begitu pembayaran terkonfirmasi. Cek lagi
                 profilmu sebentar lagi.
               </p>
               <div className="mt-6 flex w-full max-w-xs gap-3">

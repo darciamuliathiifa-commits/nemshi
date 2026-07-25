@@ -157,7 +157,7 @@ export default async function SayembaraDetailPage({
                 <UserIcon width={18} height={18} />
               </div>
               <span className="text-base font-bold text-charcoal">
-                {profile?.name ?? "Pengguna Nemshi"}
+                {profile?.name ?? "Pengguna Nemsy!"}
               </span>
             </div>
 

@@ -39,10 +39,10 @@ export const PLAN_PRICE_IDR: Record<PlanId, number> = {
 };
 
 export const PLAN_LABELS: Record<PlanId, string> = {
-  plus: "Paket Plus Nemshi",
-  extra_ad: "Slot Iklan Tambahan Nemshi",
-  extra_sayembara: "Slot Sayembara Tambahan Nemshi",
-  hemat: "Paket Hemat Nemshi",
+  plus: "Paket Plus Nemsy!",
+  extra_ad: "Slot Iklan Tambahan Nemsy!",
+  extra_sayembara: "Slot Sayembara Tambahan Nemsy!",
+  hemat: "Paket Hemat Nemsy!",
 };
 
 interface UserQuotaRow {

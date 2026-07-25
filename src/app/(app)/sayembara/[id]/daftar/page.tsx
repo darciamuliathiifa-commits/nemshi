@@ -43,7 +43,7 @@ export default async function DaftarSayembaraPage({
 
   const whatsappHref = owner?.whatsapp_number
     ? `https://wa.me/${owner.whatsapp_number}?text=${encodeURIComponent(
-        `Halo ${owner.name}, saya tertarik menawarkan bantuan untuk sayembara "${row.title}" di Nemshi. Boleh saya tahu detailnya lebih lanjut?`,
+        `Halo ${owner.name}, saya tertarik menawarkan bantuan untuk sayembara "${row.title}" di Nemsy! Boleh saya tahu detailnya lebih lanjut?`,
       )}`
     : null;
 

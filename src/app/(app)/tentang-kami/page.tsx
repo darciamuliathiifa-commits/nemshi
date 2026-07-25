@@ -11,9 +11,9 @@ import {
 } from "@/components/icons";
 
 export const metadata: Metadata = {
-  title: "Tentang Kami — Nemshi",
+  title: "Tentang Kami · Nemsy!",
   description:
-    "Kenapa Nemshi dibuat, apa yang jadi tanggung jawab kami, dan apa yang bukan.",
+    "Kenapa Nemsy! dibuat, apa yang jadi tanggung jawab kami, dan apa yang bukan.",
 };
 
 const doItems = [
@@ -21,7 +21,7 @@ const doItems = [
     icon: CompassIcon,
     title: "Menyediakan direktori yang mudah dicari",
     description:
-      "Satu tempat buat Masisir cari produk, jasa, dan bantuan dari sesama komunitas — tanpa perlu tanya ke sana-sini di grup WhatsApp yang cepat tenggelam.",
+      "Satu tempat buat Masisir cari produk, jasa, dan bantuan dari sesama komunitas, tanpa perlu tanya ke sana-sini di grup WhatsApp yang cepat tenggelam.",
   },
   {
     icon: ShieldCheckIcon,
@@ -39,12 +39,12 @@ const doItems = [
     icon: UsersIcon,
     title: "Mendengarkan masukan komunitas",
     description:
-      "Nemshi terus berubah berdasarkan masukan langsung dari pengguna — fitur, perbaikan, dan desain di sini lahir dari apa yang komunitas benar-benar butuhkan.",
+      "Nemsy! terus berubah berdasarkan masukan langsung dari pengguna: fitur, perbaikan, dan desain di sini lahir dari apa yang komunitas benar-benar butuhkan.",
   },
 ];
 
 const notResponsibleItems = [
-  "Transaksi, pembayaran, atau serah terima antar pengguna — semua kesepakatan dilakukan langsung antara pembeli dan penjual lewat WhatsApp.",
+  "Transaksi, pembayaran, atau serah terima antar pengguna. Semua kesepakatan dilakukan langsung antara pembeli dan penjual lewat WhatsApp.",
   "Kualitas, keaslian, atau kesesuaian produk dan jasa yang ditawarkan pengguna lain.",
   "Kerugian akibat kelalaian, penipuan, atau itikad buruk dari salah satu pihak dalam sebuah transaksi.",
   "Menjadi rekening bersama (escrow), perantara pembayaran, atau pihak yang menjamin suatu kesepakatan.",
@@ -58,24 +58,24 @@ export default function TentangKamiPage() {
       <main className="mx-auto w-full max-w-3xl px-6 py-8">
         <section className="relative overflow-hidden rounded-card border-[2.5px] border-ink bg-gradient-to-br from-brand-dark to-brand bg-dot-pattern p-8 text-center shadow-[5px_5px_0_0_rgba(20,20,20,1)] sm:p-12">
           <h1 className="text-3xl font-black tracking-tight text-charcoal sm:text-4xl">
-            Tentang Nemshi
+            Tentang Nemsy!
           </h1>
           <p className="mx-auto mt-3 max-w-xl text-[15px] font-normal leading-6 text-charcoal/70">
-            Nemshi dibangun oleh Dar Dev buat satu alasan sederhana: Masisir
+            Nemsy! dibangun oleh Dar Dev buat satu alasan sederhana: Masisir
             butuh tempat yang gampang buat jualan, cari jasa, dan saling
-            bantu — tanpa ribet.
+            bantu, tanpa ribet.
           </p>
         </section>
 
         <section className="mt-10">
-          <h2 className="text-xl font-bold text-charcoal">Kenapa Nemshi Dibuat</h2>
+          <h2 className="text-xl font-bold text-charcoal">Kenapa Nemsy! Dibuat</h2>
           <p className="mt-2 text-[14px] font-normal leading-6 text-muted-foreground">
             Selama ini, kebutuhan jual-beli dan cari jasa antar Masisir
             tersebar di banyak grup WhatsApp yang riuh dan cepat tenggelam.
             Info bagus gampang kelewat, dan susah tahu siapa yang bisa
-            dipercaya. Dar Dev membangun Nemshi supaya komunitas Masisir
+            dipercaya. Dar Dev membangun Nemsy! supaya komunitas Masisir
             punya satu portal yang rapi, gampang dicari, dan tetap
-            terjangkau — dibuat oleh mahasiswa, untuk mahasiswa.
+            terjangkau, dibuat oleh mahasiswa, untuk mahasiswa.
           </p>
         </section>
 
@@ -104,7 +104,7 @@ export default function TentangKamiPage() {
             Yang Bukan Tanggung Jawab Kami
           </h2>
           <p className="mt-2 text-[14px] font-normal leading-6 text-muted-foreground">
-            Supaya jelas sejak awal: Nemshi adalah platform direktori yang
+            Supaya jelas sejak awal: Nemsy! adalah platform direktori yang
             mempertemukan pengguna, bukan pihak dalam transaksi itu sendiri.
             Ini artinya kami tidak bertanggung jawab atas:
           </p>
@@ -139,11 +139,11 @@ export default function TentangKamiPage() {
           <p className="mx-auto mt-2 max-w-xl text-[14px] font-normal leading-6 text-muted-foreground">
             Slot pertama selalu gratis, harga paket kami jaga tetap
             terjangkau, dan setiap masukan dari komunitas benar-benar kami
-            dengar. Nemshi akan terus berkembang selama itu berarti hidup
+            dengar. Nemsy! akan terus berkembang selama itu berarti hidup
             di Mesir jadi sedikit lebih mudah buat kita semua.
           </p>
           <p className="mt-4 text-[12px] font-bold text-charcoal/50">
-            — Dar Dev
+            Dar Dev
           </p>
         </section>
 

@@ -221,7 +221,7 @@ export function AdBrowser({ ads }: { ads: Ad[] }) {
             />
             <input
               type="search"
-              placeholder="Cari di Nemshi..."
+              placeholder="Cari di Nemsy!"
               value={keyword}
               onChange={(event) => changeKeyword(event.target.value)}
               className="h-11 w-full rounded-pill border-2 border-ink bg-white pl-11 pr-4 text-[14px] font-normal text-charcoal placeholder:text-charcoal/40 focus:outline-none focus:ring-3 focus:ring-cta/10"

@@ -13,8 +13,8 @@ export function TransactionDisclaimer() {
           Perhatian Sebelum Bertransaksi
         </p>
         <p className="mt-1 text-[12px] font-normal leading-5 text-muted-foreground">
-          Nemshi hanya menyediakan platform direktori untuk mempertemukan
-          pengguna — kami tidak terlibat dan tidak bertanggung jawab atas
+          Nemsy! hanya menyediakan platform direktori untuk mempertemukan
+          pengguna. Kami tidak terlibat dan tidak bertanggung jawab atas
           transaksi, kesepakatan, atau kelalaian dari pihak mana pun. Pastikan
           kamu berhati-hati, verifikasi identitas, dan sepakati detail
           transaksi langsung dengan pihak terkait sebelum melakukan

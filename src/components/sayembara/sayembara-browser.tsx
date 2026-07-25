@@ -82,7 +82,7 @@ const SayembaraCard = memo(function SayembaraCard({ item }: { item: SayembaraLis
       </div>
 
       <div className="flex items-center justify-between gap-2 text-[10px] text-muted-foreground sm:text-[12px]">
-        <span className="truncate">{item.ownerName ?? "Pengguna Nemshi"}</span>
+        <span className="truncate">{item.ownerName ?? "Pengguna Nemsy!"}</span>
         <span className="shrink-0">{formatRelativeTime(item.created_at)}</span>
       </div>
     </Link>

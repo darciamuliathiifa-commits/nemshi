@@ -24,7 +24,7 @@ const rules = [
   {
     title: "Satu Transaksi, Satu Kesepakatan",
     description:
-      "Nemshi tidak menyediakan rekening bersama (escrow) atau mengambil komisi. Seluruh kesepakatan harga dan transaksi menjadi tanggung jawab penuh pengguna melalui WhatsApp.",
+      "Nemsy! tidak menyediakan rekening bersama (escrow) atau mengambil komisi. Seluruh kesepakatan harga dan transaksi menjadi tanggung jawab penuh pengguna melalui WhatsApp.",
   },
   {
     title: "Laporkan Pelanggaran",
@@ -44,7 +44,7 @@ export default function AturanPublikasiPage() {
             Aturan Publikasi & Moderasi
           </h2>
           <p className="mt-1 text-[14px] font-normal text-muted-foreground">
-            Panduan ini menjaga Nemshi tetap aman dan relevan untuk komunitas
+            Panduan ini menjaga Nemsy! tetap aman dan relevan untuk komunitas
             Masisir.
           </p>
 

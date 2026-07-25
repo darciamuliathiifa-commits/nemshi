@@ -19,7 +19,7 @@ export async function GET(request: Request) {
             data.user.user_metadata?.full_name ??
             data.user.user_metadata?.name ??
             data.user.email ??
-            "Pengguna Nemshi",
+            "Pengguna Nemsy!",
           email: data.user.email,
           avatar_url:
             data.user.user_metadata?.avatar_url ??

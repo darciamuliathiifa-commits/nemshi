@@ -230,7 +230,7 @@ export default function PasangIklanPage() {
                 Pilih Tipe & Kategori Iklan
               </h2>
               <p className="mt-1 text-[14px] font-normal text-muted-foreground">
-                Langkah 1 dari 3 — tentukan jenis iklan dan kategorinya.
+                Langkah 1 dari 3: tentukan jenis iklan dan kategorinya.
               </p>
 
               <div className="mt-6 rounded-card border border-border-subtle bg-white p-6">
@@ -307,7 +307,7 @@ export default function PasangIklanPage() {
             <>
               <h2 className="text-xl font-bold text-charcoal">Isi Formulir Iklan</h2>
               <p className="mt-1 text-[14px] font-normal text-muted-foreground">
-                Langkah 2 dari 3 — lengkapi detail iklan {selectedKind} kategori{" "}
+                Langkah 2 dari 3: lengkapi detail iklan {selectedKind} kategori{" "}
                 {selectedCategory}.
               </p>
 
@@ -519,7 +519,7 @@ export default function PasangIklanPage() {
             <>
               <h2 className="text-xl font-bold text-charcoal">Konfirmasi & Publikasi</h2>
               <p className="mt-1 text-[14px] font-normal text-muted-foreground">
-                Langkah 3 dari 3 — periksa kembali detail iklanmu sebelum dipublikasikan.
+                Langkah 3 dari 3: periksa kembali detail iklanmu sebelum dipublikasikan.
               </p>
 
               <div className="mt-6 rounded-card border border-border-subtle bg-white p-6">
@@ -596,7 +596,7 @@ export default function PasangIklanPage() {
                 <p className="text-[14px] font-normal text-charcoal">
                   Iklan ini akan menggunakan slot posting gratis pertamamu. Iklan
                   akan langsung tayang setelah dipublikasikan, kecuali sistem
-                  mendeteksi hal yang mencurigakan — dalam kasus itu iklan akan
+                  mendeteksi hal yang mencurigakan. Dalam kasus itu, iklan akan
                   ditinjau otomatis oleh admin dulu.
                 </p>
               </div>

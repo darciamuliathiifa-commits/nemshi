@@ -12,9 +12,9 @@ const sora = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Nemshi — Platform Iklan Baris Masisir",
+  title: "Nemsy! Platform Iklan Baris Masisir",
   description:
-    "Nemshi membantu mahasiswa Indonesia di Mesir mencari dan menawarkan produk maupun jasa dengan mudah.",
+    "Nemsy! membantu mahasiswa Indonesia di Mesir mencari dan menawarkan produk maupun jasa dengan mudah.",
 };
 
 export default function RootLayout({

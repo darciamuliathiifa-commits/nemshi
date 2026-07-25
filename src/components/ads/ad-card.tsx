@@ -25,7 +25,7 @@ export const AdCard = memo(function AdCard({ ad }: { ad: Ad }) {
       : [ad.scope, ad.estimatedDuration].filter(Boolean).join(" · ");
 
   const whatsappHref = `https://wa.me/${ad.whatsappNumber}?text=${encodeURIComponent(
-    `Halo, saya tertarik dengan iklan "${ad.title}" di Nemshi.`,
+    `Halo, saya tertarik dengan iklan "${ad.title}" di Nemsy!`,
   )}`;
 
   return (
@@ -108,8 +108,7 @@ export const AdCard = memo(function AdCard({ ad }: { ad: Ad }) {
           onClick={(event) => event.stopPropagation()}
           className="flex h-7 flex-1 items-center justify-center rounded-pill bg-success text-[10.5px] font-bold text-white transition-colors hover:brightness-90 sm:h-10 sm:text-[13px]"
         >
-          <span className="sm:hidden">Chat WA</span>
-          <span className="hidden sm:inline">Hubungi WA</span>
+          Chat WA
         </a>
       </div>
     </div>

@@ -84,7 +84,7 @@ export async function POST(request: Request) {
   let invoice;
   try {
     invoice = await createMayarInvoice({
-      name: profile?.name ?? "Pengguna Nemshi",
+      name: profile?.name ?? "Pengguna Nemsy!",
       email,
       mobile,
       redirectUrl: `${appUrl}/paket-plus?status=return&plan=${planId}`,

@@ -81,7 +81,7 @@ export default async function EksplorPage() {
         location: row.location,
         status: row.status,
         postedAt: formatRelativeTime(row.created_at),
-        sellerName: profile?.name ?? "Pengguna Nemshi",
+        sellerName: profile?.name ?? "Pengguna Nemsy!",
         sellerJoinedYear: profile
           ? new Date(profile.created_at).getFullYear()
           : new Date().getFullYear(),
