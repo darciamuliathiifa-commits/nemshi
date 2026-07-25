@@ -117,7 +117,7 @@ export function AdBrowser({ ads }: { ads: Ad[] }) {
   const [keyword, setKeyword] = useState("");
   const [location, setLocation] = useState("Semua Lokasi");
   const [categoryOpen, setCategoryOpen] = useState(true);
-  const [locationOpen, setLocationOpen] = useState(true);
+  const [locationOpen, setLocationOpen] = useState(false);
 
   const featuredAds = useMemo(() => ads.filter((ad) => ad.featured), [ads]);
 

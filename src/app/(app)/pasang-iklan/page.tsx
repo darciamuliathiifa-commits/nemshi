@@ -7,6 +7,13 @@ import { Header } from "@/components/layout/header";
 import { PhotoUploader } from "@/components/forms/photo-uploader";
 import { uploadPhotos, type UploadedPhoto } from "@/lib/upload";
 import type { AdCategory, AdCondition, AdKind } from "@/lib/types";
+import {
+  composePriceLabel,
+  currencyOptions,
+  formatThousands,
+  onlyDigits,
+  type CurrencyCode,
+} from "@/lib/format-currency";
 
 const kindOptions: { value: AdKind; label: string; description: string }[] = [
   {
@@ -47,14 +54,6 @@ const locationOptions = [
   "Tahrir",
 ];
 const CUSTOM_LOCATION_VALUE = "__lainnya__";
-
-type CurrencyCode = "IDR" | "EGP" | "USD";
-
-const currencyOptions: { value: CurrencyCode; label: string; prefix: string }[] = [
-  { value: "IDR", label: "Rupiah", prefix: "Rp " },
-  { value: "EGP", label: "EGP", prefix: "EGP " },
-  { value: "USD", label: "Dollar USD", prefix: "$" },
-];
 
 const inputClass =
   "h-11 w-full rounded-input border border-border bg-white px-4 text-[14px] text-charcoal placeholder:text-muted focus:border-cta focus:outline-none focus:ring-3 focus:ring-cta/10";
@@ -116,8 +115,7 @@ export default function PasangIklanPage() {
     setForm((prev) => ({ ...prev, [key]: value }));
   }
 
-  const currencyPrefix = currencyOptions.find((option) => option.value === form.currency)?.prefix ?? "";
-  const priceLabel = form.priceAmount.trim() ? `${currencyPrefix}${form.priceAmount.trim()}` : "";
+  const priceLabel = composePriceLabel(form.currency, form.priceAmount);
 
   async function handlePublish() {
     if (!selectedKind || !selectedCategory) return;
@@ -354,10 +352,13 @@ export default function PasangIklanPage() {
                     </select>
                     <input
                       id="price"
+                      inputMode="numeric"
                       className={inputClass}
-                      placeholder={selectedKind === "produk" ? "350.000" : "Mulai 75.000"}
-                      value={form.priceAmount}
-                      onChange={(event) => updateForm("priceAmount", event.target.value)}
+                      placeholder={selectedKind === "produk" ? "350.000" : "75.000"}
+                      value={formatThousands(form.priceAmount)}
+                      onChange={(event) =>
+                        updateForm("priceAmount", onlyDigits(event.target.value))
+                      }
                     />
                   </div>
                 </div>

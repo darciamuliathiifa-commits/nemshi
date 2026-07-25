@@ -1,5 +1,10 @@
 import { NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { AD_CATEGORIES } from "@/lib/types";
+
+// Sayembara reuses the ads status enum, but only these values make sense
+// for a service request (not "Terjual"/"Kedaluwarsa", which are ad-specific).
+const VALID_STATUSES = ["Aktif", "Selesai", "Ditutup"];
 
 interface SayembaraDetailRow {
   id: string;
@@ -119,4 +124,173 @@ export async function GET(
       createdAt: related.created_at,
     })),
   });
+}
+
+interface UpdateSayembaraBody {
+  title?: string;
+  description?: string;
+  category?: string;
+  location?: string;
+  priceLabel?: string | null;
+  waNego?: boolean;
+  status?: string;
+}
+
+export async function PATCH(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> },
+) {
+  const { id } = await params;
+
+  let body: UpdateSayembaraBody;
+  try {
+    body = await request.json();
+  } catch {
+    return NextResponse.json({ error: "Body tidak valid." }, { status: 400 });
+  }
+
+  const updates: Record<string, unknown> = {};
+
+  if (typeof body.title === "string") {
+    if (!body.title.trim()) {
+      return NextResponse.json({ error: "Judul tidak boleh kosong." }, { status: 400 });
+    }
+    updates.title = body.title.trim();
+  }
+  if (typeof body.description === "string") {
+    if (!body.description.trim()) {
+      return NextResponse.json({ error: "Deskripsi tidak boleh kosong." }, { status: 400 });
+    }
+    updates.description = body.description.trim();
+  }
+  if (typeof body.location === "string") {
+    if (!body.location.trim()) {
+      return NextResponse.json({ error: "Lokasi tidak boleh kosong." }, { status: 400 });
+    }
+    updates.location = body.location.trim();
+  }
+  if (typeof body.category === "string") {
+    if (!AD_CATEGORIES.includes(body.category as (typeof AD_CATEGORIES)[number])) {
+      return NextResponse.json(
+        { error: `Kategori harus salah satu dari: ${AD_CATEGORIES.join(", ")}.` },
+        { status: 400 },
+      );
+    }
+    updates.category = body.category;
+  }
+  if ("priceLabel" in body) {
+    updates.price_label = body.priceLabel?.trim() || null;
+  }
+  if (typeof body.waNego === "boolean") {
+    updates.wa_nego = body.waNego;
+  }
+  if (typeof body.status === "string") {
+    if (!VALID_STATUSES.includes(body.status)) {
+      return NextResponse.json(
+        { error: `Status harus salah satu dari: ${VALID_STATUSES.join(", ")}.` },
+        { status: 400 },
+      );
+    }
+    updates.status = body.status;
+  }
+
+  if (Object.keys(updates).length === 0) {
+    return NextResponse.json(
+      { error: "Tidak ada data untuk diperbarui." },
+      { status: 400 },
+    );
+  }
+
+  const supabase = await createSupabaseServerClient();
+  if (!supabase) {
+    return NextResponse.json(
+      { error: "Supabase belum dikonfigurasi." },
+      { status: 500 },
+    );
+  }
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return NextResponse.json({ error: "Belum masuk akun." }, { status: 401 });
+  }
+
+  const { data, error } = await supabase
+    .from("sayembara")
+    .update(updates)
+    .eq("id", id)
+    .eq("owner_id", user.id)
+    .select(
+      "id, title, description, category, location, price_label, wa_nego, status, created_at",
+    )
+    .maybeSingle();
+
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+
+  if (!data) {
+    return NextResponse.json(
+      { error: "Sayembara tidak ditemukan atau bukan milikmu." },
+      { status: 404 },
+    );
+  }
+
+  return NextResponse.json({
+    id: data.id,
+    title: data.title,
+    description: data.description,
+    category: data.category,
+    location: data.location,
+    priceLabel: data.price_label,
+    waNego: data.wa_nego,
+    status: data.status,
+    createdAt: data.created_at,
+  });
+}
+
+export async function DELETE(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> },
+) {
+  const { id } = await params;
+
+  const supabase = await createSupabaseServerClient();
+  if (!supabase) {
+    return NextResponse.json(
+      { error: "Supabase belum dikonfigurasi." },
+      { status: 500 },
+    );
+  }
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return NextResponse.json({ error: "Belum masuk akun." }, { status: 401 });
+  }
+
+  const { data, error } = await supabase
+    .from("sayembara")
+    .delete()
+    .eq("id", id)
+    .eq("owner_id", user.id)
+    .select("id")
+    .maybeSingle();
+
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+
+  if (!data) {
+    return NextResponse.json(
+      { error: "Sayembara tidak ditemukan atau bukan milikmu." },
+      { status: 404 },
+    );
+  }
+
+  return NextResponse.json({ status: "ok" });
 }

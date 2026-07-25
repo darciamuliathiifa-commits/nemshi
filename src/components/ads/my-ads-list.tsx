@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import type { Ad, AdStatus } from "@/lib/types";
+import type { AdStatus } from "@/lib/types";
 
 const statusFilters: AdStatus[] = ["Aktif", "Terjual", "Selesai", "Kedaluwarsa", "Ditutup"];
 
@@ -13,9 +13,17 @@ const statusAccent: Record<AdStatus, string> = {
   Ditutup: "bg-error text-white",
 };
 
-const MOCK_DELAY_MS = 600;
+export interface MyAd {
+  id: string;
+  status: AdStatus;
+  category: string;
+  title: string;
+  priceLabel: string;
+  location: string;
+  postedAt: string;
+}
 
-export function MyAdsList({ ads: initialAds }: { ads: Ad[] }) {
+export function MyAdsList({ ads: initialAds }: { ads: MyAd[] }) {
   const [ads, setAds] = useState(initialAds);
   const [activeStatus, setActiveStatus] = useState<AdStatus | "Semua">("Semua");
   const [pendingId, setPendingId] = useState<string | null>(null);
@@ -40,22 +48,46 @@ export function MyAdsList({ ads: initialAds }: { ads: Ad[] }) {
 
   async function handleStatusChange(adId: string, status: AdStatus) {
     setPendingId(adId);
-    await new Promise((resolve) => setTimeout(resolve, MOCK_DELAY_MS));
-    setAds((prev) => prev.map((ad) => (ad.id === adId ? { ...ad, status } : ad)));
-    setPendingId(null);
-    showToast(`Status iklan berhasil diubah ke ${status}.`);
+    try {
+      const res = await fetch(`/api/my-ads/${adId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error ?? "Gagal mengubah status.");
+      }
+      setAds((prev) => prev.map((ad) => (ad.id === adId ? { ...ad, status } : ad)));
+      showToast(`Status iklan berhasil diubah ke ${status}.`);
+    } catch (err) {
+      showToast(err instanceof Error ? err.message : "Gagal mengubah status.");
+    } finally {
+      setPendingId(null);
+    }
   }
 
   async function handleExtend(adId: string) {
     setPendingId(adId);
-    await new Promise((resolve) => setTimeout(resolve, MOCK_DELAY_MS));
-    setAds((prev) =>
-      prev.map((ad) =>
-        ad.id === adId ? { ...ad, status: "Aktif", postedAt: "Baru saja diperpanjang" } : ad,
-      ),
-    );
-    setPendingId(null);
-    showToast("Masa tayang iklan berhasil diperpanjang.");
+    try {
+      const res = await fetch(`/api/my-ads/${adId}/extend`, { method: "POST" });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error ?? "Gagal memperpanjang masa tayang.");
+      }
+      setAds((prev) =>
+        prev.map((ad) =>
+          ad.id === adId ? { ...ad, status: "Aktif", postedAt: "Baru saja diperpanjang" } : ad,
+        ),
+      );
+      showToast("Masa tayang iklan berhasil diperpanjang.");
+    } catch (err) {
+      showToast(
+        err instanceof Error ? err.message : "Gagal memperpanjang masa tayang.",
+      );
+    } finally {
+      setPendingId(null);
+    }
   }
 
   return (

@@ -21,6 +21,10 @@ export async function GET(request: Request) {
             data.user.email ??
             "Pengguna Nemshi",
           email: data.user.email,
+          avatar_url:
+            data.user.user_metadata?.avatar_url ??
+            data.user.user_metadata?.picture ??
+            null,
         });
 
         return NextResponse.redirect(`${origin}${next}`);

@@ -8,6 +8,7 @@ import { SaveButton } from "@/components/ads/save-button";
 import { ReportAdDialog } from "@/components/ads/report-ad-dialog";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { formatRelativeTime } from "@/lib/format-relative-time";
+import { TransactionDisclaimer } from "@/components/shared/transaction-disclaimer";
 
 const categoryAccent: Record<string, string> = {
   Pendidikan: "from-blue-100 to-blue-50",
@@ -287,6 +288,8 @@ export default async function AdDetailPage({
             </div>
           </div>
         </div>
+
+        <TransactionDisclaimer />
       </main>
     </>
   );

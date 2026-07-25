@@ -4,6 +4,8 @@ import { Header } from "@/components/layout/header";
 import { MapPinIcon, UserIcon } from "@/components/icons";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { formatRelativeTime } from "@/lib/format-relative-time";
+import { SayembaraOwnerActions } from "@/components/sayembara/sayembara-owner-actions";
+import { TransactionDisclaimer } from "@/components/shared/transaction-disclaimer";
 
 const statusAccent: Record<string, string> = {
   Aktif: "bg-success text-white",
@@ -158,6 +160,12 @@ export default async function SayembaraDetailPage({
                 {profile?.name ?? "Pengguna Nemshi"}
               </span>
             </div>
+
+            {isOwner && (
+              <div className="mt-4">
+                <SayembaraOwnerActions id={row.id} />
+              </div>
+            )}
           </div>
 
           <div className="flex flex-col gap-4">
@@ -260,6 +268,8 @@ export default async function SayembaraDetailPage({
             </div>
           </div>
         )}
+
+        <TransactionDisclaimer />
       </main>
     </>
   );
