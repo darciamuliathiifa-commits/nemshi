@@ -49,7 +49,7 @@ const SayembaraCard = memo(function SayembaraCard({ item }: { item: SayembaraLis
         </span>
       </div>
 
-      <h3 className="line-clamp-2 text-[13px] font-normal leading-4 text-charcoal sm:text-xl sm:leading-[26px]">
+      <h3 className="line-clamp-2 text-[13px] font-bold leading-4 text-charcoal sm:text-xl sm:leading-[26px]">
         {item.title}
       </h3>
 

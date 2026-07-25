@@ -3,15 +3,8 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Header } from "@/components/layout/header";
-import {
-  BankIcon,
-  ClockIcon,
-  CreditCardIcon,
-  QrCodeIcon,
-  StoreIcon,
-  WalletIcon,
-  ZapIcon,
-} from "@/components/icons";
+import { ZapIcon } from "@/components/icons";
+import { paymentMethods } from "@/lib/payment-methods";
 import type { PlanId, UserQuota } from "@/lib/server/quota-store";
 
 interface PlanInfo {
@@ -60,15 +53,6 @@ const PLANS: Record<PlanId, PlanInfo> = {
     ],
   },
 };
-
-const paymentMethods = [
-  { icon: QrCodeIcon, label: "QRIS", detail: "Scan sekali, semua e-wallet" },
-  { icon: WalletIcon, label: "E-Wallet", detail: "GoPay, OVO, DANA, ShopeePay" },
-  { icon: BankIcon, label: "Transfer Bank", detail: "Virtual account semua bank" },
-  { icon: CreditCardIcon, label: "Kartu Kredit", detail: "Visa, Mastercard" },
-  { icon: ClockIcon, label: "Paylater", detail: "Cicilan tanpa kartu" },
-  { icon: StoreIcon, label: "Minimarket", detail: "Alfamart" },
-];
 
 const inputClass =
   "h-11 w-full rounded-input border border-border bg-white px-4 text-[14px] text-charcoal placeholder:text-muted focus:border-cta focus:outline-none focus:ring-3 focus:ring-cta/10";

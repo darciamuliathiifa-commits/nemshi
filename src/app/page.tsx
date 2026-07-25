@@ -46,7 +46,7 @@ export default function LandingPage() {
               width={1090}
               height={1317}
               aria-hidden
-              className="pointer-events-none absolute -left-2 top-1/2 w-14 -translate-y-1/2 animate-[float-a_6s_ease-in-out_infinite] select-none sm:-left-8 sm:w-[100px] lg:-left-16 lg:w-[120px]"
+              className="pointer-events-none absolute top-1/2 hidden w-[100px] -translate-y-1/2 animate-[float-a_6s_ease-in-out_infinite] select-none sm:-left-8 sm:block lg:-left-16 lg:w-[120px]"
             />
 
             <Image
@@ -64,7 +64,7 @@ export default function LandingPage() {
               width={939}
               height={1209}
               aria-hidden
-              className="pointer-events-none absolute -right-2 top-1/2 w-12 -translate-y-1/2 animate-[float-b_7s_ease-in-out_infinite] select-none sm:-right-8 sm:w-[90px] lg:-right-14 lg:w-[108px]"
+              className="pointer-events-none absolute top-1/2 hidden w-[90px] -translate-y-1/2 animate-[float-b_7s_ease-in-out_infinite] select-none sm:-right-8 sm:block lg:-right-14 lg:w-[108px]"
             />
           </div>
 

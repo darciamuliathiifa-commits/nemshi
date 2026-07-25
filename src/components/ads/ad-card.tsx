@@ -32,13 +32,9 @@ export const AdCard = memo(function AdCard({ ad }: { ad: Ad }) {
     <div className="relative flex flex-col overflow-hidden rounded-card border-2 border-ink bg-white shadow-[2px_2px_0_0_rgba(20,20,20,1)] transition-transform duration-200 hover:-translate-y-1 sm:border-[2.5px] sm:shadow-[3px_3px_0_0_rgba(20,20,20,1)]">
       <Link href={`/jelajahi/${ad.id}`} className="flex flex-1 flex-col">
         <div
-          className={`flex h-20 items-start justify-between bg-gradient-to-br px-2.5 py-2 sm:h-36 sm:px-4 sm:py-3 ${categoryAccent[ad.category]}`}
+          className={`flex h-20 items-start justify-end bg-gradient-to-br px-2.5 py-2 sm:h-36 sm:px-4 sm:py-3 ${categoryAccent[ad.category]}`}
         >
-          <span className="hidden rounded-badge bg-highlight px-3 py-1 text-[12px] leading-4 font-bold text-white sm:inline-block">
-            {ad.category}
-          </span>
-
-          <div className="ml-auto flex flex-col items-end gap-1 sm:ml-0 sm:gap-2">
+          <div className="flex flex-col items-end gap-1 sm:gap-2">
             <button
               type="button"
               onClick={(event) => {
