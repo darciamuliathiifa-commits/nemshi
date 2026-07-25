@@ -8,6 +8,7 @@ import { FeaturedCarousel } from "@/components/ads/featured-carousel";
 import {
   BookIcon,
   BoxIcon,
+  ChevronDownIcon,
   ChevronRightIcon,
   GridIcon,
   MapPinIcon,
@@ -73,12 +74,50 @@ function SidebarRow({
   );
 }
 
+function FilterSection({
+  title,
+  open,
+  onToggle,
+  children,
+}: {
+  title: string;
+  open: boolean;
+  onToggle: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="rounded-card border-[2.5px] border-ink bg-white shadow-[3px_3px_0_0_rgba(20,20,20,1)]">
+      <button
+        type="button"
+        onClick={onToggle}
+        aria-expanded={open}
+        className="flex w-full items-center justify-between gap-2 p-5 text-left"
+      >
+        <span className="text-[12px] font-bold text-muted-foreground">{title}</span>
+        <ChevronDownIcon
+          width={16}
+          height={16}
+          className={`shrink-0 text-charcoal transition-transform ${open ? "rotate-180" : ""}`}
+        />
+      </button>
+
+      {open && (
+        <div className="max-h-[320px] overflow-y-auto px-5 pb-5 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          <div className="flex flex-col gap-1">{children}</div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export function AdBrowser({ ads }: { ads: Ad[] }) {
   const [activeCategory, setActiveCategory] = useState<AdCategory | "Semua">(
     "Semua",
   );
   const [keyword, setKeyword] = useState("");
   const [location, setLocation] = useState("Semua Lokasi");
+  const [categoryOpen, setCategoryOpen] = useState(true);
+  const [locationOpen, setLocationOpen] = useState(true);
 
   const featuredAds = useMemo(() => ads.filter((ad) => ad.featured), [ads]);
 
@@ -195,53 +234,55 @@ export function AdBrowser({ ads }: { ads: Ad[] }) {
       </div>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[240px_1fr] lg:items-start">
-        <aside className="flex max-h-[500px] flex-col gap-6 overflow-y-auto rounded-card border-[2.5px] border-ink bg-white p-5 shadow-[3px_3px_0_0_rgba(20,20,20,1)] [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:sticky lg:top-24">
-          <div>
-            <p className="px-3 text-[12px] font-bold text-muted-foreground">Kategori</p>
-            <div className="mt-2 flex flex-col gap-1">
+        <aside className="flex flex-col gap-4 lg:sticky lg:top-24">
+          <FilterSection
+            title="Kategori"
+            open={categoryOpen}
+            onToggle={() => setCategoryOpen((prev) => !prev)}
+          >
+            <SidebarRow
+              icon={GridIcon}
+              label="Semua Produk"
+              count={ads.length}
+              active={activeCategory === "Semua"}
+              onClick={() => setActiveCategory("Semua")}
+            />
+            {categories.map((category) => (
               <SidebarRow
-                icon={GridIcon}
-                label="Semua Produk"
-                count={ads.length}
-                active={activeCategory === "Semua"}
-                onClick={() => setActiveCategory("Semua")}
+                key={category}
+                icon={categoryIcons[category]}
+                label={category}
+                count={categoryCounts.get(category) ?? 0}
+                active={activeCategory === category}
+                onClick={() => setActiveCategory(category)}
               />
-              {categories.map((category) => (
-                <SidebarRow
-                  key={category}
-                  icon={categoryIcons[category]}
-                  label={category}
-                  count={categoryCounts.get(category) ?? 0}
-                  active={activeCategory === category}
-                  onClick={() => setActiveCategory(category)}
-                />
-              ))}
-            </div>
-          </div>
+            ))}
+          </FilterSection>
 
           {locations.length > 0 && (
-            <div className="border-t border-border-subtle pt-4">
-              <p className="px-3 text-[12px] font-bold text-muted-foreground">Lokasi</p>
-              <div className="mt-2 flex flex-col gap-1">
+            <FilterSection
+              title="Lokasi"
+              open={locationOpen}
+              onToggle={() => setLocationOpen((prev) => !prev)}
+            >
+              <SidebarRow
+                icon={MapPinIcon}
+                label="Semua Lokasi"
+                count={ads.length}
+                active={location === "Semua Lokasi"}
+                onClick={() => setLocation("Semua Lokasi")}
+              />
+              {locations.map((loc) => (
                 <SidebarRow
+                  key={loc}
                   icon={MapPinIcon}
-                  label="Semua Lokasi"
-                  count={ads.length}
-                  active={location === "Semua Lokasi"}
-                  onClick={() => setLocation("Semua Lokasi")}
+                  label={loc}
+                  count={locationCounts.get(loc) ?? 0}
+                  active={location === loc}
+                  onClick={() => setLocation(loc)}
                 />
-                {locations.map((loc) => (
-                  <SidebarRow
-                    key={loc}
-                    icon={MapPinIcon}
-                    label={loc}
-                    count={locationCounts.get(loc) ?? 0}
-                    active={location === loc}
-                    onClick={() => setLocation(loc)}
-                  />
-                ))}
-              </div>
-            </div>
+              ))}
+            </FilterSection>
           )}
         </aside>
 
