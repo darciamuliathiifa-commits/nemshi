@@ -1,11 +1,11 @@
 "use client";
 
-import { useRef } from "react";
+import { memo, useRef } from "react";
 import Link from "next/link";
 import type { Ad } from "@/lib/types";
 import { ChevronLeftIcon, ChevronRightIcon, MapPinIcon, StarIcon } from "@/components/icons";
 
-export function FeaturedCarousel({ ads }: { ads: Ad[] }) {
+export const FeaturedCarousel = memo(function FeaturedCarousel({ ads }: { ads: Ad[] }) {
   const scrollerRef = useRef<HTMLDivElement>(null);
 
   function scroll(direction: 1 | -1) {
@@ -79,4 +79,4 @@ export function FeaturedCarousel({ ads }: { ads: Ad[] }) {
       </div>
     </section>
   );
-}
+});

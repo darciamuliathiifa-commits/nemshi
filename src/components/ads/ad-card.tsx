@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import Link from "next/link";
 import type { Ad } from "@/lib/types";
 import { BookmarkIcon, MapPinIcon } from "@/components/icons";
@@ -14,7 +15,7 @@ const categoryAccent: Record<Ad["category"], string> = {
   Lainnya: "from-zinc-100 to-zinc-50",
 };
 
-export function AdCard({ ad }: { ad: Ad }) {
+export const AdCard = memo(function AdCard({ ad }: { ad: Ad }) {
   const { isSaved, toggleSaved } = useSavedAds();
   const saved = isSaved(ad.id);
 
@@ -110,4 +111,4 @@ export function AdCard({ ad }: { ad: Ad }) {
       </div>
     </div>
   );
-}
+});
