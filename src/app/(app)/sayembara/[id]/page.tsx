@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Header } from "@/components/layout/header";
 import { MapPinIcon, UserIcon } from "@/components/icons";
@@ -27,6 +28,38 @@ interface SayembaraDetailRow {
   status: string;
   created_at: string;
   profiles: { name: string } | { name: string }[] | null;
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+
+  const supabase = await createSupabaseServerClient();
+  if (!supabase) return { title: "Nemsy!" };
+
+  const { data } = await supabase
+    .from("sayembara")
+    .select("title, description")
+    .eq("id", id)
+    .maybeSingle();
+
+  if (!data) return { title: "Sayembara tidak ditemukan | Nemsy!" };
+
+  const title = `${data.title} | Nemsy!`;
+  const description = data.description.slice(0, 160);
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      images: ["/nemsy-logo-fix.png"],
+    },
+  };
 }
 
 export default async function SayembaraDetailPage({
@@ -72,6 +105,7 @@ export default async function SayembaraDetailPage({
       .select("id, title, description, category, location, price_label, wa_nego, status, created_at")
       .eq("category", row.category)
       .eq("status", "Aktif")
+      .or(`expires_at.is.null,expires_at.gt.${new Date().toISOString()}`)
       .neq("id", row.id)
       .order("created_at", { ascending: false })
       .limit(4),

@@ -40,7 +40,7 @@ const PLANS: Record<PlanId, PlanInfo> = {
     name: "Slot Sayembara Tambahan",
     price: "Rp 12.000",
     period: "/ posting",
-    benefits: ["1x jatah pasang sayembara tambahan, aktif 1 minggu"],
+    benefits: ["1x jatah pasang sayembara tambahan, aktif 2 minggu"],
   },
   hemat: {
     id: "hemat",
@@ -275,7 +275,7 @@ export default function PaketPlusPage() {
                           Bayar per Posting
                         </p>
                         <p className="mt-0.5 text-[14px] font-normal text-charcoal">
-                          Rp 12.000 sekali posting, aktif 1 minggu
+                          Rp 12.000 sekali posting, aktif 2 minggu
                         </p>
                       </div>
                       <button

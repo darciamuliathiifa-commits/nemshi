@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 
 interface RegisterApplicantBody {
   name?: string;
@@ -115,7 +116,7 @@ export async function POST(
 
   const { data: sayembara, error: sayembaraError } = await supabase
     .from("sayembara")
-    .select("id, status")
+    .select("id, status, title, owner_id")
     .eq("id", id)
     .maybeSingle();
 
@@ -142,6 +143,20 @@ export async function POST(
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+
+  // The applicant registering usually isn't logged in as the sayembara
+  // owner (often not logged in at all), so this write needs the
+  // service-role client — same reasoning as mayar_transactions.
+  const adminClient = createSupabaseAdminClient();
+  if (adminClient) {
+    await adminClient.from("notifications").insert({
+      user_id: sayembara.owner_id,
+      type: "sayembara_applicant",
+      title: "Ada pendaftar baru",
+      body: `${name} mendaftar sebagai penyedia jasa untuk sayembara "${sayembara.title}".`,
+      link: `/sayembara/${id}/pendaftar`,
+    });
   }
 
   return NextResponse.json(

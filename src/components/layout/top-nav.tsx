@@ -17,6 +17,7 @@ import {
   ZapIcon,
 } from "@/components/icons";
 import { TickerBar } from "@/components/layout/ticker-bar";
+import { NotificationBell } from "@/components/layout/notification-bell";
 import type { UserQuota } from "@/lib/server/quota-store";
 
 const navItems = [
@@ -105,6 +106,7 @@ export function TopNav() {
             >
               <SearchIcon width={18} height={18} />
             </Link>
+            <NotificationBell />
             <Link
               href="/profil"
               className="flex h-10 w-10 items-center justify-center rounded-full bg-surface text-charcoal transition-colors hover:bg-brand"

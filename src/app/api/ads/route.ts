@@ -269,6 +269,14 @@ export async function POST(request: Request) {
     ? new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString()
     : null;
 
+  // Free slot: aktif 3 hari. Any paid/bonus extra slot (one-off purchase,
+  // or granted by Plus/Hemat): aktif 2 minggu, matching the pricing copy.
+  const usingFreeSlot = !quota.freeAdSlotUsed;
+  const durationDays = usingFreeSlot ? 3 : 14;
+  const expiresAt = new Date(
+    Date.now() + durationDays * 24 * 60 * 60 * 1000,
+  ).toISOString();
+
   const { data: ad, error } = await supabase
     .from("ads")
     .insert({
@@ -286,6 +294,7 @@ export async function POST(request: Request) {
       estimated_duration: kind === "jasa" ? estimatedDuration : null,
       flag_reason: flagged ? reasons.join("; ") : null,
       featured_until: featuredUntil,
+      expires_at: expiresAt,
     })
     .select("id, status")
     .single();

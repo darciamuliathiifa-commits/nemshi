@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import Link from "next/link";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Header } from "@/components/layout/header";
 import { MapPinIcon, UserIcon } from "@/components/icons";
@@ -65,9 +66,42 @@ async function ActiveAdsCount({ ownerId }: { ownerId: string }) {
     .from("ads")
     .select("id", { count: "exact", head: true })
     .eq("owner_id", ownerId)
-    .eq("status", "Aktif");
+    .eq("status", "Aktif")
+    .or(`expires_at.is.null,expires_at.gt.${new Date().toISOString()}`);
 
   return <>{count ?? 0} iklan aktif</>;
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+
+  const supabase = createSupabasePublicClient();
+  if (!supabase) return { title: "Nemsy!" };
+
+  const { data } = await supabase
+    .from("ads")
+    .select("title, description, price_label")
+    .eq("id", id)
+    .maybeSingle();
+
+  if (!data) return { title: "Iklan tidak ditemukan | Nemsy!" };
+
+  const title = `${data.title} · ${data.price_label} | Nemsy!`;
+  const description = data.description.slice(0, 160);
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      images: ["/nemsy-logo-fix.png"],
+    },
+  };
 }
 
 export default async function AdDetailPage({
@@ -148,6 +182,7 @@ export default async function AdDetailPage({
     .select("id, kind, title, category, price_label, location")
     .eq("category", row.category)
     .eq("status", "Aktif")
+    .or(`expires_at.is.null,expires_at.gt.${new Date().toISOString()}`)
     .neq("id", row.id)
     .order("created_at", { ascending: false })
     .limit(4);

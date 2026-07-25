@@ -1,0 +1,59 @@
+import { NextResponse } from "next/server";
+import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+
+// Runs daily via Vercel Cron (see vercel.json). Public browse queries already
+// filter out ads/sayembara whose expires_at has passed, so this doesn't
+// affect what's shown — it just syncs the `status` column to "Kedaluwarsa"
+// so things like "Iklan Saya" filters and status badges stay accurate too.
+export async function GET(request: Request) {
+  const authHeader = request.headers.get("authorization");
+  const expectedSecret = process.env.CRON_SECRET;
+
+  if (!expectedSecret) {
+    return NextResponse.json(
+      { error: "CRON_SECRET belum diset." },
+      { status: 500 },
+    );
+  }
+  if (authHeader !== `Bearer ${expectedSecret}`) {
+    return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
+  }
+
+  const supabase = createSupabaseAdminClient();
+  if (!supabase) {
+    return NextResponse.json(
+      { error: "Supabase admin belum dikonfigurasi." },
+      { status: 500 },
+    );
+  }
+
+  const now = new Date().toISOString();
+
+  const [{ data: expiredAds, error: adsError }, { data: expiredSayembara, error: sayembaraError }] =
+    await Promise.all([
+      supabase
+        .from("ads")
+        .update({ status: "Kedaluwarsa" })
+        .eq("status", "Aktif")
+        .lt("expires_at", now)
+        .select("id"),
+      supabase
+        .from("sayembara")
+        .update({ status: "Kedaluwarsa" })
+        .eq("status", "Aktif")
+        .lt("expires_at", now)
+        .select("id"),
+    ]);
+
+  if (adsError || sayembaraError) {
+    return NextResponse.json(
+      { error: adsError?.message || sayembaraError?.message },
+      { status: 500 },
+    );
+  }
+
+  return NextResponse.json({
+    expiredAds: expiredAds?.length ?? 0,
+    expiredSayembara: expiredSayembara?.length ?? 0,
+  });
+}

@@ -38,7 +38,8 @@ export async function GET() {
         .from("ads")
         .select("id", { count: "exact", head: true })
         .eq("owner_id", user.id)
-        .eq("status", "Aktif"),
+        .eq("status", "Aktif")
+        .or(`expires_at.is.null,expires_at.gt.${new Date().toISOString()}`),
     ]);
 
   if (profileError) {

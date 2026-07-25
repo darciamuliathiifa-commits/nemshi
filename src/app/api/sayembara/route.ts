@@ -171,6 +171,15 @@ export async function POST(request: Request) {
     ? new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString()
     : null;
 
+  // Free slot: aktif 1 hari. Any paid/bonus extra slot: aktif 2 minggu —
+  // the quota pool doesn't track which purchase granted a given extra slot,
+  // so every source of an extra sayembara slot shares the same duration.
+  const usingFreeSlot = !quota.freeSayembaraSlotUsed;
+  const durationDays = usingFreeSlot ? 1 : 14;
+  const expiresAt = new Date(
+    Date.now() + durationDays * 24 * 60 * 60 * 1000,
+  ).toISOString();
+
   const { data, error } = await supabase
     .from("sayembara")
     .insert({
@@ -182,6 +191,7 @@ export async function POST(request: Request) {
       price_label: priceLabel,
       wa_nego: waNego,
       featured_until: featuredUntil,
+      expires_at: expiresAt,
     })
     .select(
       "id, title, description, category, location, price_label, wa_nego, status, created_at",

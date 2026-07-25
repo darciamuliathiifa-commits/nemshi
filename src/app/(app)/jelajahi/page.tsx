@@ -49,6 +49,7 @@ export default async function EksplorPage() {
          profiles!owner_id ( id, name, whatsapp_number, created_at )`,
       )
       .eq("status", "Aktif")
+      .or(`expires_at.is.null,expires_at.gt.${new Date().toISOString()}`)
       .order("created_at", { ascending: false });
 
     const rows = (data ?? []) as unknown as AdRow[];
@@ -60,6 +61,7 @@ export default async function EksplorPage() {
         .from("ads")
         .select("owner_id")
         .eq("status", "Aktif")
+        .or(`expires_at.is.null,expires_at.gt.${new Date().toISOString()}`)
         .in("owner_id", ownerIds);
 
       for (const row of (activeAdsRows ?? []) as { owner_id: string }[]) {

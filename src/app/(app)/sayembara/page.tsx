@@ -31,6 +31,8 @@ export default async function SayembaraPage() {
         `id, title, description, category, location, price_label, wa_nego, status, created_at, featured_until,
          profiles!owner_id ( name )`,
       )
+      .eq("status", "Aktif")
+      .or(`expires_at.is.null,expires_at.gt.${new Date().toISOString()}`)
       .order("created_at", { ascending: false });
 
     const rows = (data ?? []) as unknown as SayembaraRow[];

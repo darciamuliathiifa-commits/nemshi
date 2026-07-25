@@ -54,12 +54,14 @@ export default async function PublicProfilePage({
       )
       .eq("owner_id", profile.id)
       .eq("status", "Aktif")
+      .or(`expires_at.is.null,expires_at.gt.${new Date().toISOString()}`)
       .order("created_at", { ascending: false }),
     supabase
       .from("ads")
       .select("id", { count: "exact", head: true })
       .eq("owner_id", profile.id)
-      .eq("status", "Aktif"),
+      .eq("status", "Aktif")
+      .or(`expires_at.is.null,expires_at.gt.${new Date().toISOString()}`),
   ]);
 
   const joinedYear = new Date(profile.created_at).getFullYear();
