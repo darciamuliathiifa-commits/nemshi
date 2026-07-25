@@ -39,11 +39,20 @@ const SayembaraCard = memo(function SayembaraCard({ item }: { item: SayembaraLis
       className="flex flex-col gap-1.5 rounded-card border-2 border-ink bg-white p-3 shadow-[2px_2px_0_0_rgba(20,20,20,1)] transition-transform hover:-translate-y-0.5 sm:gap-3 sm:border-[2.5px] sm:p-6 sm:shadow-[3px_3px_0_0_rgba(20,20,20,1)]"
     >
       <div className="flex items-center justify-end gap-2">
-        <span
-          className={`rounded-badge px-2 py-0.5 text-[10px] leading-3 font-bold sm:px-3 sm:py-1 sm:text-[12px] sm:leading-4 ${statusAccent[item.status] ?? statusAccent.Aktif}`}
-        >
-          {item.status}
-        </span>
+        {item.status === "Aktif" ? (
+          <span
+            className="h-2.5 w-2.5 shrink-0 rounded-full bg-success sm:h-3 sm:w-3"
+            role="status"
+            aria-label="Aktif"
+            title="Aktif"
+          />
+        ) : (
+          <span
+            className={`rounded-badge px-2 py-0.5 text-[10px] leading-3 font-bold sm:px-3 sm:py-1 sm:text-[12px] sm:leading-4 ${statusAccent[item.status] ?? statusAccent.Aktif}`}
+          >
+            {item.status}
+          </span>
+        )}
       </div>
 
       <h3 className="line-clamp-2 text-[13px] font-bold leading-4 text-charcoal sm:text-xl sm:leading-[26px]">
