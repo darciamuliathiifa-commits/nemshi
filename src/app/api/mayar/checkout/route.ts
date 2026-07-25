@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { createMayarInvoice, MayarNotConfiguredError } from "@/lib/server/mayar";
 import { PLAN_PRICE_IDR, type PlanId } from "@/lib/server/quota-store";
 
@@ -105,7 +106,17 @@ export async function POST(request: Request) {
     );
   }
 
-  const { error: insertError } = await supabase.from("mayar_transactions").insert({
+  // mayar_transactions only has a SELECT RLS policy for users — the insert
+  // needs the service-role client, same reasoning as the webhook.
+  const adminClient = createSupabaseAdminClient();
+  if (!adminClient) {
+    return NextResponse.json(
+      { error: "Supabase admin belum dikonfigurasi." },
+      { status: 500 },
+    );
+  }
+
+  const { error: insertError } = await adminClient.from("mayar_transactions").insert({
     user_id: user.id,
     plan_id: planId,
     amount,

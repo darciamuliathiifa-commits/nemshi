@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { AD_CATEGORIES } from "@/lib/types";
 import { evaluateAdSubmission } from "@/lib/server/ad-filter";
 import { consumeAdSlot, getQuota, hasAdSlotAvailable } from "@/lib/server/quota-store";
@@ -290,7 +291,12 @@ export async function POST(request: Request) {
     );
   }
 
-  await consumeAdSlot(supabase, user.id, quota);
+  // user_quotas only has a SELECT RLS policy for users — writes need the
+  // service-role client, same reasoning as the Mayar webhook.
+  const adminClient = createSupabaseAdminClient();
+  if (adminClient) {
+    await consumeAdSlot(adminClient, user.id, quota);
+  }
 
   return NextResponse.json({ id: ad.id, status: ad.status }, { status: 201 });
 }
