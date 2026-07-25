@@ -49,6 +49,7 @@ export default function PaketPlusPage() {
   const [quota, setQuota] = useState<UserQuota | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [mobile, setMobile] = useState("");
+  const [manualLink, setManualLink] = useState<string | null>(null);
 
   useEffect(() => {
     fetch("/api/profile")
@@ -59,40 +60,41 @@ export default function PaketPlusPage() {
       .catch(() => {});
   }, []);
 
+  async function pollQuota() {
+    setStep("confirming");
+
+    for (let attempt = 0; attempt < POLL_ATTEMPTS; attempt += 1) {
+      try {
+        const res = await fetch("/api/mayar/quota");
+        if (res.ok) {
+          const data: UserQuota = await res.json();
+          if (data.plan === "plus") {
+            setQuota(data);
+            setStep("success");
+            // This page load is the popup Mayar redirected after payment —
+            // close it automatically, the main tab is already polling too.
+            if (window.opener) {
+              setTimeout(() => window.close(), 2000);
+            }
+            return;
+          }
+        }
+      } catch {
+        // keep polling — a transient failure isn't final
+      }
+      await new Promise((resolve) => setTimeout(resolve, POLL_INTERVAL_MS));
+    }
+    setStep("pending");
+  }
+
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get("status") !== "return") return;
 
-    let cancelled = false;
-
-    async function pollQuota() {
-      setStep("confirming");
-
-      for (let attempt = 0; attempt < POLL_ATTEMPTS; attempt += 1) {
-        try {
-          const res = await fetch("/api/mayar/quota");
-          if (res.ok) {
-            const data: UserQuota = await res.json();
-            if (data.plan === "plus") {
-              if (!cancelled) {
-                setQuota(data);
-                setStep("success");
-              }
-              return;
-            }
-          }
-        } catch {
-          // keep polling — a transient failure isn't final
-        }
-        await new Promise((resolve) => setTimeout(resolve, POLL_INTERVAL_MS));
-      }
-      if (!cancelled) setStep("pending");
-    }
-
-    pollQuota();
-    return () => {
-      cancelled = true;
-    };
+    (async () => {
+      await Promise.resolve();
+      pollQuota();
+    })();
   }, []);
 
   async function handlePay() {
@@ -103,6 +105,7 @@ export default function PaketPlusPage() {
 
     setStep("redirecting");
     setError(null);
+    setManualLink(null);
 
     try {
       const response = await fetch("/api/mayar/checkout", {
@@ -117,7 +120,22 @@ export default function PaketPlusPage() {
         throw new Error(result.error ?? "Gagal membuat invoice pembayaran.");
       }
 
-      window.location.href = result.link;
+      const popup = window.open(
+        result.link,
+        "mayarCheckout",
+        "width=480,height=760,noopener=no",
+      );
+
+      if (!popup) {
+        setManualLink(result.link);
+        setError(
+          "Popup diblokir browser. Klik tombol di bawah untuk buka pembayaran secara manual.",
+        );
+        setStep("checkout");
+        return;
+      }
+
+      pollQuota();
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "Gagal menghubungkan ke Mayar. Coba lagi.",
@@ -326,13 +344,25 @@ export default function PaketPlusPage() {
                 <p className="mt-3 text-[14px] font-normal text-error">{error}</p>
               )}
 
-              <button
-                type="button"
-                onClick={handlePay}
-                className="mt-6 flex h-11 w-full items-center justify-center rounded-pill bg-charcoal text-base font-bold text-white transition-colors hover:bg-black"
-              >
-                Bayar dengan Mayar
-              </button>
+              {manualLink ? (
+                <a
+                  href={manualLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => pollQuota()}
+                  className="mt-6 flex h-11 w-full items-center justify-center rounded-pill bg-charcoal text-base font-bold text-white transition-colors hover:bg-black"
+                >
+                  Buka Pembayaran Mayar
+                </a>
+              ) : (
+                <button
+                  type="button"
+                  onClick={handlePay}
+                  className="mt-6 flex h-11 w-full items-center justify-center rounded-pill bg-charcoal text-base font-bold text-white transition-colors hover:bg-black"
+                >
+                  Bayar dengan Mayar
+                </button>
+              )}
             </>
           )}
 
