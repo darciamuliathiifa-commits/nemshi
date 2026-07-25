@@ -77,21 +77,6 @@ export default async function SayembaraDetailPage({
       .limit(4),
   ]);
 
-  let applicants: { name: string; contact: string; appliedAt: string }[] = [];
-  if (isOwner) {
-    const { data: applicantRows } = await supabase
-      .from("sayembara_applicants")
-      .select("applicant_name, contact, created_at")
-      .eq("sayembara_id", row.id)
-      .order("created_at", { ascending: true });
-
-    applicants = (applicantRows ?? []).map((applicant) => ({
-      name: applicant.applicant_name,
-      contact: applicant.contact,
-      appliedAt: formatRelativeTime(applicant.created_at),
-    }));
-  }
-
   const related = relatedRows ?? [];
 
   return (
@@ -191,40 +176,19 @@ export default async function SayembaraDetailPage({
               {isOwner ? (
                 <>
                   <h3 className="text-base font-bold text-charcoal">
-                    Daftar Pendaftar ({applicants.length})
+                    Pendaftar ({applicantCount ?? 0})
                   </h3>
-
-                  {applicants.length > 0 ? (
-                    <div className="mt-4 flex flex-col gap-3">
-                      {applicants.map((applicant) => (
-                        <div
-                          key={applicant.contact}
-                          className="flex items-center justify-between gap-3 rounded-input border border-border-subtle px-4 py-3"
-                        >
-                          <div className="flex items-center gap-3">
-                            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-black/20 text-ink">
-                              <UserIcon width={16} height={16} />
-                            </div>
-                            <div>
-                              <p className="text-[14px] font-bold text-charcoal">
-                                {applicant.name}
-                              </p>
-                              <p className="text-[12px] font-normal text-muted-foreground">
-                                {applicant.contact}
-                              </p>
-                            </div>
-                          </div>
-                          <span className="text-[12px] text-muted-foreground">
-                            {applicant.appliedAt}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <p className="mt-2 text-[14px] font-normal text-muted-foreground">
-                      Belum ada yang mendaftar untuk sayembara ini.
-                    </p>
-                  )}
+                  <p className="mt-1 text-[14px] font-normal text-muted-foreground">
+                    {(applicantCount ?? 0) > 0
+                      ? "Lihat siapa saja yang mendaftar dan hubungi mereka langsung."
+                      : "Belum ada yang mendaftar untuk sayembara ini."}
+                  </p>
+                  <Link
+                    href={`/sayembara/${row.id}/pendaftar`}
+                    className="mt-4 flex h-11 w-full items-center justify-center rounded-pill bg-charcoal text-base font-bold text-white transition-colors hover:bg-black"
+                  >
+                    Lihat Pendaftar
+                  </Link>
                 </>
               ) : (
                 <>

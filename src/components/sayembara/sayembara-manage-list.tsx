@@ -127,6 +127,12 @@ export function SayembaraManageList({ items: initialItems }: { items: MySayembar
                   </span>
                 ) : (
                   <>
+                    <Link
+                      href={`/sayembara/${item.id}/pendaftar`}
+                      className="flex h-9 w-full items-center justify-center rounded-pill bg-charcoal text-[14px] font-bold text-white transition-colors hover:bg-black"
+                    >
+                      Lihat Pendaftar ({item.applicantCount})
+                    </Link>
                     <div className="flex gap-2">
                       <Link
                         href={`/sayembara/${item.id}/edit`}
