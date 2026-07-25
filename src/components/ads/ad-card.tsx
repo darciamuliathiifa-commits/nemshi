@@ -29,16 +29,16 @@ export const AdCard = memo(function AdCard({ ad }: { ad: Ad }) {
   )}`;
 
   return (
-    <div className="relative flex flex-col overflow-hidden rounded-card border-[2.5px] border-ink bg-white shadow-[3px_3px_0_0_rgba(20,20,20,1)] transition-transform duration-200 hover:-translate-y-1">
+    <div className="relative flex flex-col overflow-hidden rounded-card border-2 border-ink bg-white shadow-[2px_2px_0_0_rgba(20,20,20,1)] transition-transform duration-200 hover:-translate-y-1 sm:border-[2.5px] sm:shadow-[3px_3px_0_0_rgba(20,20,20,1)]">
       <Link href={`/jelajahi/${ad.id}`} className="flex flex-1 flex-col">
         <div
-          className={`flex h-36 items-start justify-between bg-gradient-to-br px-4 py-3 ${categoryAccent[ad.category]}`}
+          className={`flex h-20 items-start justify-between bg-gradient-to-br px-2.5 py-2 sm:h-36 sm:px-4 sm:py-3 ${categoryAccent[ad.category]}`}
         >
-          <span className="rounded-badge bg-highlight px-3 py-1 text-[12px] leading-4 font-bold text-white">
+          <span className="rounded-badge bg-highlight px-2 py-0.5 text-[10px] leading-3 font-bold text-white sm:px-3 sm:py-1 sm:text-[12px] sm:leading-4">
             {ad.category}
           </span>
 
-          <div className="flex flex-col items-end gap-2">
+          <div className="flex flex-col items-end gap-1 sm:gap-2">
             <button
               type="button"
               onClick={(event) => {
@@ -48,63 +48,65 @@ export const AdCard = memo(function AdCard({ ad }: { ad: Ad }) {
               }}
               aria-pressed={saved}
               aria-label={saved ? "Hapus dari tersimpan" : "Simpan iklan"}
-              className="flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-charcoal shadow-sm transition-colors hover:bg-white"
+              className="flex h-6 w-6 items-center justify-center rounded-full bg-white/90 text-charcoal shadow-sm transition-colors hover:bg-white sm:h-8 sm:w-8"
             >
               <BookmarkIcon
-                width={16}
-                height={16}
+                width={13}
+                height={13}
                 fill={saved ? "currentColor" : "none"}
                 className={saved ? "text-cta" : "text-charcoal"}
               />
             </button>
-            <span className="rounded-badge bg-charcoal/80 px-3 py-1 text-[12px] leading-4 font-bold text-white">
+            <span className="rounded-badge bg-charcoal/80 px-2 py-0.5 text-[10px] leading-3 font-bold text-white sm:px-3 sm:py-1 sm:text-[12px] sm:leading-4">
               {ad.kind === "produk" ? "Produk" : "Jasa"}
             </span>
           </div>
         </div>
 
-        <div className="flex flex-1 flex-col px-5 pt-5 text-left">
-          <h3 className="line-clamp-2 min-h-[2.5em] text-base font-bold leading-5 text-charcoal">
+        <div className="flex flex-1 flex-col px-2.5 pt-2.5 text-left sm:px-5 sm:pt-5">
+          <h3 className="line-clamp-2 min-h-[2.2em] text-[12.5px] font-bold leading-4 text-charcoal sm:min-h-[2.5em] sm:text-base sm:leading-5">
             {ad.title}
           </h3>
 
-          <p className="mt-2 text-lg font-bold leading-6 text-cta">{ad.priceLabel}</p>
+          <p className="mt-1 text-[13px] font-bold leading-4 text-cta sm:mt-2 sm:text-lg sm:leading-6">
+            {ad.priceLabel}
+          </p>
 
-          <div className="mt-3 flex items-center gap-1.5 text-[13px] leading-4 font-normal text-muted-foreground">
-            <MapPinIcon width={14} height={14} className="shrink-0" />
+          <div className="mt-1.5 flex items-center gap-1 text-[10.5px] leading-3 font-normal text-muted-foreground sm:mt-3 sm:gap-1.5 sm:text-[13px] sm:leading-4">
+            <MapPinIcon width={11} height={11} className="shrink-0" />
             <span className="truncate">{ad.location}</span>
           </div>
 
           {secondaryMeta && (
-            <p className="mt-1 text-[13px] leading-4 font-normal text-muted-foreground">
+            <p className="mt-1 line-clamp-1 text-[10.5px] leading-3 font-normal text-muted-foreground sm:text-[13px] sm:leading-4">
               {secondaryMeta}
             </p>
           )}
 
-          <div className="mt-4 flex items-center justify-between gap-2 border-t border-border-subtle pt-3">
-            <span className="truncate text-[12px] leading-4 font-bold text-muted-foreground">
+          <div className="mt-2 flex items-center justify-between gap-2 border-t border-border-subtle pt-2 sm:mt-4 sm:pt-3">
+            <span className="truncate text-[10px] leading-3 font-bold text-muted-foreground sm:text-[12px] sm:leading-4">
               {ad.sellerName}
             </span>
-            <span className="shrink-0 text-[12px] leading-4 font-bold text-muted-foreground">
+            <span className="shrink-0 text-[10px] leading-3 font-bold text-muted-foreground sm:text-[12px] sm:leading-4">
               {ad.postedAt}
             </span>
           </div>
         </div>
       </Link>
 
-      <div className="flex items-center gap-2 p-5 pt-4">
+      <div className="flex items-center gap-1.5 p-2.5 pt-2 sm:gap-2 sm:p-5 sm:pt-4">
         <Link
           href={`/jelajahi/${ad.id}`}
-          className="flex h-10 flex-1 items-center justify-center rounded-pill border-2 border-ink text-[13px] font-bold text-charcoal transition-colors hover:bg-surface"
+          className="flex h-7 flex-1 items-center justify-center rounded-pill border-2 border-ink text-[10.5px] font-bold text-charcoal transition-colors hover:bg-surface sm:h-10 sm:text-[13px]"
         >
-          Lihat Detail
+          Detail
         </Link>
         <a
           href={whatsappHref}
           target="_blank"
           rel="noopener noreferrer"
           onClick={(event) => event.stopPropagation()}
-          className="flex h-10 flex-1 items-center justify-center rounded-pill bg-charcoal text-[13px] font-bold text-white transition-colors hover:bg-black"
+          className="flex h-7 flex-1 items-center justify-center rounded-pill bg-charcoal text-[10.5px] font-bold text-white transition-colors hover:bg-black sm:h-10 sm:text-[13px]"
         >
           Hubungi WA
         </a>

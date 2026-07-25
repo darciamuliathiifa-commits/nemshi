@@ -7,6 +7,7 @@ import {
   BookmarkIcon,
   ChevronDownIcon,
   CloseIcon,
+  CompassIcon,
   ListIcon,
   MegaphoneIcon,
   MenuIcon,
@@ -23,6 +24,14 @@ const navItems = [
   { href: "/sayembara", label: "Sayembara", icon: MegaphoneIcon },
   { href: "/iklan-saya", label: "Iklan Saya", icon: ListIcon },
   { href: "/tersimpan", label: "Tersimpan", icon: BookmarkIcon },
+];
+
+const drawerNavItems = [
+  { href: "/jelajahi", label: "Eksplor", icon: CompassIcon },
+  { href: "/sayembara", label: "Sayembara", icon: MegaphoneIcon },
+  { href: "/iklan-saya", label: "Iklan Saya", icon: ListIcon },
+  { href: "/tersimpan", label: "Tersimpan", icon: BookmarkIcon },
+  { href: "/profil", label: "Profil", icon: UserIcon },
 ];
 
 function slotsLeft(quota: UserQuota | null) {
@@ -165,53 +174,74 @@ export function TopNav() {
             onClick={() => setMobileOpen(false)}
             className="absolute inset-0 bg-ink/40"
           />
-          <div className="absolute right-0 top-0 flex h-full w-72 max-w-[80vw] flex-col bg-white px-4 py-6 shadow-xl">
-            <div className="flex items-center justify-between px-2">
-              <span className="text-lg font-bold tracking-tight text-charcoal">
-                Nemshi
-              </span>
-              <button
-                type="button"
-                aria-label="Tutup menu"
-                onClick={() => setMobileOpen(false)}
-                className="flex h-9 w-9 items-center justify-center rounded-full hover:bg-surface"
-              >
-                <CloseIcon width={20} height={20} />
-              </button>
+          <div className="absolute right-0 top-0 flex h-full w-80 max-w-[85vw] flex-col overflow-y-auto border-l-2 border-ink bg-white shadow-[-4px_0_0_0_rgba(20,20,20,1)]">
+            <div className="relative overflow-hidden bg-gradient-to-br from-brand-dark to-brand bg-dot-pattern px-5 py-6">
+              <div className="flex items-center justify-between">
+                <span className="text-xl font-bold tracking-tight text-charcoal">
+                  Nemshi
+                </span>
+                <button
+                  type="button"
+                  aria-label="Tutup menu"
+                  onClick={() => setMobileOpen(false)}
+                  className="flex h-9 w-9 items-center justify-center rounded-full border-2 border-ink bg-white text-charcoal transition-colors hover:bg-surface"
+                >
+                  <CloseIcon width={18} height={18} />
+                </button>
+              </div>
+
+              {slots && (
+                <div className="mt-4 flex items-center gap-2 rounded-pill border-2 border-ink bg-white px-3.5 py-2 text-[13px] font-bold text-charcoal shadow-[2px_2px_0_0_rgba(20,20,20,1)]">
+                  <ZapIcon width={14} height={14} className="shrink-0 text-cta" />
+                  Jatah: {slots.ads} Iklan · {slots.sayembara} Sayembara
+                </div>
+              )}
             </div>
 
-            {slots && (
-              <div className="mt-4 rounded-input bg-surface px-3 py-2.5 text-[13px] font-bold text-charcoal">
-                Jatah tersisa: {slots.ads} Iklan · {slots.sayembara} Sayembara
-              </div>
-            )}
-
-            <nav className="mt-6 flex flex-col gap-1">
-              {[
-                ...navItems,
-                { href: "/pasang-iklan", label: "Pasang Iklan", icon: PlusCircleIcon },
-                { href: "/sayembara/baru", label: "Pasang Sayembara", icon: MegaphoneIcon },
-                { href: "/profil", label: "Profil", icon: UserIcon },
-              ].map(
-                (item) => {
-                  const isActive = pathname?.startsWith(item.href);
-                  const Icon = item.icon;
-                  return (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      onClick={() => setMobileOpen(false)}
-                      className={`flex items-center gap-3 rounded-input px-3 py-2.5 text-base font-normal transition-colors ${
-                        isActive ? "bg-brand/40 text-charcoal" : "text-charcoal hover:bg-surface"
+            <nav className="flex flex-col gap-1.5 px-4 py-5">
+              {drawerNavItems.map((item) => {
+                const isActive = pathname?.startsWith(item.href);
+                const Icon = item.icon;
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={() => setMobileOpen(false)}
+                    className={`flex items-center gap-3 rounded-pill px-3 py-2.5 text-[15px] font-bold transition-colors ${
+                      isActive ? "bg-charcoal text-white" : "text-charcoal hover:bg-surface"
+                    }`}
+                  >
+                    <span
+                      className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${
+                        isActive ? "bg-white/20" : "bg-surface"
                       }`}
                     >
-                      {Icon && <Icon width={20} height={20} />}
-                      {item.label}
-                    </Link>
-                  );
-                },
-              )}
+                      <Icon width={16} height={16} />
+                    </span>
+                    {item.label}
+                  </Link>
+                );
+              })}
             </nav>
+
+            <div className="mt-auto flex flex-col gap-2 border-t-2 border-border-subtle px-4 py-5">
+              <Link
+                href="/pasang-iklan"
+                onClick={() => setMobileOpen(false)}
+                className="flex items-center justify-center gap-2 rounded-pill border-2 border-ink bg-white px-4 py-3 text-[14px] font-bold text-charcoal shadow-[2px_2px_0_0_rgba(20,20,20,1)] transition-transform hover:-translate-y-0.5"
+              >
+                <ListIcon width={18} height={18} />
+                Pasang Iklan
+              </Link>
+              <Link
+                href="/sayembara/baru"
+                onClick={() => setMobileOpen(false)}
+                className="flex items-center justify-center gap-2 rounded-pill bg-charcoal px-4 py-3 text-[14px] font-bold text-white shadow-[2px_2px_0_0_rgba(20,20,20,1)] transition-transform hover:-translate-y-0.5"
+              >
+                <MegaphoneIcon width={18} height={18} />
+                Pasang Sayembara
+              </Link>
+            </div>
           </div>
         </div>
       )}

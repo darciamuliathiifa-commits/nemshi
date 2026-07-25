@@ -26,6 +26,7 @@ interface AdRow {
   estimated_duration: string | null;
   whatsapp_number: string | null;
   created_at: string;
+  featured_until: string | null;
   profiles: SellerProfileRow | SellerProfileRow[] | null;
 }
 
@@ -39,7 +40,7 @@ export default async function EksplorPage() {
       .select(
         `id, owner_id, kind, title, description, category, price_label, location,
          status, condition, delivery_method, scope, estimated_duration,
-         whatsapp_number, created_at,
+         whatsapp_number, created_at, featured_until,
          profiles!owner_id ( id, name, whatsapp_number, created_at )`,
       )
       .eq("status", "Aktif")
@@ -86,7 +87,7 @@ export default async function EksplorPage() {
         deliveryMethod: row.delivery_method ?? undefined,
         scope: row.scope ?? undefined,
         estimatedDuration: row.estimated_duration ?? undefined,
-        featured: false,
+        featured: !!row.featured_until && new Date(row.featured_until) > new Date(),
       };
     });
   }

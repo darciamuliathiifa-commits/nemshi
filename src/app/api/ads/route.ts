@@ -31,6 +31,7 @@ interface AdRow {
   estimated_duration: string | null;
   whatsapp_number: string | null;
   created_at: string;
+  featured_until: string | null;
   profiles: SellerProfileRow | SellerProfileRow[] | null;
 }
 
@@ -59,7 +60,7 @@ export async function GET(request: Request) {
     .select(
       `id, owner_id, kind, title, description, category, price_label, location,
        status, condition, delivery_method, scope, estimated_duration,
-       whatsapp_number, created_at,
+       whatsapp_number, created_at, featured_until,
        profiles!owner_id ( id, name, whatsapp_number, created_at )`,
       { count: "exact" },
     )
@@ -123,6 +124,7 @@ export async function GET(request: Request) {
       estimatedDuration: row.estimated_duration,
       whatsappNumber: row.whatsapp_number ?? profile?.whatsapp_number ?? null,
       createdAt: row.created_at,
+      featured: !!row.featured_until && new Date(row.featured_until) > new Date(),
       seller: profile
         ? {
             name: profile.name,
@@ -257,6 +259,16 @@ export async function POST(request: Request) {
   const { flagged, reasons } = evaluateAdSubmission({ title, description, priceLabel });
   const status = flagged ? "Menunggu Validasi" : "Aktif";
 
+  // Active Paket Plus subscribers get 3 days of featured/exclusive
+  // placement (the "Iklan Unggulan" carousel) before the ad continues as a
+  // regular listing.
+  const isActivePlus =
+    quota.plan === "plus" &&
+    (!quota.planExpiresAt || new Date(quota.planExpiresAt) > new Date());
+  const featuredUntil = isActivePlus
+    ? new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString()
+    : null;
+
   const { data: ad, error } = await supabase
     .from("ads")
     .insert({
@@ -273,6 +285,7 @@ export async function POST(request: Request) {
       scope: kind === "jasa" ? scope : null,
       estimated_duration: kind === "jasa" ? estimatedDuration : null,
       flag_reason: flagged ? reasons.join("; ") : null,
+      featured_until: featuredUntil,
     })
     .select("id, status")
     .single();

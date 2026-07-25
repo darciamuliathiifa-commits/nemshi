@@ -34,48 +34,54 @@ const SayembaraCard = memo(function SayembaraCard({ item }: { item: SayembaraLis
   return (
     <Link
       href={`/sayembara/${item.id}`}
-      className="flex flex-col gap-3 rounded-card border-[2.5px] border-ink bg-white p-6 shadow-[3px_3px_0_0_rgba(20,20,20,1)] transition-transform hover:-translate-y-0.5"
+      className="flex flex-col gap-1.5 rounded-card border-2 border-ink bg-white p-3 shadow-[2px_2px_0_0_rgba(20,20,20,1)] transition-transform hover:-translate-y-0.5 sm:gap-3 sm:border-[2.5px] sm:p-6 sm:shadow-[3px_3px_0_0_rgba(20,20,20,1)]"
     >
       <div className="flex items-center justify-between gap-2">
-        <span className="rounded-badge bg-highlight px-3 py-1 text-[12px] leading-4 font-bold text-white">
+        <span className="rounded-badge bg-highlight px-2 py-0.5 text-[10px] leading-3 font-bold text-white sm:px-3 sm:py-1 sm:text-[12px] sm:leading-4">
           {item.category}
         </span>
         <span
-          className={`rounded-badge px-3 py-1 text-[12px] leading-4 font-bold ${statusAccent[item.status] ?? statusAccent.Aktif}`}
+          className={`rounded-badge px-2 py-0.5 text-[10px] leading-3 font-bold sm:px-3 sm:py-1 sm:text-[12px] sm:leading-4 ${statusAccent[item.status] ?? statusAccent.Aktif}`}
         >
           {item.status}
         </span>
       </div>
 
-      <h3 className="text-xl font-normal leading-[26px] text-charcoal">{item.title}</h3>
+      <h3 className="line-clamp-2 text-[13px] font-normal leading-4 text-charcoal sm:text-xl sm:leading-[26px]">
+        {item.title}
+      </h3>
 
-      <p className="text-[14px] leading-5 font-normal text-muted-foreground">
+      <p className="line-clamp-2 text-[11px] leading-4 font-normal text-muted-foreground sm:line-clamp-none sm:text-[14px] sm:leading-5">
         {item.description}
       </p>
 
       {(item.price_label || item.wa_nego) && (
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
           {item.price_label && (
-            <span className="text-[14px] font-bold text-cta">{item.price_label}</span>
+            <span className="text-[12px] font-bold text-cta sm:text-[14px]">
+              {item.price_label}
+            </span>
           )}
           {item.wa_nego && (
-            <span className="rounded-badge bg-success/10 px-2.5 py-1 text-[11px] font-bold text-success">
+            <span className="rounded-badge bg-success/10 px-2 py-0.5 text-[10px] font-bold text-success sm:px-2.5 sm:py-1 sm:text-[11px]">
               Nego via WA
             </span>
           )}
         </div>
       )}
 
-      <div className="mt-auto flex items-center justify-between border-t border-border-subtle pt-3">
-        <span className="text-[12px] font-bold text-muted-foreground">{item.location}</span>
-        <span className="rounded-badge bg-surface px-2.5 py-1 text-[12px] font-bold text-charcoal">
+      <div className="mt-auto flex items-center justify-between gap-2 border-t border-border-subtle pt-2 sm:pt-3">
+        <span className="truncate text-[10px] font-bold text-muted-foreground sm:text-[12px]">
+          {item.location}
+        </span>
+        <span className="shrink-0 rounded-badge bg-surface px-2 py-0.5 text-[10px] font-bold text-charcoal sm:px-2.5 sm:py-1 sm:text-[12px]">
           {item.applicantCount} pendaftar
         </span>
       </div>
 
-      <div className="flex items-center justify-between text-[12px] text-muted-foreground">
-        <span>{item.ownerName ?? "Pengguna Nemshi"}</span>
-        <span>{formatRelativeTime(item.created_at)}</span>
+      <div className="flex items-center justify-between gap-2 text-[10px] text-muted-foreground sm:text-[12px]">
+        <span className="truncate">{item.ownerName ?? "Pengguna Nemshi"}</span>
+        <span className="shrink-0">{formatRelativeTime(item.created_at)}</span>
       </div>
     </Link>
   );
@@ -161,7 +167,7 @@ export function SayembaraBrowser({ items }: { items: SayembaraListItem[] }) {
 
       {paginatedItems.length > 0 ? (
         <>
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-4">
             {paginatedItems.map((item) => (
               <SayembaraCard key={item.id} item={item} />
             ))}

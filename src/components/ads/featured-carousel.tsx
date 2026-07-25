@@ -21,7 +21,12 @@ export const FeaturedCarousel = memo(function FeaturedCarousel({ ads }: { ads: A
       <div className="mb-5 flex items-center justify-between">
         <div className="flex items-center gap-2.5">
           <StarIcon width={22} height={22} className="text-charcoal" />
-          <h2 className="text-2xl font-bold text-charcoal">Iklan Unggulan</h2>
+          <div>
+            <h2 className="text-2xl font-bold text-charcoal">Iklan Unggulan</h2>
+            <p className="text-[12px] font-normal text-charcoal/70">
+              Slot eksklusif Paket Plus, tayang 3 hari
+            </p>
+          </div>
         </div>
         <div className="hidden gap-2 sm:flex">
           <button

@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import type { Ad, AdCategory } from "@/lib/types";
 import { AdCard } from "@/components/ads/ad-card";
@@ -122,6 +122,15 @@ export function AdBrowser({ ads }: { ads: Ad[] }) {
   const [categoryOpen, setCategoryOpen] = useState(true);
   const [locationOpen, setLocationOpen] = useState(false);
   const [page, setPage] = useState(1);
+
+  useEffect(() => {
+    // syncing initial open/closed state with viewport size on mount (window is unavailable during SSR, so this can't be derived during render).
+    if (window.matchMedia("(max-width: 1023px)").matches) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setCategoryOpen(false);
+      setLocationOpen(false);
+    }
+  }, []);
 
   const featuredAds = useMemo(() => ads.filter((ad) => ad.featured), [ads]);
 
@@ -317,7 +326,7 @@ export function AdBrowser({ ads }: { ads: Ad[] }) {
 
           {paginatedAds.length > 0 ? (
             <>
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
                 {paginatedAds.map((ad) => (
                   <AdCard key={ad.id} ad={ad} />
                 ))}
