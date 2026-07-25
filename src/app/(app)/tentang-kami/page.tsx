@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { Header } from "@/components/layout/header";
 import {
   CheckCircleIcon,
   CompassIcon,
@@ -51,24 +52,8 @@ const notResponsibleItems = [
 
 export default function TentangKamiPage() {
   return (
-    <div className="min-h-screen bg-cream">
-      <div className="px-6 py-3">
-        <div className="mx-auto flex w-full max-w-[1400px] items-center justify-between gap-3 rounded-pill bg-white/95 px-4 py-2.5 shadow-sm backdrop-blur">
-          <Link
-            href="/"
-            className="shrink-0 text-lg font-bold tracking-tight text-charcoal"
-          >
-            Nemshi
-          </Link>
-          <Link
-            href="/jelajahi"
-            className="flex h-10 shrink-0 items-center gap-1.5 rounded-pill bg-charcoal px-5 text-[14px] font-bold text-white transition-colors hover:bg-black"
-          >
-            <CompassIcon width={16} height={16} />
-            Ke Eksplor
-          </Link>
-        </div>
-      </div>
+    <>
+      <Header title="Tentang Kami" />
 
       <main className="mx-auto w-full max-w-3xl px-6 py-8">
         <section className="relative overflow-hidden rounded-card border-[2.5px] border-ink bg-gradient-to-br from-brand-dark to-brand bg-dot-pattern p-8 text-center shadow-[5px_5px_0_0_rgba(20,20,20,1)] sm:p-12">
@@ -186,6 +171,6 @@ export default function TentangKamiPage() {
           </Link>
         </div>
       </main>
-    </div>
+    </>
   );
 }

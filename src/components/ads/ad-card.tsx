@@ -34,11 +34,11 @@ export const AdCard = memo(function AdCard({ ad }: { ad: Ad }) {
         <div
           className={`flex h-20 items-start justify-between bg-gradient-to-br px-2.5 py-2 sm:h-36 sm:px-4 sm:py-3 ${categoryAccent[ad.category]}`}
         >
-          <span className="rounded-badge bg-highlight px-2 py-0.5 text-[10px] leading-3 font-bold text-white sm:px-3 sm:py-1 sm:text-[12px] sm:leading-4">
+          <span className="hidden rounded-badge bg-highlight px-3 py-1 text-[12px] leading-4 font-bold text-white sm:inline-block">
             {ad.category}
           </span>
 
-          <div className="flex flex-col items-end gap-1 sm:gap-2">
+          <div className="ml-auto flex flex-col items-end gap-1 sm:ml-0 sm:gap-2">
             <button
               type="button"
               onClick={(event) => {
@@ -57,7 +57,7 @@ export const AdCard = memo(function AdCard({ ad }: { ad: Ad }) {
                 className={saved ? "text-cta" : "text-charcoal"}
               />
             </button>
-            <span className="rounded-badge bg-charcoal/80 px-2 py-0.5 text-[10px] leading-3 font-bold text-white sm:px-3 sm:py-1 sm:text-[12px] sm:leading-4">
+            <span className="hidden rounded-badge bg-charcoal/80 px-3 py-1 text-[12px] leading-4 font-bold text-white sm:inline-block">
               {ad.kind === "produk" ? "Produk" : "Jasa"}
             </span>
           </div>
@@ -68,7 +68,7 @@ export const AdCard = memo(function AdCard({ ad }: { ad: Ad }) {
             {ad.title}
           </h3>
 
-          <p className="mt-1 text-[13px] font-bold leading-4 text-cta sm:mt-2 sm:text-lg sm:leading-6">
+          <p className="mt-1 text-[13px] font-bold leading-4 text-success sm:mt-2 sm:text-lg sm:leading-6">
             {ad.priceLabel}
           </p>
 
@@ -108,7 +108,8 @@ export const AdCard = memo(function AdCard({ ad }: { ad: Ad }) {
           onClick={(event) => event.stopPropagation()}
           className="flex h-7 flex-1 items-center justify-center rounded-pill bg-success text-[10.5px] font-bold text-white transition-colors hover:brightness-90 sm:h-10 sm:text-[13px]"
         >
-          Hubungi WA
+          <span className="sm:hidden">Chat WA</span>
+          <span className="hidden sm:inline">Hubungi WA</span>
         </a>
       </div>
     </div>

@@ -5,8 +5,17 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Header } from "@/components/layout/header";
 import { PhotoUploader } from "@/components/forms/photo-uploader";
+import { QuotaExceededModal } from "@/components/shared/quota-exceeded-modal";
 import { uploadPhotos, type UploadedPhoto } from "@/lib/upload";
 import type { AdCategory, AdCondition, AdKind } from "@/lib/types";
+import {
+  BookIcon,
+  BoxIcon,
+  MegaphoneIcon,
+  SparklesIcon,
+  TagIcon,
+  UtensilsIcon,
+} from "@/components/icons";
 import {
   composePriceLabel,
   currencyOptions,
@@ -36,6 +45,15 @@ const categoryOptions: AdCategory[] = [
   "Barang Baru & Bekas",
   "Lainnya",
 ];
+
+const categoryIcons: Record<AdCategory, (props: { width?: number; height?: number; className?: string }) => React.ReactElement> = {
+  Pendidikan: BookIcon,
+  "Makanan & Minuman": UtensilsIcon,
+  "Kreatif & Digital": SparklesIcon,
+  "Bantuan & Layanan Harian": MegaphoneIcon,
+  "Barang Baru & Bekas": BoxIcon,
+  Lainnya: TagIcon,
+};
 
 const conditionOptions: AdCondition[] = ["Baru", "Bekas"];
 const deliveryOptions = ["Via WA", "COD", "Pickup Sendiri"];
@@ -97,6 +115,7 @@ export default function PasangIklanPage() {
   const [selectedKind, setSelectedKind] = useState<AdKind | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<AdCategory | null>(null);
   const [form, setForm] = useState<FormState>(initialForm);
+  const [showQuotaModal, setShowQuotaModal] = useState(false);
 
   const canContinueStep1 = selectedKind !== null && selectedCategory !== null;
 
@@ -129,9 +148,7 @@ export default function PasangIklanPage() {
         const quota = await quotaRes.json();
         const hasSlot = !quota.freeAdSlotUsed || quota.extraAdSlots > 0;
         if (!hasSlot) {
-          setPublishError(
-            "Kuota ngiklan udah abis, beli paket satuan atau Paket Plus dulu ya.",
-          );
+          setShowQuotaModal(true);
           setPublishing(false);
           return;
         }
@@ -245,22 +262,30 @@ export default function PasangIklanPage() {
                 </div>
 
                 <p className={`mt-6 ${labelClass}`}>Kategori</p>
-                <div className="mt-3 flex flex-wrap gap-2">
+                <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3">
                   {categoryOptions.map((category) => {
                     const isActive = selectedCategory === category;
+                    const Icon = categoryIcons[category];
                     return (
                       <button
                         key={category}
                         type="button"
                         onClick={() => setSelectedCategory(category)}
                         aria-pressed={isActive}
-                        className={`h-9 rounded-pill border px-4 text-[14px] font-bold transition-colors ${
+                        className={`flex flex-col items-center gap-2 rounded-card border-2 p-4 text-center transition-colors ${
                           isActive
                             ? "border-charcoal bg-charcoal text-white"
-                            : "border-border bg-transparent text-charcoal hover:bg-surface"
+                            : "border-border bg-white text-charcoal hover:border-border-strong"
                         }`}
                       >
-                        {category}
+                        <span
+                          className={`flex h-10 w-10 items-center justify-center rounded-full ${
+                            isActive ? "bg-white/20" : "bg-surface"
+                          }`}
+                        >
+                          <Icon width={18} height={18} />
+                        </span>
+                        <span className="text-[13px] font-bold leading-4">{category}</span>
                       </button>
                     );
                   })}
@@ -577,16 +602,8 @@ export default function PasangIklanPage() {
               </div>
 
               {publishError && (
-                <div className="mt-4 flex flex-wrap items-center justify-between gap-2 rounded-card border border-error/40 bg-error/5 px-4 py-3">
+                <div className="mt-4 rounded-card border border-error/40 bg-error/5 px-4 py-3">
                   <p className="text-[14px] font-normal text-error">{publishError}</p>
-                  {publishError.includes("Kuota") && (
-                    <Link
-                      href="/paket-plus"
-                      className="shrink-0 text-[14px] font-bold text-cta hover:text-highlight"
-                    >
-                      Lihat Paket Plus
-                    </Link>
-                  )}
                 </div>
               )}
 
@@ -643,6 +660,13 @@ export default function PasangIklanPage() {
           )}
         </div>
       </main>
+
+      {showQuotaModal && (
+        <QuotaExceededModal
+          message="Slot pasang iklan gratis kamu sudah kepakai. Upgrade paket buat dapat slot tambahan dan lanjut pasang iklan."
+          onClose={() => setShowQuotaModal(false)}
+        />
+      )}
     </>
   );
 }

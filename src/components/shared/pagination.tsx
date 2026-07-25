@@ -13,11 +13,16 @@ export function Pagination({
 
   const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
 
+  function goTo(p: number) {
+    onChange(p);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
   return (
     <div className="mt-8 flex flex-wrap items-center justify-center gap-1.5">
       <button
         type="button"
-        onClick={() => onChange(Math.max(1, page - 1))}
+        onClick={() => goTo(Math.max(1, page - 1))}
         disabled={page === 1}
         aria-label="Halaman sebelumnya"
         className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-2 border-ink text-charcoal transition-colors hover:bg-surface disabled:opacity-40"
@@ -29,7 +34,7 @@ export function Pagination({
         <button
           key={p}
           type="button"
-          onClick={() => onChange(p)}
+          onClick={() => goTo(p)}
           aria-current={p === page ? "page" : undefined}
           className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-[13px] font-bold transition-colors ${
             p === page
@@ -43,7 +48,7 @@ export function Pagination({
 
       <button
         type="button"
-        onClick={() => onChange(Math.min(totalPages, page + 1))}
+        onClick={() => goTo(Math.min(totalPages, page + 1))}
         disabled={page === totalPages}
         aria-label="Halaman berikutnya"
         className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-2 border-ink text-charcoal transition-colors hover:bg-surface disabled:opacity-40"

@@ -4,11 +4,23 @@ import { useState } from "react";
 import Link from "next/link";
 import { Header } from "@/components/layout/header";
 import { SayembaraForm, type SayembaraFormSubmitValues } from "@/components/sayembara/sayembara-form";
+import { QuotaExceededModal } from "@/components/shared/quota-exceeded-modal";
 
 export default function PasangSayembaraPage() {
   const [submitted, setSubmitted] = useState(false);
+  const [showQuotaModal, setShowQuotaModal] = useState(false);
 
   async function handleSubmit(values: SayembaraFormSubmitValues) {
+    const quotaRes = await fetch("/api/mayar/quota");
+    if (quotaRes.ok) {
+      const quota = await quotaRes.json();
+      const hasSlot = !quota.freeSayembaraSlotUsed || quota.extraSayembaraSlots > 0;
+      if (!hasSlot) {
+        setShowQuotaModal(true);
+        return;
+      }
+    }
+
     const res = await fetch("/api/sayembara", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -90,6 +102,13 @@ export default function PasangSayembaraPage() {
           />
         </div>
       </main>
+
+      {showQuotaModal && (
+        <QuotaExceededModal
+          message="Slot pasang sayembara gratis kamu sudah kepakai. Upgrade paket buat dapat slot tambahan dan lanjut pasang sayembara."
+          onClose={() => setShowQuotaModal(false)}
+        />
+      )}
     </>
   );
 }

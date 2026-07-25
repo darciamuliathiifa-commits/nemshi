@@ -21,13 +21,14 @@ export const SayembaraFeaturedCarousel = memo(function SayembaraFeaturedCarousel
   if (items.length === 0) return null;
 
   return (
-    <section className="mb-10 rounded-card border-[2.5px] border-ink bg-gradient-to-br from-brand-dark to-brand p-6 shadow-[5px_5px_0_0_rgba(20,20,20,1)] sm:p-8">
-      <div className="mb-5 flex items-center justify-between">
-        <div className="flex items-center gap-2.5">
-          <StarIcon width={22} height={22} className="text-charcoal" />
+    <section className="mb-10 rounded-card border-[2.5px] border-ink bg-gradient-to-br from-brand-dark to-brand p-4 shadow-[5px_5px_0_0_rgba(20,20,20,1)] sm:p-8">
+      <div className="mb-4 flex items-center justify-between sm:mb-5">
+        <div className="flex items-center gap-2 sm:gap-2.5">
+          <StarIcon width={18} height={18} className="text-charcoal sm:hidden" />
+          <StarIcon width={22} height={22} className="hidden text-charcoal sm:block" />
           <div>
-            <h2 className="text-2xl font-bold text-charcoal">Sayembara Unggulan</h2>
-            <p className="text-[12px] font-normal text-charcoal/70">
+            <h2 className="text-lg font-bold text-charcoal sm:text-2xl">Sayembara Unggulan</h2>
+            <p className="text-[11px] font-normal text-charcoal/70 sm:text-[12px]">
               Slot eksklusif Paket Plus, tayang 3 hari
             </p>
           </div>
@@ -54,36 +55,36 @@ export const SayembaraFeaturedCarousel = memo(function SayembaraFeaturedCarousel
 
       <div
         ref={scrollerRef}
-        className="flex snap-x snap-mandatory gap-5 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        className="flex snap-x snap-mandatory gap-3 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] sm:gap-5 [&::-webkit-scrollbar]:hidden"
       >
         {items.map((item) => (
           <Link
             key={item.id}
             href={`/sayembara/${item.id}`}
-            className="group relative flex w-[300px] shrink-0 snap-start flex-col overflow-hidden rounded-card border-[2.5px] border-ink bg-white shadow-[3px_3px_0_0_rgba(20,20,20,1)] transition-transform hover:-translate-y-1 sm:w-[360px]"
+            className="group relative flex w-[78vw] max-w-[260px] shrink-0 snap-start flex-col overflow-hidden rounded-card border-[2.5px] border-ink bg-white shadow-[3px_3px_0_0_rgba(20,20,20,1)] transition-transform hover:-translate-y-1 sm:w-[360px] sm:max-w-none"
           >
-            <span className="absolute right-4 top-4 z-10 flex items-center gap-1 rounded-badge bg-charcoal px-3 py-1.5 text-[12px] leading-4 font-bold text-brand">
-              <StarIcon width={12} height={12} />
+            <span className="absolute right-3 top-3 z-10 flex items-center gap-1 rounded-badge bg-charcoal px-2.5 py-1 text-[10.5px] leading-3 font-bold text-brand sm:right-4 sm:top-4 sm:px-3 sm:py-1.5 sm:text-[12px] sm:leading-4">
+              <StarIcon width={11} height={11} />
               Unggulan
             </span>
 
-            <div className="flex h-36 items-start bg-gradient-to-br from-brand/40 to-brand/10 px-5 py-4">
-              <span className="rounded-badge bg-charcoal px-3.5 py-1.5 text-[13px] leading-4 font-bold text-white">
+            <div className="flex h-24 items-start bg-gradient-to-br from-brand/40 to-brand/10 px-3.5 py-3 sm:h-36 sm:px-5 sm:py-4">
+              <span className="rounded-badge bg-charcoal px-2.5 py-1 text-[11px] leading-3 font-bold text-white sm:px-3.5 sm:py-1.5 sm:text-[13px] sm:leading-4">
                 {item.category}
               </span>
             </div>
 
-            <div className="flex flex-1 flex-col gap-2 p-5">
-              <h3 className="line-clamp-2 text-lg font-bold leading-6 text-charcoal">
+            <div className="flex flex-1 flex-col gap-1.5 p-3.5 sm:gap-2 sm:p-5">
+              <h3 className="line-clamp-2 text-[14px] font-bold leading-5 text-charcoal sm:text-lg sm:leading-6">
                 {item.title}
               </h3>
               {item.price_label && (
-                <p className="text-lg font-bold text-cta">{item.price_label}</p>
+                <p className="text-base font-bold text-success sm:text-lg">{item.price_label}</p>
               )}
               {item.location && (
-                <div className="mt-1 flex items-center gap-1.5 text-[14px] font-normal text-muted-foreground">
-                  <MapPinIcon width={15} height={15} />
-                  <span>{item.location}</span>
+                <div className="mt-0.5 flex items-center gap-1.5 text-[12px] font-normal text-muted-foreground sm:mt-1 sm:text-[14px]">
+                  <MapPinIcon width={13} height={13} className="shrink-0" />
+                  <span className="truncate">{item.location}</span>
                 </div>
               )}
             </div>

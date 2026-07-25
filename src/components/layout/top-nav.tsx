@@ -24,6 +24,7 @@ const navItems = [
   { href: "/sayembara", label: "Sayembara", icon: MegaphoneIcon },
   { href: "/iklan-saya", label: "Iklan Saya", icon: ListIcon },
   { href: "/tersimpan", label: "Tersimpan", icon: BookmarkIcon },
+  { href: "/tentang-kami", label: "Tentang Kami" },
 ];
 
 const drawerNavItems = [

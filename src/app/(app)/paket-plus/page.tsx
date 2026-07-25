@@ -172,6 +172,13 @@ export default function PaketPlusPage() {
     setError(null);
     setManualLink(null);
 
+    // Open the popup synchronously, still inside the click's call stack —
+    // browsers only allow window.open() without being blocked when it's
+    // triggered directly by a user gesture. Doing this after an `await`
+    // (even a fast one) breaks that chain and gets it blocked. We navigate
+    // this blank window to the real URL once the async work below resolves.
+    const popup = window.open("", "mayarCheckout", "width=480,height=760,noopener=no");
+
     try {
       const quotaRes = await fetch("/api/mayar/quota");
       const baseline: UserQuota | null = quotaRes.ok ? await quotaRes.json() : null;
@@ -190,13 +197,8 @@ export default function PaketPlusPage() {
       }
 
       const bridgeUrl = `/paket-plus/checkout-bridge?link=${encodeURIComponent(result.link)}&label=${encodeURIComponent(selectedPlan.name)}`;
-      const popup = window.open(
-        bridgeUrl,
-        "mayarCheckout",
-        "width=480,height=760,noopener=no",
-      );
 
-      if (!popup) {
+      if (!popup || popup.closed) {
         setManualLink(result.link);
         setError(
           "Popup diblokir browser. Klik tombol di bawah untuk buka pembayaran secara manual.",
@@ -205,8 +207,10 @@ export default function PaketPlusPage() {
         return;
       }
 
+      popup.location.href = bridgeUrl;
       pollQuota(selectedPlanId, baseline);
     } catch (err) {
+      popup?.close();
       setError(
         err instanceof Error ? err.message : "Gagal menghubungkan ke Mayar. Coba lagi.",
       );
@@ -345,7 +349,10 @@ export default function PaketPlusPage() {
                   </button>
                 </div>
 
-                <div className="mx-auto flex w-full max-w-sm flex-col rounded-card border-[2.5px] border-ink bg-white p-6 shadow-[4px_4px_0_0_rgba(255,199,44,1)]">
+                <div className="relative mx-auto flex w-full max-w-sm flex-col rounded-card border-[2.5px] border-ink bg-white p-6 shadow-[4px_4px_0_0_rgba(255,199,44,1)]">
+                  <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-pill border-2 border-ink bg-brand px-4 py-1 text-[12px] font-bold text-charcoal shadow-[2px_2px_0_0_rgba(20,20,20,1)]">
+                    Paling Direkomendasikan
+                  </span>
                   <h3 className="text-base font-bold text-charcoal">
                     {PLANS.plus.name}
                   </h3>
