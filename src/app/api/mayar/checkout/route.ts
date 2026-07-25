@@ -2,9 +2,9 @@ import { NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { createMayarInvoice, MayarNotConfiguredError } from "@/lib/server/mayar";
-import { PLAN_PRICE_IDR, type PlanId } from "@/lib/server/quota-store";
+import { PLAN_LABELS, PLAN_PRICE_IDR, type PlanId } from "@/lib/server/quota-store";
 
-const VALID_PLAN_IDS: PlanId[] = ["plus"];
+const VALID_PLAN_IDS: PlanId[] = ["plus", "extra_ad", "extra_sayembara"];
 
 interface CheckoutBody {
   planId?: string;
@@ -87,10 +87,10 @@ export async function POST(request: Request) {
       name: profile?.name ?? "Pengguna Nemshi",
       email,
       mobile,
-      redirectUrl: `${appUrl}/paket-plus?status=return`,
-      description: "Paket Plus Nemshi",
+      redirectUrl: `${appUrl}/paket-plus?status=return&plan=${planId}`,
+      description: PLAN_LABELS[planId as PlanId],
       expiredAt,
-      items: [{ quantity: 1, rate: amount, description: "Paket Plus Nemshi" }],
+      items: [{ quantity: 1, rate: amount, description: PLAN_LABELS[planId as PlanId] }],
       extraData: { userId: user.id, planId },
     });
   } catch (err) {

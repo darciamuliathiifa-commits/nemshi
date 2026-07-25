@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import type { AdCategory } from "@/lib/types";
 import {
   composePriceLabel,
@@ -212,8 +213,16 @@ export function SayembaraForm({
       </form>
 
       {submitError && (
-        <div className="mt-4 rounded-card border border-error/40 bg-error/5 px-4 py-3">
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-2 rounded-card border border-error/40 bg-error/5 px-4 py-3">
           <p className="text-[14px] font-normal text-error">{submitError}</p>
+          {submitError.includes("Kuota") && (
+            <Link
+              href="/paket-plus"
+              className="shrink-0 text-[14px] font-bold text-cta hover:text-highlight"
+            >
+              Lihat Paket Plus
+            </Link>
+          )}
         </div>
       )}
 

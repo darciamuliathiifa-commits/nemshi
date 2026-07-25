@@ -4,6 +4,9 @@ import { memo, useMemo, useState } from "react";
 import Link from "next/link";
 import { PlusCircleIcon, SearchIcon } from "@/components/icons";
 import { formatRelativeTime } from "@/lib/format-relative-time";
+import { Pagination } from "@/components/shared/pagination";
+
+const PAGE_SIZE = 20;
 
 const statusAccent: Record<string, string> = {
   Aktif: "bg-success text-white",
@@ -80,6 +83,7 @@ const SayembaraCard = memo(function SayembaraCard({ item }: { item: SayembaraLis
 
 export function SayembaraBrowser({ items }: { items: SayembaraListItem[] }) {
   const [keyword, setKeyword] = useState("");
+  const [page, setPage] = useState(1);
 
   const filteredItems = useMemo(() => {
     const normalized = keyword.trim().toLowerCase();
@@ -91,6 +95,14 @@ export function SayembaraBrowser({ items }: { items: SayembaraListItem[] }) {
         item.description.toLowerCase().includes(normalized),
     );
   }, [items, keyword]);
+
+  const totalPages = Math.max(1, Math.ceil(filteredItems.length / PAGE_SIZE));
+  const paginatedItems = filteredItems.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+
+  function changeKeyword(value: string) {
+    setKeyword(value);
+    setPage(1);
+  }
 
   return (
     <main className="flex-1 px-6 py-8">
@@ -126,7 +138,7 @@ export function SayembaraBrowser({ items }: { items: SayembaraListItem[] }) {
                 type="search"
                 placeholder="Cari sayembara..."
                 value={keyword}
-                onChange={(event) => setKeyword(event.target.value)}
+                onChange={(event) => changeKeyword(event.target.value)}
                 className="h-11 w-full rounded-pill border-2 border-ink bg-white pl-11 pr-4 text-[14px] font-normal text-charcoal placeholder:text-charcoal/40 focus:outline-none focus:ring-3 focus:ring-cta/10"
               />
             </label>
@@ -147,12 +159,15 @@ export function SayembaraBrowser({ items }: { items: SayembaraListItem[] }) {
         </p>
       </div>
 
-      {filteredItems.length > 0 ? (
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {filteredItems.map((item) => (
-            <SayembaraCard key={item.id} item={item} />
-          ))}
-        </div>
+      {paginatedItems.length > 0 ? (
+        <>
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {paginatedItems.map((item) => (
+              <SayembaraCard key={item.id} item={item} />
+            ))}
+          </div>
+          <Pagination page={page} totalPages={totalPages} onChange={setPage} />
+        </>
       ) : (
         <div className="flex flex-col items-center justify-center rounded-card border border-dashed border-border-strong py-16 text-center">
           <p className="text-base font-normal text-charcoal">

@@ -248,7 +248,7 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         error:
-          "Slot iklan gratis sudah terpakai. Upgrade ke Paket Plus untuk menambah slot.",
+          "Kuota ngiklan udah abis, beli paket satuan atau Paket Plus dulu ya.",
       },
       { status: 402 },
     );

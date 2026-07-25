@@ -12,6 +12,7 @@ interface ProfileResponse {
   name?: string;
   whatsappNumber?: string | null;
   location?: string | null;
+  onboardingCompleted?: boolean;
 }
 
 export function OnboardingModal() {
@@ -29,7 +30,7 @@ export function OnboardingModal() {
       .then((res) => (res.ok ? res.json() : null))
       .then((data: ProfileResponse | null) => {
         if (!data) return;
-        if (!data.whatsappNumber || !data.location) {
+        if (!data.onboardingCompleted) {
           setName(data.name ?? "");
           setWhatsappNumber(data.whatsappNumber ?? "");
           setLocation(data.location ?? "");
@@ -61,6 +62,7 @@ export function OnboardingModal() {
           name: name.trim(),
           whatsappNumber: whatsappNumber.trim(),
           location: location.trim(),
+          onboardingCompleted: true,
         }),
       });
 

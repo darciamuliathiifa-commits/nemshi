@@ -1,6 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 
-export type PlanId = "plus";
+export type PlanId = "plus" | "extra_ad" | "extra_sayembara";
 
 export interface UserQuota {
   userId: string;
@@ -12,15 +12,34 @@ export interface UserQuota {
   planExpiresAt: string | null;
 }
 
-const PLAN_BENEFITS: Record<
-  PlanId,
-  { extraAdSlots: number; extraSayembaraSlots: number; durationMonths: number }
-> = {
-  plus: { extraAdSlots: 3, extraSayembaraSlots: 2, durationMonths: 3 },
+interface PlanBenefit {
+  extraAdSlots: number;
+  extraSayembaraSlots: number;
+  durationMonths: number;
+  grantsPlus: boolean;
+}
+
+const PLAN_BENEFITS: Record<PlanId, PlanBenefit> = {
+  plus: { extraAdSlots: 3, extraSayembaraSlots: 2, durationMonths: 3, grantsPlus: true },
+  extra_ad: { extraAdSlots: 1, extraSayembaraSlots: 0, durationMonths: 0, grantsPlus: false },
+  extra_sayembara: {
+    extraAdSlots: 0,
+    extraSayembaraSlots: 1,
+    durationMonths: 0,
+    grantsPlus: false,
+  },
 };
 
 export const PLAN_PRICE_IDR: Record<PlanId, number> = {
   plus: 150000,
+  extra_ad: 50000,
+  extra_sayembara: 12000,
+};
+
+export const PLAN_LABELS: Record<PlanId, string> = {
+  plus: "Paket Plus Nemshi",
+  extra_ad: "Slot Iklan Tambahan Nemshi",
+  extra_sayembara: "Slot Sayembara Tambahan Nemshi",
 };
 
 interface UserQuotaRow {
@@ -73,7 +92,7 @@ export async function getQuota(
 // Grants plan benefits only — the caller owns writing/updating the
 // mayar_transactions row (checkout inserts it 'pending', the webhook flips
 // it to 'success' right around calling this).
-export async function activatePlusPlan(
+export async function activatePlan(
   supabase: SupabaseClient,
   planId: PlanId,
   userId: string,
@@ -84,8 +103,15 @@ export async function activatePlusPlan(
   }
 
   const current = await getQuota(supabase, userId);
-  const expiresAt = new Date();
-  expiresAt.setMonth(expiresAt.getMonth() + benefit.durationMonths);
+
+  let plan = current.plan;
+  let planExpiresAt = current.planExpiresAt;
+  if (benefit.grantsPlus) {
+    const expiresAt = new Date();
+    expiresAt.setMonth(expiresAt.getMonth() + benefit.durationMonths);
+    plan = "plus";
+    planExpiresAt = expiresAt.toISOString();
+  }
 
   const { data, error } = await supabase
     .from("user_quotas")
@@ -97,8 +123,8 @@ export async function activatePlusPlan(
         extra_ad_slots: current.extraAdSlots + benefit.extraAdSlots,
         extra_sayembara_slots:
           current.extraSayembaraSlots + benefit.extraSayembaraSlots,
-        plan: "plus",
-        plan_expires_at: expiresAt.toISOString(),
+        plan,
+        plan_expires_at: planExpiresAt,
       },
       { onConflict: "user_id" },
     )

@@ -1,6 +1,13 @@
 import { NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
+function joinedLabel(createdAt: string): string {
+  return new Date(createdAt).toLocaleDateString("id-ID", {
+    month: "long",
+    year: "numeric",
+  });
+}
+
 export async function GET() {
   const supabase = await createSupabaseServerClient();
   if (!supabase) {
@@ -22,7 +29,9 @@ export async function GET() {
     await Promise.all([
       supabase
         .from("profiles")
-        .select("id, name, email, location, whatsapp_number, avatar_url, created_at")
+        .select(
+          "id, name, email, location, whatsapp_number, avatar_url, onboarding_completed, created_at",
+        )
         .eq("id", user.id)
         .maybeSingle(),
       supabase
@@ -47,7 +56,9 @@ export async function GET() {
     location: profile.location,
     whatsappNumber: profile.whatsapp_number,
     avatarUrl: profile.avatar_url,
+    onboardingCompleted: profile.onboarding_completed,
     joinedYear: new Date(profile.created_at).getFullYear(),
+    joinedLabel: joinedLabel(profile.created_at),
     activeAdsCount: activeAdsCount ?? 0,
   });
 }
@@ -56,6 +67,7 @@ interface UpdateProfileBody {
   name?: string;
   location?: string;
   whatsappNumber?: string;
+  onboardingCompleted?: boolean;
 }
 
 export async function PUT(request: Request) {
@@ -66,7 +78,7 @@ export async function PUT(request: Request) {
     return NextResponse.json({ error: "Body tidak valid." }, { status: 400 });
   }
 
-  const updates: Record<string, string> = {};
+  const updates: Record<string, string | boolean> = {};
   if (typeof body.name === "string") {
     if (!body.name.trim()) {
       return NextResponse.json({ error: "Nama tidak boleh kosong." }, { status: 400 });
@@ -78,6 +90,9 @@ export async function PUT(request: Request) {
   }
   if (typeof body.whatsappNumber === "string") {
     updates.whatsapp_number = body.whatsappNumber.trim();
+  }
+  if (typeof body.onboardingCompleted === "boolean") {
+    updates.onboarding_completed = body.onboardingCompleted;
   }
 
   if (Object.keys(updates).length === 0) {
@@ -107,7 +122,9 @@ export async function PUT(request: Request) {
     .from("profiles")
     .update(updates)
     .eq("id", user.id)
-    .select("id, name, email, location, whatsapp_number, avatar_url, created_at")
+    .select(
+      "id, name, email, location, whatsapp_number, avatar_url, onboarding_completed, created_at",
+    )
     .maybeSingle();
 
   if (error) {
@@ -125,6 +142,8 @@ export async function PUT(request: Request) {
     location: data.location,
     whatsappNumber: data.whatsapp_number,
     avatarUrl: data.avatar_url,
+    onboardingCompleted: data.onboarding_completed,
     joinedYear: new Date(data.created_at).getFullYear(),
+    joinedLabel: joinedLabel(data.created_at),
   });
 }

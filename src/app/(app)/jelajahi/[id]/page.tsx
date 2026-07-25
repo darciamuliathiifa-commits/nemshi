@@ -141,6 +141,17 @@ export default async function AdDetailPage({
     `Halo, saya tertarik dengan iklan "${ad.title}" di Nemshi.`,
   )}`;
 
+  const { data: relatedRows } = await supabase
+    .from("ads")
+    .select("id, kind, title, category, price_label, location")
+    .eq("category", row.category)
+    .eq("status", "Aktif")
+    .neq("id", row.id)
+    .order("created_at", { ascending: false })
+    .limit(4);
+
+  const related = relatedRows ?? [];
+
   return (
     <>
       <Header title="Detail Iklan" />
@@ -288,6 +299,40 @@ export default async function AdDetailPage({
             </div>
           </div>
         </div>
+
+        {related.length > 0 && (
+          <div className="mt-8">
+            <h3 className="text-lg font-bold text-charcoal">Produk & Jasa Serupa</h3>
+            <div className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {related.map((item) => (
+                <Link
+                  key={item.id}
+                  href={`/jelajahi/${item.id}`}
+                  className="flex flex-col gap-2 rounded-card border-[2.5px] border-ink bg-white p-4 shadow-[3px_3px_0_0_rgba(20,20,20,1)] transition-transform hover:-translate-y-0.5"
+                >
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="w-fit rounded-badge bg-highlight px-2.5 py-1 text-[11px] font-bold text-white">
+                      {item.category}
+                    </span>
+                    <span className="w-fit rounded-badge bg-charcoal/80 px-2.5 py-1 text-[11px] font-bold text-white">
+                      {item.kind === "produk" ? "Produk" : "Jasa"}
+                    </span>
+                  </div>
+                  <h4 className="line-clamp-2 text-[14px] font-bold leading-5 text-charcoal">
+                    {item.title}
+                  </h4>
+                  <span className="text-[13px] font-bold text-cta">
+                    {item.price_label}
+                  </span>
+                  <span className="flex items-center gap-1 text-[12px] font-normal text-muted-foreground">
+                    <MapPinIcon width={12} height={12} />
+                    {item.location}
+                  </span>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
 
         <TransactionDisclaimer />
       </main>

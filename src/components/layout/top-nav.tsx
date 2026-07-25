@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
   BookmarkIcon,
+  ChevronDownIcon,
   CloseIcon,
   ListIcon,
   MegaphoneIcon,
@@ -12,6 +13,7 @@ import {
   PlusCircleIcon,
   SearchIcon,
   UserIcon,
+  ZapIcon,
 } from "@/components/icons";
 import { TickerBar } from "@/components/layout/ticker-bar";
 import type { UserQuota } from "@/lib/server/quota-store";
@@ -34,6 +36,7 @@ function slotsLeft(quota: UserQuota | null) {
 export function TopNav() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [postMenuOpen, setPostMenuOpen] = useState(false);
   const [quota, setQuota] = useState<UserQuota | null>(null);
 
   useEffect(() => {
@@ -78,10 +81,11 @@ export function TopNav() {
             {slots && (
               <Link
                 href="/profil"
-                className="hidden shrink-0 items-center gap-1.5 whitespace-nowrap rounded-pill bg-surface px-3 py-1.5 text-[12px] font-bold text-charcoal transition-colors hover:bg-brand/60 xl:flex"
-                title="Sisa jatah posting"
+                className="hidden shrink-0 items-center gap-1.5 whitespace-nowrap rounded-pill border-2 border-ink bg-brand px-3 py-1.5 text-[12px] font-bold text-charcoal transition-colors hover:bg-brand/70 xl:flex"
+                title="Jatah posting kamu"
               >
-                {slots.ads} Iklan · {slots.sayembara} Sayembara
+                <ZapIcon width={13} height={13} />
+                Jatah: {slots.ads} Iklan · {slots.sayembara} Sayembara
               </Link>
             )}
             <Link
@@ -98,13 +102,49 @@ export function TopNav() {
             >
               <UserIcon width={18} height={18} />
             </Link>
-            <Link
-              href="/pasang-iklan"
-              className="hidden h-10 shrink-0 items-center gap-1.5 rounded-pill bg-charcoal px-5 text-[14px] font-bold text-white transition-colors hover:bg-black sm:flex"
-            >
-              <PlusCircleIcon width={16} height={16} />
-              Pasang Iklan
-            </Link>
+
+            <div className="relative hidden sm:block">
+              <button
+                type="button"
+                onClick={() => setPostMenuOpen((prev) => !prev)}
+                aria-expanded={postMenuOpen}
+                className="flex h-10 shrink-0 items-center gap-1.5 rounded-pill bg-charcoal px-5 text-[14px] font-bold text-white transition-colors hover:bg-black"
+              >
+                <PlusCircleIcon width={16} height={16} />
+                Pasang Iklan/Sayembara
+                <ChevronDownIcon width={14} height={14} />
+              </button>
+
+              {postMenuOpen && (
+                <>
+                  <button
+                    type="button"
+                    aria-label="Tutup menu"
+                    onClick={() => setPostMenuOpen(false)}
+                    className="fixed inset-0 z-40 cursor-default"
+                  />
+                  <div className="absolute right-0 z-50 mt-2 w-56 overflow-hidden rounded-card border-2 border-ink bg-white shadow-[3px_3px_0_0_rgba(20,20,20,1)]">
+                    <Link
+                      href="/pasang-iklan"
+                      onClick={() => setPostMenuOpen(false)}
+                      className="flex items-center gap-2.5 px-4 py-3 text-[14px] font-bold text-charcoal transition-colors hover:bg-surface"
+                    >
+                      <ListIcon width={16} height={16} />
+                      Pasang Iklan
+                    </Link>
+                    <Link
+                      href="/sayembara/baru"
+                      onClick={() => setPostMenuOpen(false)}
+                      className="flex items-center gap-2.5 border-t border-border-subtle px-4 py-3 text-[14px] font-bold text-charcoal transition-colors hover:bg-surface"
+                    >
+                      <MegaphoneIcon width={16} height={16} />
+                      Pasang Sayembara
+                    </Link>
+                  </div>
+                </>
+              )}
+            </div>
+
             <button
               type="button"
               aria-label="Buka menu"
@@ -147,7 +187,12 @@ export function TopNav() {
             )}
 
             <nav className="mt-6 flex flex-col gap-1">
-              {[...navItems, { href: "/pasang-iklan", label: "Pasang Iklan", icon: PlusCircleIcon }, { href: "/profil", label: "Profil", icon: UserIcon }].map(
+              {[
+                ...navItems,
+                { href: "/pasang-iklan", label: "Pasang Iklan", icon: PlusCircleIcon },
+                { href: "/sayembara/baru", label: "Pasang Sayembara", icon: MegaphoneIcon },
+                { href: "/profil", label: "Profil", icon: UserIcon },
+              ].map(
                 (item) => {
                   const isActive = pathname?.startsWith(item.href);
                   const Icon = item.icon;

@@ -5,6 +5,7 @@ import Link from "next/link";
 import type { Ad, AdCategory } from "@/lib/types";
 import { AdCard } from "@/components/ads/ad-card";
 import { FeaturedCarousel } from "@/components/ads/featured-carousel";
+import { Pagination } from "@/components/shared/pagination";
 import {
   BookIcon,
   BoxIcon,
@@ -36,6 +37,8 @@ const categoryIcons: Record<AdCategory, (props: { width?: number; height?: numbe
   "Barang Baru & Bekas": BoxIcon,
   Lainnya: TagIcon,
 };
+
+const PAGE_SIZE = 20;
 
 function SidebarRow({
   icon: Icon,
@@ -118,6 +121,7 @@ export function AdBrowser({ ads }: { ads: Ad[] }) {
   const [location, setLocation] = useState("Semua Lokasi");
   const [categoryOpen, setCategoryOpen] = useState(true);
   const [locationOpen, setLocationOpen] = useState(false);
+  const [page, setPage] = useState(1);
 
   const featuredAds = useMemo(() => ads.filter((ad) => ad.featured), [ads]);
 
@@ -158,6 +162,24 @@ export function AdBrowser({ ads }: { ads: Ad[] }) {
     });
   }, [ads, activeCategory, location, keyword]);
 
+  const totalPages = Math.max(1, Math.ceil(filteredAds.length / PAGE_SIZE));
+  const paginatedAds = filteredAds.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+
+  function changeCategory(value: AdCategory | "Semua") {
+    setActiveCategory(value);
+    setPage(1);
+  }
+
+  function changeLocation(value: string) {
+    setLocation(value);
+    setPage(1);
+  }
+
+  function changeKeyword(value: string) {
+    setKeyword(value);
+    setPage(1);
+  }
+
   return (
     <main className="flex-1 px-6 py-8">
       <section className="relative overflow-hidden rounded-card border-[2.5px] border-ink bg-gradient-to-br from-brand-dark to-brand bg-dot-pattern shadow-[5px_5px_0_0_rgba(20,20,20,1)]">
@@ -191,7 +213,7 @@ export function AdBrowser({ ads }: { ads: Ad[] }) {
               type="search"
               placeholder="Cari di Nemshi..."
               value={keyword}
-              onChange={(event) => setKeyword(event.target.value)}
+              onChange={(event) => changeKeyword(event.target.value)}
               className="h-11 w-full rounded-pill border-2 border-ink bg-white pl-11 pr-4 text-[14px] font-normal text-charcoal placeholder:text-charcoal/40 focus:outline-none focus:ring-3 focus:ring-cta/10"
             />
           </label>
@@ -245,7 +267,7 @@ export function AdBrowser({ ads }: { ads: Ad[] }) {
               label="Semua Produk"
               count={ads.length}
               active={activeCategory === "Semua"}
-              onClick={() => setActiveCategory("Semua")}
+              onClick={() => changeCategory("Semua")}
             />
             {categories.map((category) => (
               <SidebarRow
@@ -254,7 +276,7 @@ export function AdBrowser({ ads }: { ads: Ad[] }) {
                 label={category}
                 count={categoryCounts.get(category) ?? 0}
                 active={activeCategory === category}
-                onClick={() => setActiveCategory(category)}
+                onClick={() => changeCategory(category)}
               />
             ))}
           </FilterSection>
@@ -270,7 +292,7 @@ export function AdBrowser({ ads }: { ads: Ad[] }) {
                 label="Semua Lokasi"
                 count={ads.length}
                 active={location === "Semua Lokasi"}
-                onClick={() => setLocation("Semua Lokasi")}
+                onClick={() => changeLocation("Semua Lokasi")}
               />
               {locations.map((loc) => (
                 <SidebarRow
@@ -279,7 +301,7 @@ export function AdBrowser({ ads }: { ads: Ad[] }) {
                   label={loc}
                   count={locationCounts.get(loc) ?? 0}
                   active={location === loc}
-                  onClick={() => setLocation(loc)}
+                  onClick={() => changeLocation(loc)}
                 />
               ))}
             </FilterSection>
@@ -293,12 +315,15 @@ export function AdBrowser({ ads }: { ads: Ad[] }) {
             </p>
           </div>
 
-          {filteredAds.length > 0 ? (
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
-              {filteredAds.map((ad) => (
-                <AdCard key={ad.id} ad={ad} />
-              ))}
-            </div>
+          {paginatedAds.length > 0 ? (
+            <>
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                {paginatedAds.map((ad) => (
+                  <AdCard key={ad.id} ad={ad} />
+                ))}
+              </div>
+              <Pagination page={page} totalPages={totalPages} onChange={setPage} />
+            </>
           ) : (
             <div className="flex flex-col items-center justify-center rounded-card border border-dashed border-border-strong py-16 text-center">
               <p className="text-base font-normal text-charcoal">

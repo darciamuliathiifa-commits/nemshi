@@ -124,6 +124,19 @@ export default function PasangIklanPage() {
     setPublishError(null);
 
     try {
+      const quotaRes = await fetch("/api/mayar/quota");
+      if (quotaRes.ok) {
+        const quota = await quotaRes.json();
+        const hasSlot = !quota.freeAdSlotUsed || quota.extraAdSlots > 0;
+        if (!hasSlot) {
+          setPublishError(
+            "Kuota ngiklan udah abis, beli paket satuan atau Paket Plus dulu ya.",
+          );
+          setPublishing(false);
+          return;
+        }
+      }
+
       const photoUrls = await uploadPhotos(form.photos);
 
       const res = await fetch("/api/ads", {
@@ -564,8 +577,16 @@ export default function PasangIklanPage() {
               </div>
 
               {publishError && (
-                <div className="mt-4 rounded-card border border-error/40 bg-error/5 px-4 py-3">
+                <div className="mt-4 flex flex-wrap items-center justify-between gap-2 rounded-card border border-error/40 bg-error/5 px-4 py-3">
                   <p className="text-[14px] font-normal text-error">{publishError}</p>
+                  {publishError.includes("Kuota") && (
+                    <Link
+                      href="/paket-plus"
+                      className="shrink-0 text-[14px] font-bold text-cta hover:text-highlight"
+                    >
+                      Lihat Paket Plus
+                    </Link>
+                  )}
                 </div>
               )}
 

@@ -12,19 +12,43 @@ import {
   WalletIcon,
   ZapIcon,
 } from "@/components/icons";
-import type { UserQuota } from "@/lib/server/quota-store";
+import type { PlanId, UserQuota } from "@/lib/server/quota-store";
 
-const plusPlan = {
-  id: "plus" as const,
-  name: "Paket Plus",
-  price: "Rp 150.000",
-  period: "/ paket",
-  benefits: [
-    "3x jatah pasang iklan, masing-masing aktif 2 minggu",
-    "2x jatah pasang sayembara, masing-masing aktif 2 minggu",
-    "Prioritas tayang di halaman Eksplor",
-    "Jatah berlaku 3 bulan sejak pembelian",
-  ],
+interface PlanInfo {
+  id: PlanId;
+  name: string;
+  price: string;
+  period: string;
+  benefits: string[];
+}
+
+const PLANS: Record<PlanId, PlanInfo> = {
+  plus: {
+    id: "plus",
+    name: "Paket Plus",
+    price: "Rp 150.000",
+    period: "/ paket",
+    benefits: [
+      "3x jatah pasang iklan, masing-masing aktif 2 minggu",
+      "2x jatah pasang sayembara, masing-masing aktif 2 minggu",
+      "Prioritas tayang di halaman Eksplor",
+      "Jatah berlaku 3 bulan sejak pembelian",
+    ],
+  },
+  extra_ad: {
+    id: "extra_ad",
+    name: "Slot Iklan Tambahan",
+    price: "Rp 50.000",
+    period: "/ posting",
+    benefits: ["1x jatah pasang iklan tambahan, aktif 2 minggu"],
+  },
+  extra_sayembara: {
+    id: "extra_sayembara",
+    name: "Slot Sayembara Tambahan",
+    price: "Rp 12.000",
+    period: "/ posting",
+    benefits: ["1x jatah pasang sayembara tambahan, aktif 1 minggu"],
+  },
 };
 
 const paymentMethods = [
@@ -44,12 +68,26 @@ type CheckoutStep = "plans" | "checkout" | "redirecting" | "confirming" | "succe
 const POLL_ATTEMPTS = 6;
 const POLL_INTERVAL_MS = 2000;
 
+function isPlanFulfilled(
+  planId: PlanId,
+  quota: UserQuota,
+  baseline: UserQuota | null,
+): boolean {
+  if (planId === "plus") return quota.plan === "plus";
+  if (planId === "extra_ad") return quota.extraAdSlots > (baseline?.extraAdSlots ?? -1);
+  return quota.extraSayembaraSlots > (baseline?.extraSayembaraSlots ?? -1);
+}
+
 export default function PaketPlusPage() {
   const [step, setStep] = useState<CheckoutStep>("plans");
+  const [selectedPlanId, setSelectedPlanId] = useState<PlanId>("plus");
   const [quota, setQuota] = useState<UserQuota | null>(null);
+  const [baselineQuota, setBaselineQuota] = useState<UserQuota | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [mobile, setMobile] = useState("");
   const [manualLink, setManualLink] = useState<string | null>(null);
+
+  const selectedPlan = PLANS[selectedPlanId];
 
   useEffect(() => {
     fetch("/api/profile")
@@ -60,7 +98,7 @@ export default function PaketPlusPage() {
       .catch(() => {});
   }, []);
 
-  async function pollQuota() {
+  async function pollQuota(planId: PlanId, baseline: UserQuota | null) {
     setStep("confirming");
 
     for (let attempt = 0; attempt < POLL_ATTEMPTS; attempt += 1) {
@@ -68,7 +106,7 @@ export default function PaketPlusPage() {
         const res = await fetch("/api/mayar/quota");
         if (res.ok) {
           const data: UserQuota = await res.json();
-          if (data.plan === "plus") {
+          if (isPlanFulfilled(planId, data, baseline)) {
             setQuota(data);
             setStep("success");
             // This page load is the popup Mayar redirected after payment —
@@ -91,11 +129,21 @@ export default function PaketPlusPage() {
     const params = new URLSearchParams(window.location.search);
     if (params.get("status") !== "return") return;
 
+    const planId = (params.get("plan") as PlanId) || "plus";
+
     (async () => {
       await Promise.resolve();
-      pollQuota();
+      setSelectedPlanId(planId);
+      pollQuota(planId, null);
     })();
   }, []);
+
+  function choosePlan(planId: PlanId) {
+    setSelectedPlanId(planId);
+    setError(null);
+    setManualLink(null);
+    setStep("checkout");
+  }
 
   async function handlePay() {
     if (!mobile.trim()) {
@@ -108,10 +156,14 @@ export default function PaketPlusPage() {
     setManualLink(null);
 
     try {
+      const quotaRes = await fetch("/api/mayar/quota");
+      const baseline: UserQuota | null = quotaRes.ok ? await quotaRes.json() : null;
+      setBaselineQuota(baseline);
+
       const response = await fetch("/api/mayar/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ planId: plusPlan.id, mobile: mobile.trim() }),
+        body: JSON.stringify({ planId: selectedPlanId, mobile: mobile.trim() }),
       });
 
       const result = await response.json().catch(() => ({}));
@@ -135,7 +187,7 @@ export default function PaketPlusPage() {
         return;
       }
 
-      pollQuota();
+      pollQuota(selectedPlanId, baseline);
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "Gagal menghubungkan ke Mayar. Coba lagi.",
@@ -180,13 +232,22 @@ export default function PaketPlusPage() {
                         1x posting / bulan, aktif 3 hari
                       </p>
                     </div>
-                    <div className="rounded-input bg-surface/60 px-4 py-3">
-                      <p className="text-[12px] font-bold text-muted-foreground">
-                        Bayar per Posting
-                      </p>
-                      <p className="mt-0.5 text-[14px] font-normal text-charcoal">
-                        Rp 50.000 sekali posting, aktif 2 minggu
-                      </p>
+                    <div className="flex items-center justify-between gap-3 rounded-input bg-surface/60 px-4 py-3">
+                      <div>
+                        <p className="text-[12px] font-bold text-muted-foreground">
+                          Bayar per Posting
+                        </p>
+                        <p className="mt-0.5 text-[14px] font-normal text-charcoal">
+                          Rp 50.000 sekali posting, aktif 2 minggu
+                        </p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => choosePlan("extra_ad")}
+                        className="h-9 shrink-0 rounded-pill bg-charcoal px-4 text-[13px] font-bold text-white transition-colors hover:bg-black"
+                      >
+                        Beli
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -202,13 +263,22 @@ export default function PaketPlusPage() {
                         1x posting, aktif 1 hari
                       </p>
                     </div>
-                    <div className="rounded-input bg-surface/60 px-4 py-3">
-                      <p className="text-[12px] font-bold text-muted-foreground">
-                        Bayar per Posting
-                      </p>
-                      <p className="mt-0.5 text-[14px] font-normal text-charcoal">
-                        Rp 12.000 sekali posting, aktif 1 minggu
-                      </p>
+                    <div className="flex items-center justify-between gap-3 rounded-input bg-surface/60 px-4 py-3">
+                      <div>
+                        <p className="text-[12px] font-bold text-muted-foreground">
+                          Bayar per Posting
+                        </p>
+                        <p className="mt-0.5 text-[14px] font-normal text-charcoal">
+                          Rp 12.000 sekali posting, aktif 1 minggu
+                        </p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => choosePlan("extra_sayembara")}
+                        className="h-9 shrink-0 rounded-pill bg-charcoal px-4 text-[13px] font-bold text-white transition-colors hover:bg-black"
+                      >
+                        Beli
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -223,20 +293,20 @@ export default function PaketPlusPage() {
 
               <div className="mx-auto mt-4 flex max-w-sm flex-col rounded-card border-[2.5px] border-ink bg-white p-6 shadow-[4px_4px_0_0_rgba(255,199,44,1)]">
                 <h3 className="text-base font-bold text-charcoal">
-                  {plusPlan.name}
+                  {PLANS.plus.name}
                 </h3>
                 <p className="mt-2">
                   <span className="text-2xl font-bold text-charcoal">
-                    {plusPlan.price}
+                    {PLANS.plus.price}
                   </span>
                   <span className="text-[14px] font-normal text-muted-foreground">
                     {" "}
-                    {plusPlan.period}
+                    {PLANS.plus.period}
                   </span>
                 </p>
 
                 <ul className="mt-4 flex flex-1 flex-col gap-2">
-                  {plusPlan.benefits.map((benefit) => (
+                  {PLANS.plus.benefits.map((benefit) => (
                     <li
                       key={benefit}
                       className="flex items-start gap-2 text-[14px] font-normal text-charcoal"
@@ -249,7 +319,7 @@ export default function PaketPlusPage() {
 
                 <button
                   type="button"
-                  onClick={() => setStep("checkout")}
+                  onClick={() => choosePlan("plus")}
                   className="mt-6 h-11 rounded-pill bg-charcoal text-base font-bold text-white transition-colors hover:bg-black"
                 >
                   Pilih Paket
@@ -278,12 +348,12 @@ export default function PaketPlusPage() {
               <div className="mt-6 rounded-card border-[2.5px] border-ink bg-white p-6 shadow-[3px_3px_0_0_rgba(20,20,20,1)]">
                 <div className="flex items-center justify-between border-b border-border-subtle pb-4">
                   <span className="text-base font-bold text-charcoal">
-                    {plusPlan.name}
+                    {selectedPlan.name}
                   </span>
                   <span className="text-base font-bold text-charcoal">
-                    {plusPlan.price}
+                    {selectedPlan.price}
                     <span className="text-[14px] font-normal text-muted-foreground">
-                      {plusPlan.period}
+                      {selectedPlan.period}
                     </span>
                   </span>
                 </div>
@@ -293,7 +363,7 @@ export default function PaketPlusPage() {
                     Total Tagihan
                   </span>
                   <span className="text-xl font-bold text-cta">
-                    {plusPlan.price}
+                    {selectedPlan.price}
                   </span>
                 </div>
               </div>
@@ -349,7 +419,7 @@ export default function PaketPlusPage() {
                   href={manualLink}
                   target="_blank"
                   rel="noopener noreferrer"
-                  onClick={() => pollQuota()}
+                  onClick={() => pollQuota(selectedPlanId, baselineQuota)}
                   className="mt-6 flex h-11 w-full items-center justify-center rounded-pill bg-charcoal text-base font-bold text-white transition-colors hover:bg-black"
                 >
                   Buka Pembayaran Mayar
@@ -398,8 +468,8 @@ export default function PaketPlusPage() {
               </h2>
               <p className="mt-2 max-w-sm text-[14px] font-normal text-muted-foreground">
                 Belum ada konfirmasi dari Mayar. Kalau kamu sudah bayar, jatah
-                Paket Plus akan otomatis aktif begitu pembayaran terkonfirmasi
-                — cek lagi profilmu sebentar lagi.
+                akan otomatis aktif begitu pembayaran terkonfirmasi — cek lagi
+                profilmu sebentar lagi.
               </p>
               <div className="mt-6 flex w-full max-w-xs gap-3">
                 <button
@@ -428,8 +498,8 @@ export default function PaketPlusPage() {
                 Pembayaran Berhasil
               </h2>
               <p className="mt-2 max-w-sm text-[14px] font-normal text-muted-foreground">
-                {plusPlan.name} kamu sudah aktif. Jatah iklan dan sayembara
-                otomatis ditambahkan ke akunmu.
+                {selectedPlan.name} kamu sudah aktif. Jatah otomatis
+                ditambahkan ke akunmu.
               </p>
 
               {quota && (

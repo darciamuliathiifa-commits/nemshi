@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
-import { activatePlusPlan, type PlanId } from "@/lib/server/quota-store";
+import { activatePlan, type PlanId } from "@/lib/server/quota-store";
 
 // Called by Mayar's servers, not a logged-in browser — there's no session
 // cookie to authenticate with. Mayar doesn't document HMAC/signature
@@ -71,7 +71,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ status: "already processed" });
   }
 
-  const quota = await activatePlusPlan(
+  const quota = await activatePlan(
     supabase,
     transaction.plan_id as PlanId,
     transaction.user_id,

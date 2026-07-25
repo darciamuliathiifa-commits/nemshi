@@ -15,6 +15,7 @@ interface ProfileData {
   location: string | null;
   avatarUrl: string | null;
   joinedYear: number;
+  joinedLabel: string;
   activeAdsCount: number;
 }
 
@@ -204,7 +205,7 @@ export default function ProfilPage() {
                     Bergabung sejak
                   </span>
                   <span className="text-base font-normal text-charcoal">
-                    {profile.joinedYear}
+                    {profile.joinedLabel}
                   </span>
                 </div>
 
