@@ -3,7 +3,15 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Header } from "@/components/layout/header";
-import { ZapIcon } from "@/components/icons";
+import {
+  BankIcon,
+  ClockIcon,
+  CreditCardIcon,
+  QrCodeIcon,
+  StoreIcon,
+  WalletIcon,
+  ZapIcon,
+} from "@/components/icons";
 import type { UserQuota } from "@/lib/server/quota-store";
 
 const plusPlan = {
@@ -19,6 +27,18 @@ const plusPlan = {
   ],
 };
 
+const paymentMethods = [
+  { icon: QrCodeIcon, label: "QRIS", detail: "Scan sekali, semua e-wallet" },
+  { icon: WalletIcon, label: "E-Wallet", detail: "GoPay, OVO, DANA, ShopeePay" },
+  { icon: BankIcon, label: "Transfer Bank", detail: "Virtual account semua bank" },
+  { icon: CreditCardIcon, label: "Kartu Kredit", detail: "Visa, Mastercard" },
+  { icon: ClockIcon, label: "Paylater", detail: "Cicilan tanpa kartu" },
+  { icon: StoreIcon, label: "Minimarket", detail: "Alfamart" },
+];
+
+const inputClass =
+  "h-11 w-full rounded-input border border-border bg-white px-4 text-[14px] text-charcoal placeholder:text-muted focus:border-cta focus:outline-none focus:ring-3 focus:ring-cta/10";
+
 type CheckoutStep = "plans" | "checkout" | "redirecting" | "confirming" | "success" | "pending";
 
 const POLL_ATTEMPTS = 6;
@@ -28,6 +48,16 @@ export default function PaketPlusPage() {
   const [step, setStep] = useState<CheckoutStep>("plans");
   const [quota, setQuota] = useState<UserQuota | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [mobile, setMobile] = useState("");
+
+  useEffect(() => {
+    fetch("/api/profile")
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data: { whatsappNumber?: string | null } | null) => {
+        if (data?.whatsappNumber) setMobile(data.whatsappNumber);
+      })
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -66,6 +96,11 @@ export default function PaketPlusPage() {
   }, []);
 
   async function handlePay() {
+    if (!mobile.trim()) {
+      setError("Isi nomor WhatsApp kamu dulu.");
+      return;
+    }
+
     setStep("redirecting");
     setError(null);
 
@@ -73,7 +108,7 @@ export default function PaketPlusPage() {
       const response = await fetch("/api/mayar/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ planId: plusPlan.id }),
+        body: JSON.stringify({ planId: plusPlan.id, mobile: mobile.trim() }),
       });
 
       const result = await response.json().catch(() => ({}));
@@ -242,6 +277,48 @@ export default function PaketPlusPage() {
                   <span className="text-xl font-bold text-cta">
                     {plusPlan.price}
                   </span>
+                </div>
+              </div>
+
+              <div className="mt-4">
+                <label className="text-[12px] font-bold text-muted-foreground" htmlFor="mobile">
+                  Nomor WhatsApp
+                </label>
+                <input
+                  id="mobile"
+                  className={`mt-1 ${inputClass}`}
+                  placeholder="Contoh: 6281234567890"
+                  value={mobile}
+                  onChange={(event) => setMobile(event.target.value)}
+                />
+                <p className="mt-1 text-[12px] font-normal text-muted-foreground">
+                  Dipakai Mayar untuk konfirmasi pembayaran.
+                </p>
+              </div>
+
+              <div className="mt-4 rounded-card border-[2.5px] border-ink bg-white p-5 shadow-[3px_3px_0_0_rgba(20,20,20,1)]">
+                <p className="text-[12px] font-bold text-muted-foreground">
+                  Metode Pembayaran yang Didukung
+                </p>
+                <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3">
+                  {paymentMethods.map((method) => (
+                    <div
+                      key={method.label}
+                      className="flex items-center gap-2 rounded-input border border-border-subtle px-3 py-2.5"
+                    >
+                      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-surface text-charcoal">
+                        <method.icon width={16} height={16} />
+                      </span>
+                      <div>
+                        <p className="text-[13px] font-bold text-charcoal">
+                          {method.label}
+                        </p>
+                        <p className="text-[11px] font-normal text-muted-foreground">
+                          {method.detail}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
 

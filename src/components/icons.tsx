@@ -257,3 +257,51 @@ export function TagIcon(props: IconProps) {
     </svg>
   );
 }
+
+export function QrCodeIcon(props: IconProps) {
+  return (
+    <svg {...base} {...props}>
+      <rect x="3" y="3" width="7" height="7" rx="1" />
+      <rect x="14" y="3" width="7" height="7" rx="1" />
+      <rect x="3" y="14" width="7" height="7" rx="1" />
+      <path d="M14 14h3v3h-3zM19 14h2M14 19h2M19 19h2v2h-2z" />
+    </svg>
+  );
+}
+
+export function WalletIcon(props: IconProps) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M3 7a2 2 0 0 1 2-2h13a1 1 0 0 1 1 1v3H5a2 2 0 0 1-2-2Z" />
+      <path d="M3 7v10a2 2 0 0 0 2 2h14a1 1 0 0 0 1-1V10a1 1 0 0 0-1-1H5" />
+      <circle cx="16.5" cy="14.5" r="1.2" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
+export function BankIcon(props: IconProps) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M3 21h18M4 21V10M20 21V10M2 10l10-6 10 6M6 10v11M18 10v11M10 10v11M14 10v11" />
+    </svg>
+  );
+}
+
+export function StoreIcon(props: IconProps) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M3 9 4.5 4h15L21 9" />
+      <path d="M3 9a2.5 2.5 0 0 0 5 0 2.5 2.5 0 0 0 5 0 2.5 2.5 0 0 0 5 0 2.5 2.5 0 0 0 5 0" />
+      <path d="M5 9v11h14V9M9.5 20v-6h5v6" />
+    </svg>
+  );
+}
+
+export function ClockIcon(props: IconProps) {
+  return (
+    <svg {...base} {...props}>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M12 7v5l3.5 2" />
+    </svg>
+  );
+}

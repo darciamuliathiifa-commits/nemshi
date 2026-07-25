@@ -7,6 +7,7 @@ const VALID_PLAN_IDS: PlanId[] = ["plus"];
 
 interface CheckoutBody {
   planId?: string;
+  mobile?: string;
 }
 
 export async function POST(request: Request) {
@@ -44,17 +45,27 @@ export async function POST(request: Request) {
     .eq("id", user.id)
     .maybeSingle();
 
-  if (!profile?.whatsapp_number) {
+  const mobile = body.mobile?.trim() || profile?.whatsapp_number;
+
+  if (!mobile) {
     return NextResponse.json(
-      { error: "Lengkapi nomor WhatsApp di profil kamu dulu sebelum checkout." },
+      { error: "Nomor WhatsApp wajib diisi." },
       { status: 400 },
     );
   }
-  if (!profile.email) {
+  if (!profile?.email) {
     return NextResponse.json(
       { error: "Email akun kamu tidak ditemukan." },
       { status: 400 },
     );
+  }
+
+  // Keep the profile in sync so the user doesn't have to re-enter it next time.
+  if (body.mobile?.trim() && body.mobile.trim() !== profile.whatsapp_number) {
+    await supabase
+      .from("profiles")
+      .update({ whatsapp_number: body.mobile.trim() })
+      .eq("id", user.id);
   }
 
   const appUrl = process.env.NEXT_PUBLIC_APP_URL || new URL(request.url).origin;
@@ -66,7 +77,7 @@ export async function POST(request: Request) {
     invoice = await createMayarInvoice({
       name: profile.name,
       email: profile.email,
-      mobile: profile.whatsapp_number,
+      mobile,
       redirectUrl: `${appUrl}/paket-plus?status=return`,
       description: "Paket Plus Nemshi",
       expiredAt,
