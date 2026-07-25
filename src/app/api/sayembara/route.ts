@@ -162,6 +162,15 @@ export async function POST(request: Request) {
   const priceLabel = body.priceLabel?.trim() || null;
   const waNego = body.waNego === true;
 
+  // Active Paket Plus subscribers get 3 days of featured/exclusive placement
+  // (the "Sayembara Unggulan" carousel), same benefit as ads.
+  const isActivePlus =
+    quota.plan === "plus" &&
+    (!quota.planExpiresAt || new Date(quota.planExpiresAt) > new Date());
+  const featuredUntil = isActivePlus
+    ? new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString()
+    : null;
+
   const { data, error } = await supabase
     .from("sayembara")
     .insert({
@@ -172,6 +181,7 @@ export async function POST(request: Request) {
       location,
       price_label: priceLabel,
       wa_nego: waNego,
+      featured_until: featuredUntil,
     })
     .select(
       "id, title, description, category, location, price_label, wa_nego, status, created_at",

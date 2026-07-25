@@ -6,9 +6,11 @@ import { MapPinIcon, UserIcon } from "@/components/icons";
 import { ShareButton } from "@/components/ads/share-button";
 import { SaveButton } from "@/components/ads/save-button";
 import { ReportAdDialog } from "@/components/ads/report-ad-dialog";
-import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { createSupabasePublicClient } from "@/lib/supabase/public";
 import { formatRelativeTime } from "@/lib/format-relative-time";
 import { TransactionDisclaimer } from "@/components/shared/transaction-disclaimer";
+
+export const revalidate = 30;
 
 const categoryAccent: Record<string, string> = {
   Pendidikan: "from-blue-100 to-blue-50",
@@ -56,7 +58,7 @@ interface AdDetailRow {
 }
 
 async function ActiveAdsCount({ ownerId }: { ownerId: string }) {
-  const supabase = await createSupabaseServerClient();
+  const supabase = createSupabasePublicClient();
   if (!supabase) return <>0 iklan aktif</>;
 
   const { count } = await supabase
@@ -75,7 +77,7 @@ export default async function AdDetailPage({
 }) {
   const { id } = await params;
 
-  const supabase = await createSupabaseServerClient();
+  const supabase = createSupabasePublicClient();
   if (!supabase) {
     notFound();
   }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useLayoutEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import type { Ad, AdCategory } from "@/lib/types";
 import { AdCard } from "@/components/ads/ad-card";
@@ -105,7 +105,7 @@ function FilterSection({
       </button>
 
       {open && (
-        <div className="max-h-[320px] overflow-y-auto px-5 pb-5 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        <div className="px-5 pb-5 lg:max-h-[320px] lg:overflow-y-auto lg:[-ms-overflow-style:none] lg:[scrollbar-width:none] lg:[&::-webkit-scrollbar]:hidden">
           <div className="flex flex-col gap-1">{children}</div>
         </div>
       )}
@@ -123,8 +123,9 @@ export function AdBrowser({ ads }: { ads: Ad[] }) {
   const [locationOpen, setLocationOpen] = useState(false);
   const [page, setPage] = useState(1);
 
-  useEffect(() => {
-    // syncing initial open/closed state with viewport size on mount (window is unavailable during SSR, so this can't be derived during render).
+  useLayoutEffect(() => {
+    // useLayoutEffect (not useEffect) so this runs before the browser paints,
+    // avoiding a visible flash of the open panel on mobile before it snaps closed.
     if (window.matchMedia("(max-width: 1023px)").matches) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setCategoryOpen(false);

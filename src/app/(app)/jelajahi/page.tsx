@@ -1,7 +1,12 @@
 import { AdBrowser } from "@/components/ads/ad-browser";
-import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { createSupabasePublicClient } from "@/lib/supabase/public";
 import { formatRelativeTime } from "@/lib/format-relative-time";
 import type { Ad } from "@/lib/types";
+
+// ISR: serve a cached version of the listing for up to 30s instead of
+// blocking every page view on a fresh Supabase round-trip — cuts perceived
+// load delay while keeping the listing reasonably fresh.
+export const revalidate = 30;
 
 interface SellerProfileRow {
   id: string;
@@ -31,7 +36,7 @@ interface AdRow {
 }
 
 export default async function EksplorPage() {
-  const supabase = await createSupabaseServerClient();
+  const supabase = createSupabasePublicClient();
   let ads: Ad[] = [];
 
   if (supabase) {

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { PlusCircleIcon, SearchIcon } from "@/components/icons";
 import { formatRelativeTime } from "@/lib/format-relative-time";
 import { Pagination } from "@/components/shared/pagination";
+import { SayembaraFeaturedCarousel } from "@/components/sayembara/sayembara-featured-carousel";
 
 const PAGE_SIZE = 20;
 
@@ -28,6 +29,7 @@ export interface SayembaraListItem {
   created_at: string;
   ownerName: string | null;
   applicantCount: number;
+  featured?: boolean;
 }
 
 const SayembaraCard = memo(function SayembaraCard({ item }: { item: SayembaraListItem }) {
@@ -90,6 +92,8 @@ const SayembaraCard = memo(function SayembaraCard({ item }: { item: SayembaraLis
 export function SayembaraBrowser({ items }: { items: SayembaraListItem[] }) {
   const [keyword, setKeyword] = useState("");
   const [page, setPage] = useState(1);
+
+  const featuredItems = useMemo(() => items.filter((item) => item.featured), [items]);
 
   const filteredItems = useMemo(() => {
     const normalized = keyword.trim().toLowerCase();
@@ -159,7 +163,11 @@ export function SayembaraBrowser({ items }: { items: SayembaraListItem[] }) {
         </div>
       </section>
 
-      <div className="mb-4 mt-8">
+      <div className="mt-8">
+        <SayembaraFeaturedCarousel items={featuredItems} />
+      </div>
+
+      <div className="mb-4">
         <p className="text-[14px] font-normal text-muted-foreground">
           {filteredItems.length} sayembara ditemukan.
         </p>

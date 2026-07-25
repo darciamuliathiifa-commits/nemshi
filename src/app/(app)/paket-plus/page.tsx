@@ -49,6 +49,16 @@ const PLANS: Record<PlanId, PlanInfo> = {
     period: "/ posting",
     benefits: ["1x jatah pasang sayembara tambahan, aktif 1 minggu"],
   },
+  hemat: {
+    id: "hemat",
+    name: "Paket Hemat",
+    price: "Rp 99.000",
+    period: "/ paket",
+    benefits: [
+      "2x jatah pasang iklan, masing-masing aktif 2 minggu",
+      "1x jatah pasang sayembara, aktif 2 minggu",
+    ],
+  },
 };
 
 const paymentMethods = [
@@ -75,7 +85,14 @@ function isPlanFulfilled(
 ): boolean {
   if (planId === "plus") return quota.plan === "plus";
   if (planId === "extra_ad") return quota.extraAdSlots > (baseline?.extraAdSlots ?? -1);
-  return quota.extraSayembaraSlots > (baseline?.extraSayembaraSlots ?? -1);
+  if (planId === "extra_sayembara") {
+    return quota.extraSayembaraSlots > (baseline?.extraSayembaraSlots ?? -1);
+  }
+  // hemat grants both an ad slot and a sayembara slot at once.
+  return (
+    quota.extraAdSlots > (baseline?.extraAdSlots ?? -1) &&
+    quota.extraSayembaraSlots > (baseline?.extraSayembaraSlots ?? -1)
+  );
 }
 
 export default function PaketPlusPage() {
@@ -172,8 +189,9 @@ export default function PaketPlusPage() {
         throw new Error(result.error ?? "Gagal membuat invoice pembayaran.");
       }
 
+      const bridgeUrl = `/paket-plus/checkout-bridge?link=${encodeURIComponent(result.link)}&label=${encodeURIComponent(selectedPlan.name)}`;
       const popup = window.open(
-        result.link,
+        bridgeUrl,
         "mayarCheckout",
         "width=480,height=760,noopener=no",
       );
@@ -285,45 +303,82 @@ export default function PaketPlusPage() {
               </div>
 
               <h2 className="mt-8 text-xl font-bold text-charcoal">
-                Upgrade ke Paket Plus
+                Upgrade Paket
               </h2>
               <p className="mt-1 text-[14px] font-normal text-muted-foreground">
                 Sekali bayar, dapat jatah iklan dan sayembara lebih banyak.
               </p>
 
-              <div className="mx-auto mt-4 flex max-w-sm flex-col rounded-card border-[2.5px] border-ink bg-white p-6 shadow-[4px_4px_0_0_rgba(255,199,44,1)]">
-                <h3 className="text-base font-bold text-charcoal">
-                  {PLANS.plus.name}
-                </h3>
-                <p className="mt-2">
-                  <span className="text-2xl font-bold text-charcoal">
-                    {PLANS.plus.price}
-                  </span>
-                  <span className="text-[14px] font-normal text-muted-foreground">
-                    {" "}
-                    {PLANS.plus.period}
-                  </span>
-                </p>
+              <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div className="mx-auto flex w-full max-w-sm flex-col rounded-card border-[2.5px] border-ink bg-white p-6 shadow-[3px_3px_0_0_rgba(20,20,20,1)]">
+                  <h3 className="text-base font-bold text-charcoal">
+                    {PLANS.hemat.name}
+                  </h3>
+                  <p className="mt-2">
+                    <span className="text-2xl font-bold text-charcoal">
+                      {PLANS.hemat.price}
+                    </span>
+                    <span className="text-[14px] font-normal text-muted-foreground">
+                      {" "}
+                      {PLANS.hemat.period}
+                    </span>
+                  </p>
 
-                <ul className="mt-4 flex flex-1 flex-col gap-2">
-                  {PLANS.plus.benefits.map((benefit) => (
-                    <li
-                      key={benefit}
-                      className="flex items-start gap-2 text-[14px] font-normal text-charcoal"
-                    >
-                      <span className="mt-0.5 text-success">✓</span>
-                      {benefit}
-                    </li>
-                  ))}
-                </ul>
+                  <ul className="mt-4 flex flex-1 flex-col gap-2">
+                    {PLANS.hemat.benefits.map((benefit) => (
+                      <li
+                        key={benefit}
+                        className="flex items-start gap-2 text-[14px] font-normal text-charcoal"
+                      >
+                        <span className="mt-0.5 text-success">✓</span>
+                        {benefit}
+                      </li>
+                    ))}
+                  </ul>
 
-                <button
-                  type="button"
-                  onClick={() => choosePlan("plus")}
-                  className="mt-6 h-11 rounded-pill bg-charcoal text-base font-bold text-white transition-colors hover:bg-black"
-                >
-                  Pilih Paket
-                </button>
+                  <button
+                    type="button"
+                    onClick={() => choosePlan("hemat")}
+                    className="mt-6 h-11 rounded-pill border-2 border-ink text-base font-bold text-charcoal transition-colors hover:bg-surface"
+                  >
+                    Pilih Paket
+                  </button>
+                </div>
+
+                <div className="mx-auto flex w-full max-w-sm flex-col rounded-card border-[2.5px] border-ink bg-white p-6 shadow-[4px_4px_0_0_rgba(255,199,44,1)]">
+                  <h3 className="text-base font-bold text-charcoal">
+                    {PLANS.plus.name}
+                  </h3>
+                  <p className="mt-2">
+                    <span className="text-2xl font-bold text-charcoal">
+                      {PLANS.plus.price}
+                    </span>
+                    <span className="text-[14px] font-normal text-muted-foreground">
+                      {" "}
+                      {PLANS.plus.period}
+                    </span>
+                  </p>
+
+                  <ul className="mt-4 flex flex-1 flex-col gap-2">
+                    {PLANS.plus.benefits.map((benefit) => (
+                      <li
+                        key={benefit}
+                        className="flex items-start gap-2 text-[14px] font-normal text-charcoal"
+                      >
+                        <span className="mt-0.5 text-success">✓</span>
+                        {benefit}
+                      </li>
+                    ))}
+                  </ul>
+
+                  <button
+                    type="button"
+                    onClick={() => choosePlan("plus")}
+                    className="mt-6 h-11 rounded-pill bg-charcoal text-base font-bold text-white transition-colors hover:bg-black"
+                  >
+                    Pilih Paket
+                  </button>
+                </div>
               </div>
             </>
           )}

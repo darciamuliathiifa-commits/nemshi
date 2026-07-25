@@ -1,6 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 
-export type PlanId = "plus" | "extra_ad" | "extra_sayembara";
+export type PlanId = "plus" | "extra_ad" | "extra_sayembara" | "hemat";
 
 export interface UserQuota {
   userId: string;
@@ -28,18 +28,21 @@ const PLAN_BENEFITS: Record<PlanId, PlanBenefit> = {
     durationMonths: 0,
     grantsPlus: false,
   },
+  hemat: { extraAdSlots: 2, extraSayembaraSlots: 1, durationMonths: 0, grantsPlus: false },
 };
 
 export const PLAN_PRICE_IDR: Record<PlanId, number> = {
   plus: 150000,
   extra_ad: 50000,
   extra_sayembara: 12000,
+  hemat: 99000,
 };
 
 export const PLAN_LABELS: Record<PlanId, string> = {
   plus: "Paket Plus Nemshi",
   extra_ad: "Slot Iklan Tambahan Nemshi",
   extra_sayembara: "Slot Sayembara Tambahan Nemshi",
+  hemat: "Paket Hemat Nemshi",
 };
 
 interface UserQuotaRow {

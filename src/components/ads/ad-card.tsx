@@ -106,7 +106,7 @@ export const AdCard = memo(function AdCard({ ad }: { ad: Ad }) {
           target="_blank"
           rel="noopener noreferrer"
           onClick={(event) => event.stopPropagation()}
-          className="flex h-7 flex-1 items-center justify-center rounded-pill bg-charcoal text-[10.5px] font-bold text-white transition-colors hover:bg-black sm:h-10 sm:text-[13px]"
+          className="flex h-7 flex-1 items-center justify-center rounded-pill bg-success text-[10.5px] font-bold text-white transition-colors hover:brightness-90 sm:h-10 sm:text-[13px]"
         >
           Hubungi WA
         </a>

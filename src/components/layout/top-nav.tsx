@@ -241,6 +241,13 @@ export function TopNav() {
                 <MegaphoneIcon width={18} height={18} />
                 Pasang Sayembara
               </Link>
+              <Link
+                href="/tentang-kami"
+                onClick={() => setMobileOpen(false)}
+                className="mt-1 text-center text-[12px] font-bold text-charcoal/40 transition-colors hover:text-charcoal/70"
+              >
+                Tentang Kami
+              </Link>
             </div>
           </div>
         </div>

@@ -4,7 +4,7 @@ import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { createMayarInvoice, MayarNotConfiguredError } from "@/lib/server/mayar";
 import { PLAN_LABELS, PLAN_PRICE_IDR, type PlanId } from "@/lib/server/quota-store";
 
-const VALID_PLAN_IDS: PlanId[] = ["plus", "extra_ad", "extra_sayembara"];
+const VALID_PLAN_IDS: PlanId[] = ["plus", "extra_ad", "extra_sayembara", "hemat"];
 
 interface CheckoutBody {
   planId?: string;

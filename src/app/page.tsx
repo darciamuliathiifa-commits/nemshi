@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { PublicNav } from "@/components/layout/public-nav";
 import { GoogleLoginButton } from "@/components/auth/google-login-button";
 import {
@@ -109,9 +110,12 @@ export default function LandingPage() {
           ))}
         </div>
 
-        <p className="text-[12px] font-normal text-charcoal/40">
-          Product by Dar Dev
-        </p>
+        <Link
+          href="/tentang-kami"
+          className="text-[12px] font-normal text-charcoal/40 hover:text-charcoal/70"
+        >
+          Tentang Kami · Product by Dar Dev
+        </Link>
       </div>
     </div>
   );

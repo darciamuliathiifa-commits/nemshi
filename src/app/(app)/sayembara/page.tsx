@@ -1,5 +1,9 @@
-import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { createSupabasePublicClient } from "@/lib/supabase/public";
 import { SayembaraBrowser, type SayembaraListItem } from "@/components/sayembara/sayembara-browser";
+
+// ISR: serve a cached version of the listing for up to 30s instead of
+// blocking every page view on a fresh Supabase round-trip.
+export const revalidate = 30;
 
 interface SayembaraRow {
   id: string;
@@ -11,11 +15,12 @@ interface SayembaraRow {
   wa_nego: boolean;
   status: string;
   created_at: string;
+  featured_until: string | null;
   profiles: { name: string } | { name: string }[] | null;
 }
 
 export default async function SayembaraPage() {
-  const supabase = await createSupabaseServerClient();
+  const supabase = createSupabasePublicClient();
 
   let items: SayembaraListItem[] = [];
 
@@ -23,7 +28,7 @@ export default async function SayembaraPage() {
     const { data } = await supabase
       .from("sayembara")
       .select(
-        `id, title, description, category, location, price_label, wa_nego, status, created_at,
+        `id, title, description, category, location, price_label, wa_nego, status, created_at, featured_until,
          profiles!owner_id ( name )`,
       )
       .order("created_at", { ascending: false });
@@ -52,6 +57,7 @@ export default async function SayembaraPage() {
         ...row,
         ownerName: profile?.name ?? null,
         applicantCount: applicantCountById.get(row.id) ?? 0,
+        featured: !!row.featured_until && new Date(row.featured_until) > new Date(),
       };
     });
   }

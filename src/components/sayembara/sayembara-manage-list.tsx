@@ -90,34 +90,36 @@ export function SayembaraManageList({ items: initialItems }: { items: MySayembar
 
   return (
     <>
-      <div className="flex flex-col gap-3">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
         {items.map((item) => {
           const isPending = pendingId === item.id;
           return (
             <div
               key={item.id}
-              className="flex flex-col gap-3 rounded-card border border-border-subtle bg-white p-4 sm:flex-row sm:items-center sm:justify-between"
+              className="flex flex-col gap-3 rounded-card border-[2.5px] border-ink bg-white p-5 shadow-[3px_3px_0_0_rgba(20,20,20,1)]"
             >
-              <div className="flex-1">
-                <div className="flex items-center gap-2">
-                  <span
-                    className={`rounded-badge px-3 py-1 text-[12px] leading-4 font-bold ${statusAccent[item.status] ?? statusAccent.Aktif}`}
-                  >
-                    {item.status}
-                  </span>
-                  <span className="text-[12px] font-bold text-muted-foreground">
-                    {item.category}
-                  </span>
-                </div>
-                <h3 className="mt-2 text-base font-bold text-charcoal">{item.title}</h3>
-                <p className="mt-1 text-[14px] font-normal text-muted-foreground">
-                  {item.priceLabel ? `${item.priceLabel} · ` : ""}
-                  {item.location} · {item.applicantCount} pendaftar · Diposting{" "}
-                  {item.postedAt}
-                </p>
+              <div className="flex items-center gap-2">
+                <span
+                  className={`rounded-badge px-3 py-1 text-[12px] leading-4 font-bold ${statusAccent[item.status] ?? statusAccent.Aktif}`}
+                >
+                  {item.status}
+                </span>
+                <span className="text-[12px] font-bold text-muted-foreground">
+                  {item.category}
+                </span>
               </div>
 
-              <div className="flex items-center gap-2 sm:shrink-0">
+              <h3 className="line-clamp-2 text-base font-bold leading-5 text-charcoal">
+                {item.title}
+              </h3>
+              {item.priceLabel && (
+                <p className="text-lg font-bold text-cta">{item.priceLabel}</p>
+              )}
+              <p className="text-[13px] font-normal text-muted-foreground">
+                {item.location} · {item.applicantCount} pendaftar · Diposting {item.postedAt}
+              </p>
+
+              <div className="mt-1 flex flex-col gap-2 border-t border-border-subtle pt-3">
                 {isPending ? (
                   <span className="flex h-9 items-center gap-2 px-2 text-[14px] text-muted-foreground">
                     <span className="h-4 w-4 animate-spin rounded-full border-2 border-surface border-t-cta" />
@@ -125,20 +127,22 @@ export function SayembaraManageList({ items: initialItems }: { items: MySayembar
                   </span>
                 ) : (
                   <>
-                    <Link
-                      href={`/sayembara/${item.id}/edit`}
-                      className="h-9 shrink-0 rounded-pill border-2 border-ink px-4 text-[14px] font-bold leading-[32px] text-charcoal transition-colors hover:bg-surface"
-                    >
-                      Edit
-                    </Link>
-                    <button
-                      type="button"
-                      onClick={() => handleDelete(item.id)}
-                      className="h-9 shrink-0 rounded-pill border-2 border-error px-4 text-[14px] font-bold text-error transition-colors hover:bg-error/10"
-                    >
-                      Hapus
-                    </button>
-                    <label className="flex items-center gap-2">
+                    <div className="flex gap-2">
+                      <Link
+                        href={`/sayembara/${item.id}/edit`}
+                        className="h-9 flex-1 rounded-pill border-2 border-ink text-center text-[14px] font-bold leading-[32px] text-charcoal transition-colors hover:bg-surface"
+                      >
+                        Edit
+                      </Link>
+                      <button
+                        type="button"
+                        onClick={() => handleDelete(item.id)}
+                        className="h-9 flex-1 rounded-pill border-2 border-error text-[14px] font-bold text-error transition-colors hover:bg-error/10"
+                      >
+                        Hapus
+                      </button>
+                    </div>
+                    <label className="flex items-center justify-between gap-2">
                       <span className="text-[12px] font-bold text-muted-foreground">
                         Ubah status
                       </span>
@@ -148,7 +152,7 @@ export function SayembaraManageList({ items: initialItems }: { items: MySayembar
                         onChange={(event) =>
                           handleStatusChange(item.id, event.target.value as SayembaraStatus)
                         }
-                        className="h-9 rounded-input border border-border bg-white px-3 text-[14px] text-charcoal focus:border-cta focus:outline-none focus:ring-3 focus:ring-cta/10 disabled:bg-surface"
+                        className="h-9 flex-1 rounded-input border border-border bg-white px-3 text-[14px] text-charcoal focus:border-cta focus:outline-none focus:ring-3 focus:ring-cta/10 disabled:bg-surface"
                       >
                         {statusOptions.map((status) => (
                           <option key={status} value={status}>

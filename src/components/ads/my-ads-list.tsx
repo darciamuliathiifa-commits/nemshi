@@ -96,7 +96,7 @@ export function MyAdsList({ ads: initialAds }: { ads: MyAd[] }) {
         {statusFilters.map((status) => (
           <div
             key={status}
-            className="rounded-card border border-border-subtle bg-white p-4"
+            className="rounded-card border-2 border-ink bg-white p-4 shadow-[2px_2px_0_0_rgba(20,20,20,1)]"
           >
             <p className="text-2xl font-bold text-charcoal">{statusCounts.get(status)}</p>
             <p className="mt-1 text-[12px] font-bold text-muted-foreground">{status}</p>
@@ -130,32 +130,34 @@ export function MyAdsList({ ads: initialAds }: { ads: MyAd[] }) {
       </p>
 
       {filteredAds.length > 0 ? (
-        <div className="flex flex-col gap-3">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
           {filteredAds.map((ad) => {
             const isPending = pendingId === ad.id;
             return (
               <div
                 key={ad.id}
-                className="flex flex-col gap-3 rounded-card border border-border-subtle bg-white p-4 sm:flex-row sm:items-center sm:justify-between"
+                className="flex flex-col gap-3 rounded-card border-[2.5px] border-ink bg-white p-5 shadow-[3px_3px_0_0_rgba(20,20,20,1)]"
               >
-                <div className="flex-1">
-                  <div className="flex items-center gap-2">
-                    <span
-                      className={`rounded-badge px-3 py-1 text-[12px] leading-4 font-bold ${statusAccent[ad.status]}`}
-                    >
-                      {ad.status}
-                    </span>
-                    <span className="text-[12px] font-bold text-muted-foreground">
-                      {ad.category}
-                    </span>
-                  </div>
-                  <h3 className="mt-2 text-base font-bold text-charcoal">{ad.title}</h3>
-                  <p className="mt-1 text-[14px] font-normal text-muted-foreground">
-                    {ad.priceLabel} · {ad.location} · Diposting {ad.postedAt}
-                  </p>
+                <div className="flex items-center gap-2">
+                  <span
+                    className={`rounded-badge px-3 py-1 text-[12px] leading-4 font-bold ${statusAccent[ad.status]}`}
+                  >
+                    {ad.status}
+                  </span>
+                  <span className="text-[12px] font-bold text-muted-foreground">
+                    {ad.category}
+                  </span>
                 </div>
 
-                <div className="flex items-center gap-2 sm:shrink-0">
+                <h3 className="line-clamp-2 text-base font-bold leading-5 text-charcoal">
+                  {ad.title}
+                </h3>
+                <p className="text-lg font-bold text-cta">{ad.priceLabel}</p>
+                <p className="text-[13px] font-normal text-muted-foreground">
+                  {ad.location} · Diposting {ad.postedAt}
+                </p>
+
+                <div className="mt-1 flex flex-col gap-2 border-t border-border-subtle pt-3">
                   {isPending ? (
                     <span className="flex h-9 items-center gap-2 px-2 text-[14px] text-muted-foreground">
                       <span className="h-4 w-4 animate-spin rounded-full border-2 border-surface border-t-cta" />
@@ -167,13 +169,13 @@ export function MyAdsList({ ads: initialAds }: { ads: MyAd[] }) {
                         <button
                           type="button"
                           onClick={() => handleExtend(ad.id)}
-                          className="h-9 rounded-pill bg-cta px-4 text-[14px] font-bold text-white transition-colors hover:bg-highlight"
+                          className="h-9 w-full rounded-pill bg-cta text-[14px] font-bold text-white transition-colors hover:bg-highlight"
                         >
                           Perpanjang Masa Tayang
                         </button>
                       )}
 
-                      <label className="flex items-center gap-2">
+                      <label className="flex items-center justify-between gap-2">
                         <span className="text-[12px] font-bold text-muted-foreground">
                           Ubah status
                         </span>
@@ -183,7 +185,7 @@ export function MyAdsList({ ads: initialAds }: { ads: MyAd[] }) {
                           onChange={(event) =>
                             handleStatusChange(ad.id, event.target.value as AdStatus)
                           }
-                          className="h-9 rounded-input border border-border bg-white px-3 text-[14px] text-charcoal focus:border-cta focus:outline-none focus:ring-3 focus:ring-cta/10 disabled:bg-surface"
+                          className="h-9 flex-1 rounded-input border border-border bg-white px-3 text-[14px] text-charcoal focus:border-cta focus:outline-none focus:ring-3 focus:ring-cta/10 disabled:bg-surface"
                         >
                           {statusFilters.map((status) => (
                             <option key={status} value={status}>

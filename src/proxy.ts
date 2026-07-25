@@ -1,7 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
-const PUBLIC_ROUTES = ["/", "/auth/callback"];
+const PUBLIC_ROUTES = ["/", "/auth/callback", "/tentang-kami"];
 
 export default async function proxy(request: NextRequest) {
   let response = NextResponse.next({ request });
