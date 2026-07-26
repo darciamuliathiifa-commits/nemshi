@@ -128,7 +128,7 @@ export function SayembaraBrowser({ items }: { items: SayembaraListItem[] }) {
       <section className="relative overflow-hidden rounded-card border-[2.5px] border-ink bg-gradient-to-br from-brand-dark to-brand bg-dot-pattern shadow-[5px_5px_0_0_rgba(20,20,20,1)]">
         <HeroBanner />
 
-        <div className="relative -mt-8 mx-4 mb-4 flex flex-col gap-4 rounded-card border-[2.5px] border-ink bg-white p-5 shadow-[3px_3px_0_0_rgba(20,20,20,1)] sm:mx-6 sm:mb-6 sm:flex-row sm:items-center sm:justify-between">
+        <div className="relative -mt-16 mx-4 mb-4 flex flex-col gap-4 rounded-card border-[2.5px] border-ink bg-white p-5 shadow-[3px_3px_0_0_rgba(20,20,20,1)] sm:mx-6 sm:mb-6 sm:flex-row sm:items-center sm:justify-between sm:-mt-24 lg:-mt-32">
           <div>
             <h1 className="text-xl font-bold text-charcoal sm:text-2xl">
               Butuh Bantuan? Pasang Sayembara
