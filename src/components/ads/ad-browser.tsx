@@ -1,6 +1,7 @@
 "use client";
 
 import { useLayoutEffect, useMemo, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import type { Ad, AdCategory } from "@/lib/types";
 import { AdCard } from "@/components/ads/ad-card";
@@ -229,6 +230,17 @@ export function AdBrowser({ ads }: { ads: Ad[] }) {
           </label>
         </div>
       </section>
+
+      <div className="mt-6 overflow-hidden rounded-card border-[2.5px] border-ink shadow-[4px_4px_0_0_rgba(20,20,20,1)] sm:mt-8">
+        <Image
+          src="/banner-nemsy.png"
+          alt="Nemsy!: Satu Portal Untuk Usaha Masisir"
+          width={4218}
+          height={989}
+          className="h-auto w-full"
+          priority
+        />
+      </div>
 
       <div className="mt-8">
         <FeaturedCarousel ads={featuredAds} />

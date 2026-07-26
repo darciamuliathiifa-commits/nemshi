@@ -1,6 +1,7 @@
 "use client";
 
 import { memo, useMemo, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { PlusCircleIcon, SearchIcon } from "@/components/icons";
 import { formatRelativeTime } from "@/lib/format-relative-time";
@@ -170,6 +171,17 @@ export function SayembaraBrowser({ items }: { items: SayembaraListItem[] }) {
           </div>
         </div>
       </section>
+
+      <div className="mt-6 overflow-hidden rounded-card border-[2.5px] border-ink shadow-[4px_4px_0_0_rgba(20,20,20,1)] sm:mt-8">
+        <Image
+          src="/banner-nemsy.png"
+          alt="Nemsy!: Satu Portal Untuk Usaha Masisir"
+          width={4218}
+          height={989}
+          className="h-auto w-full"
+          priority
+        />
+      </div>
 
       <div className="mt-8">
         <SayembaraFeaturedCarousel items={featuredItems} />
