@@ -21,10 +21,13 @@ interface UserItem {
 
 type LoadState = "loading" | "ready" | "error";
 
+const ITEMS_PER_PAGE = 20;
+
 export default function AdminPenggunaPage() {
   const [users, setUsers] = useState<UserItem[]>([]);
   const [loadState, setLoadState] = useState<LoadState>("loading");
   const [search, setSearch] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
   const [pendingId, setPendingId] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
   const [customUser, setCustomUser] = useState<UserItem | null>(null);
@@ -130,6 +133,12 @@ export default function AdminPenggunaPage() {
     );
   });
 
+  const totalPages = Math.ceil(filteredUsers.length / ITEMS_PER_PAGE) || 1;
+  const paginatedUsers = filteredUsers.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE,
+  );
+
   return (
     <>
       <header className="sticky top-0 z-10 flex flex-wrap items-center justify-between gap-4 border-b border-border-subtle bg-white/90 px-6 py-4 backdrop-blur">
@@ -152,7 +161,10 @@ export default function AdminPenggunaPage() {
             type="search"
             placeholder="Cari nama, email, atau WA..."
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) => {
+              setSearch(e.target.value);
+              setCurrentPage(1);
+            }}
             className="h-10 w-full rounded-pill border border-border bg-white pl-10 pr-4 text-[13px] text-charcoal placeholder:text-muted focus:border-cta focus:outline-none focus:ring-3 focus:ring-cta/10"
           />
         </div>
@@ -193,90 +205,110 @@ export default function AdminPenggunaPage() {
               </div>
             </div>
 
-            <p className="mb-4 text-[14px] font-normal text-muted-foreground">
-              {filteredUsers.length} pengguna ditemukan.
-            </p>
+            <div className="mb-4 flex items-center justify-between">
+              <p className="text-[14px] font-normal text-muted-foreground">
+                {filteredUsers.length} pengguna ditemukan (Halaman {currentPage} dari {totalPages})
+              </p>
+            </div>
 
-            {filteredUsers.length > 0 ? (
-              <div className="flex flex-col gap-4">
-                {filteredUsers.map((userItem) => {
+            {paginatedUsers.length > 0 ? (
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                {paginatedUsers.map((userItem) => {
                   const isPending = pendingId === userItem.id;
                   return (
                     <div
                       key={userItem.id}
-                      className="flex flex-col gap-4 rounded-card border-[2px] border-ink bg-white p-5 shadow-[3px_3px_0_0_rgba(20,20,20,1)] lg:flex-row lg:items-center lg:justify-between"
+                      className="flex flex-col justify-between rounded-card border-[2.5px] border-ink bg-white p-5 shadow-[3px_3px_0_0_rgba(20,20,20,1)] transition-transform hover:-translate-y-0.5"
                     >
-                      {/* Left: User Info */}
-                      <div className="flex items-start gap-3.5">
-                        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border-2 border-ink bg-brand text-charcoal font-bold">
-                          {userItem.name.slice(0, 2).toUpperCase()}
-                        </div>
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <h3 className="text-base font-bold text-charcoal">{userItem.name}</h3>
-                            <span
-                              className={`rounded-badge px-2.5 py-0.5 text-[11px] font-bold ${
-                                userItem.plan === "plus"
-                                  ? "bg-brand text-charcoal border border-ink"
-                                  : "bg-surface text-charcoal/70"
-                              }`}
-                            >
-                              {userItem.plan === "plus" ? "Paket Plus" : "Pengguna Gratis"}
-                            </span>
+                      {/* Top: Header Info */}
+                      <div>
+                        <div className="flex items-start justify-between gap-2 border-b border-border-subtle pb-3">
+                          <div className="flex items-center gap-2.5 min-w-0">
+                            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 border-ink bg-brand font-bold text-charcoal text-sm">
+                              {userItem.name.slice(0, 2).toUpperCase()}
+                            </div>
+                            <div className="min-w-0">
+                              <h3 className="truncate text-[14px] font-bold text-charcoal" title={userItem.name}>
+                                {userItem.name}
+                              </h3>
+                              <p className="truncate text-[11px] font-normal text-muted-foreground" title={userItem.email ?? ""}>
+                                {userItem.email ?? "Tanpa Email"}
+                              </p>
+                            </div>
                           </div>
 
-                          <p className="mt-1 text-[13px] font-normal text-muted-foreground">
-                            {userItem.email ?? "Tanpa Email"} · WA: {userItem.whatsappNumber ?? "-"} · {userItem.activeAdsCount} iklan aktif
-                          </p>
+                          <span
+                            className={`shrink-0 rounded-badge px-2 py-0.5 text-[10px] font-bold ${
+                              userItem.plan === "plus"
+                                ? "bg-brand text-charcoal border border-ink"
+                                : "bg-surface text-charcoal/70"
+                            }`}
+                          >
+                            {userItem.plan === "plus" ? "Paket Plus" : "Gratis"}
+                          </span>
+                        </div>
 
-                          <div className="mt-2.5 flex flex-wrap items-center gap-2 text-[12px] font-medium">
-                            <span className="rounded-input border border-border bg-cream px-2.5 py-1 text-charcoal">
-                              Slot Iklan Tambahan: <strong className="text-cta">+{userItem.extraAdSlots}</strong>
-                            </span>
-                            <span className="rounded-input border border-border bg-cream px-2.5 py-1 text-charcoal">
-                              Slot Sayembara Tambahan: <strong className="text-cta">+{userItem.extraSayembaraSlots}</strong>
-                            </span>
-                            <span className="rounded-input border border-border bg-surface px-2.5 py-1 text-muted-foreground">
-                              Slot Gratis: {userItem.freeAdSlotUsed ? "Terpakai" : "Tersedia"}
-                            </span>
+                        {/* Middle: Details & Quotas */}
+                        <div className="my-3.5 flex flex-col gap-1.5 text-[12px]">
+                          <div className="flex items-center justify-between text-muted-foreground">
+                            <span>WhatsApp:</span>
+                            <strong className="text-charcoal">{userItem.whatsappNumber ?? "-"}</strong>
+                          </div>
+                          <div className="flex items-center justify-between text-muted-foreground">
+                            <span>Iklan Aktif:</span>
+                            <strong className="text-charcoal">{userItem.activeAdsCount} iklan</strong>
+                          </div>
+                          <div className="flex items-center justify-between text-muted-foreground">
+                            <span>Extra Slot Iklan:</span>
+                            <strong className="text-cta">+{userItem.extraAdSlots}</strong>
+                          </div>
+                          <div className="flex items-center justify-between text-muted-foreground">
+                            <span>Extra Sayembara:</span>
+                            <strong className="text-cta">+{userItem.extraSayembaraSlots}</strong>
+                          </div>
+                          <div className="flex items-center justify-between text-muted-foreground">
+                            <span>Slot Gratis:</span>
+                            <strong className={userItem.freeAdSlotUsed ? "text-error" : "text-success"}>
+                              {userItem.freeAdSlotUsed ? "Terpakai" : "Tersedia"}
+                            </strong>
                           </div>
                         </div>
                       </div>
 
-                      {/* Right: Grant Actions */}
-                      <div className="flex flex-wrap items-center gap-2 border-t border-border-subtle pt-3 lg:border-t-0 lg:pt-0">
+                      {/* Bottom: Action Buttons Grid */}
+                      <div className="border-t border-border-subtle pt-3">
                         {isPending ? (
-                          <span className="flex h-9 items-center gap-2 px-3 text-[13px] font-medium text-muted-foreground">
+                          <div className="flex h-16 items-center justify-center gap-2 text-[12px] font-medium text-muted-foreground">
                             <span className="h-4 w-4 animate-spin rounded-full border-2 border-surface border-t-cta" />
-                            Memproses kuota...
-                          </span>
+                            Memproses...
+                          </div>
                         ) : (
-                          <>
+                          <div className="grid grid-cols-2 gap-2">
                             <button
                               type="button"
                               onClick={() => handleGrant(userItem, "grant_ad", 1)}
-                              className="flex h-9 items-center gap-1 rounded-pill border-2 border-ink bg-white px-3 text-[12px] font-bold text-charcoal shadow-[2px_2px_0_0_rgba(20,20,20,1)] transition-transform hover:-translate-y-0.5"
+                              className="flex h-8 items-center justify-center gap-1 rounded-pill border border-ink bg-white px-2 text-[11px] font-bold text-charcoal shadow-[1.5px_1.5px_0_0_rgba(20,20,20,1)] transition-transform hover:-translate-y-0.5 active:translate-y-0"
                             >
-                              <PlusCircleIcon width={14} height={14} />
-                              +1 Slot Iklan
+                              <PlusCircleIcon width={12} height={12} />
+                              +1 Iklan
                             </button>
 
                             <button
                               type="button"
                               onClick={() => handleGrant(userItem, "grant_sayembara", 1)}
-                              className="flex h-9 items-center gap-1 rounded-pill border-2 border-ink bg-white px-3 text-[12px] font-bold text-charcoal shadow-[2px_2px_0_0_rgba(20,20,20,1)] transition-transform hover:-translate-y-0.5"
+                              className="flex h-8 items-center justify-center gap-1 rounded-pill border border-ink bg-white px-2 text-[11px] font-bold text-charcoal shadow-[1.5px_1.5px_0_0_rgba(20,20,20,1)] transition-transform hover:-translate-y-0.5 active:translate-y-0"
                             >
-                              <PlusCircleIcon width={14} height={14} />
-                              +1 Slot Sayembara
+                              <PlusCircleIcon width={12} height={12} />
+                              +1 Sayembara
                             </button>
 
                             <button
                               type="button"
                               onClick={() => handleGrant(userItem, "grant_plus")}
-                              className="flex h-9 items-center gap-1 rounded-pill bg-brand border-2 border-ink px-3 text-[12px] font-bold text-charcoal shadow-[2px_2px_0_0_rgba(20,20,20,1)] transition-transform hover:-translate-y-0.5"
+                              className="flex h-8 items-center justify-center gap-1 rounded-pill border border-ink bg-brand px-2 text-[11px] font-bold text-charcoal shadow-[1.5px_1.5px_0_0_rgba(20,20,20,1)] transition-transform hover:-translate-y-0.5 active:translate-y-0"
                             >
-                              <ZapIcon width={14} height={14} />
-                              Beri Paket Plus
+                              <ZapIcon width={12} height={12} />
+                              +Paket Plus
                             </button>
 
                             <button
@@ -286,11 +318,11 @@ export default function AdminPenggunaPage() {
                                 setCustomAdAmount(1);
                                 setCustomSayembaraAmount(1);
                               }}
-                              className="flex h-9 items-center justify-center rounded-pill border border-border bg-surface px-3 text-[12px] font-bold text-charcoal hover:bg-border/30"
+                              className="flex h-8 items-center justify-center rounded-pill border border-border bg-surface px-2 text-[11px] font-bold text-charcoal hover:bg-border/30"
                             >
                               Custom...
                             </button>
-                          </>
+                          </div>
                         )}
                       </div>
                     </div>
@@ -302,6 +334,38 @@ export default function AdminPenggunaPage() {
                 <p className="text-base font-normal text-charcoal">
                   Pengguna tidak ditemukan.
                 </p>
+              </div>
+            )}
+
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+              <div className="mt-8 flex flex-wrap items-center justify-between gap-4 border-t border-border-subtle pt-6">
+                <p className="text-[13px] font-normal text-muted-foreground">
+                  Menampilkan {(currentPage - 1) * ITEMS_PER_PAGE + 1} -{" "}
+                  {Math.min(currentPage * ITEMS_PER_PAGE, filteredUsers.length)} dari{" "}
+                  {filteredUsers.length} pengguna
+                </p>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    disabled={currentPage === 1}
+                    onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                    className="flex h-9 items-center justify-center rounded-pill border border-border bg-white px-4 text-[13px] font-bold text-charcoal shadow-sm transition-colors hover:bg-surface disabled:opacity-40"
+                  >
+                    ← Sebelumnya
+                  </button>
+                  <span className="px-2 text-[13px] font-bold text-charcoal">
+                    {currentPage} / {totalPages}
+                  </span>
+                  <button
+                    type="button"
+                    disabled={currentPage === totalPages}
+                    onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                    className="flex h-9 items-center justify-center rounded-pill border border-border bg-white px-4 text-[13px] font-bold text-charcoal shadow-sm transition-colors hover:bg-surface disabled:opacity-40"
+                  >
+                    Selanjutnya →
+                  </button>
+                </div>
               </div>
             )}
           </>
