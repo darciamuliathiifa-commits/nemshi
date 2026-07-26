@@ -3,10 +3,13 @@ import { createSupabasePublicClient } from "@/lib/supabase/public";
 import { formatRelativeTime } from "@/lib/format-relative-time";
 import type { Ad } from "@/lib/types";
 
-// ISR: serve a cached version of the listing for up to 30s instead of
-// blocking every page view on a fresh Supabase round-trip — cuts perceived
-// load delay while keeping the listing reasonably fresh.
-export const revalidate = 30;
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
+const SEED_OWNER_IDS = Array.from(
+  { length: 12 },
+  (_, i) => `10000000-0000-0000-0000-0000000000${String(i + 1).padStart(2, "0")}`,
+);
 
 interface SellerProfileRow {
   id: string;
@@ -49,6 +52,7 @@ export default async function EksplorPage() {
          profiles!owner_id ( id, name, whatsapp_number, created_at )`,
       )
       .eq("status", "Aktif")
+      .not("owner_id", "in", `(${SEED_OWNER_IDS.join(",")})`)
       .or(`expires_at.is.null,expires_at.gt.${new Date().toISOString()}`)
       .order("created_at", { ascending: false });
 
@@ -83,6 +87,7 @@ export default async function EksplorPage() {
         location: row.location,
         status: row.status,
         postedAt: formatRelativeTime(row.created_at),
+        createdAt: row.created_at,
         sellerName: profile?.name ?? "Pengguna Nemsy!",
         sellerJoinedYear: profile
           ? new Date(profile.created_at).getFullYear()

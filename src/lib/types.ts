@@ -39,5 +39,6 @@ export interface Ad {
   deliveryMethod?: string;
   scope?: string;
   estimatedDuration?: string;
+  createdAt?: string;
   featured?: boolean;
 }

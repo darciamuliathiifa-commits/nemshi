@@ -55,6 +55,11 @@ export async function GET(request: Request) {
     );
   }
 
+  const SEED_OWNER_IDS = Array.from(
+    { length: 12 },
+    (_, i) => `10000000-0000-0000-0000-0000000000${String(i + 1).padStart(2, "0")}`,
+  );
+
   let query = supabase
     .from("ads")
     .select(
@@ -65,6 +70,7 @@ export async function GET(request: Request) {
       { count: "exact" },
     )
     .eq("status", "Aktif")
+    .not("owner_id", "in", `(${SEED_OWNER_IDS.join(",")})`)
     .order("created_at", { ascending: false });
 
   if (category && category !== "Semua") {

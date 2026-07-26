@@ -160,17 +160,23 @@ export function AdBrowser({ ads }: { ads: Ad[] }) {
   const filteredAds = useMemo(() => {
     const normalizedKeyword = keyword.trim().toLowerCase();
 
-    return ads.filter((ad) => {
-      const matchesCategory =
-        activeCategory === "Semua" || ad.category === activeCategory;
-      const matchesLocation = location === "Semua Lokasi" || ad.location === location;
-      const matchesKeyword =
-        normalizedKeyword === "" ||
-        ad.title.toLowerCase().includes(normalizedKeyword) ||
-        ad.description.toLowerCase().includes(normalizedKeyword);
+    return ads
+      .filter((ad) => {
+        const matchesCategory =
+          activeCategory === "Semua" || ad.category === activeCategory;
+        const matchesLocation = location === "Semua Lokasi" || ad.location === location;
+        const matchesKeyword =
+          normalizedKeyword === "" ||
+          ad.title.toLowerCase().includes(normalizedKeyword) ||
+          ad.description.toLowerCase().includes(normalizedKeyword);
 
-      return matchesCategory && matchesLocation && matchesKeyword;
-    });
+        return matchesCategory && matchesLocation && matchesKeyword;
+      })
+      .sort((a, b) => {
+        const timeA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+        const timeB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+        return timeB - timeA;
+      });
   }, [ads, activeCategory, location, keyword]);
 
   const totalPages = Math.max(1, Math.ceil(filteredAds.length / PAGE_SIZE));
