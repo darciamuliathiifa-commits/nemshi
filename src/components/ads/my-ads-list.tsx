@@ -23,6 +23,15 @@ const statusAccent: Record<AdStatus, string> = {
   Ditutup: "bg-error text-white",
 };
 
+const categoryAccent: Record<string, string> = {
+  Pendidikan: "from-blue-100 to-blue-50",
+  "Makanan & Minuman": "from-amber-100 to-amber-50",
+  "Kreatif & Digital": "from-violet-100 to-violet-50",
+  "Bantuan & Layanan Harian": "from-emerald-100 to-emerald-50",
+  "Barang Baru & Bekas": "from-rose-100 to-rose-50",
+  Lainnya: "from-zinc-100 to-zinc-50",
+};
+
 export interface MyAd {
   id: string;
   status: AdStatus;
@@ -31,6 +40,7 @@ export interface MyAd {
   priceLabel: string;
   location: string;
   postedAt: string;
+  coverPhoto?: string;
 }
 
 export function MyAdsList({ ads: initialAds }: { ads: MyAd[] }) {
@@ -149,81 +159,104 @@ export function MyAdsList({ ads: initialAds }: { ads: MyAd[] }) {
       </p>
 
       {filteredAds.length > 0 ? (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+        <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
           {filteredAds.map((ad) => {
             const isPending = pendingId === ad.id;
             return (
               <div
                 key={ad.id}
-                className="flex flex-col gap-3 rounded-card border-[2.5px] border-ink bg-white p-5 shadow-[3px_3px_0_0_rgba(20,20,20,1)]"
+                className="flex flex-col overflow-hidden rounded-card border-[2.5px] border-ink bg-white shadow-[3px_3px_0_0_rgba(20,20,20,1)] transition-transform duration-200 hover:-translate-y-0.5 sm:flex-row sm:items-stretch"
               >
-                <div className="flex items-center justify-between gap-2">
-                  <span
-                    className={`rounded-badge px-3 py-1 text-[12px] leading-4 font-bold ${statusAccent[ad.status]}`}
-                  >
-                    {ad.status}
-                  </span>
-                  <span className="text-[12px] font-bold text-muted-foreground">
-                    {ad.category}
-                  </span>
+                {/* Image on left side */}
+                <div
+                  className={`relative h-44 w-full shrink-0 overflow-hidden bg-gradient-to-br sm:h-auto sm:w-44 lg:w-48 ${categoryAccent[ad.category] ?? categoryAccent.Lainnya}`}
+                >
+                  {ad.coverPhoto ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={ad.coverPhoto}
+                      alt={ad.title}
+                      className="h-full w-full object-cover"
+                    />
+                  ) : (
+                    <div className="flex h-full w-full items-center justify-center p-4 text-center text-[13px] font-bold text-charcoal/60">
+                      {ad.category}
+                    </div>
+                  )}
                 </div>
 
-                <h3 className="line-clamp-2 text-base font-bold leading-5 text-charcoal">
-                  {ad.title}
-                </h3>
-                <p className="text-lg font-bold text-cta">{ad.priceLabel}</p>
-                <p className="text-[13px] font-normal text-muted-foreground">
-                  {ad.location} · Diposting {ad.postedAt}
-                </p>
-
-                <div className="mt-1 flex flex-col gap-2.5 border-t border-border-subtle pt-3">
-                  {isPending ? (
-                    <span className="flex h-9 items-center gap-2 px-2 text-[14px] text-muted-foreground">
-                      <span className="h-4 w-4 animate-spin rounded-full border-2 border-surface border-t-cta" />
-                      Memproses...
-                    </span>
-                  ) : (
-                    <>
-                      <button
-                        type="button"
-                        onClick={() => setEditingAdId(ad.id)}
-                        className="flex h-9 w-full items-center justify-center gap-1.5 rounded-pill border-2 border-ink bg-white text-[13px] font-bold text-charcoal shadow-[2px_2px_0_0_rgba(20,20,20,1)] transition-transform hover:-translate-y-0.5"
+                {/* Details on right side */}
+                <div className="flex flex-1 flex-col justify-between p-4 sm:p-5">
+                  <div className="flex flex-col gap-2">
+                    <div className="flex items-center justify-between gap-2">
+                      <span
+                        className={`rounded-badge px-3 py-1 text-[12px] leading-4 font-bold ${statusAccent[ad.status]}`}
                       >
-                        <EditIcon width={14} height={14} />
-                        Edit Detail Iklan
-                      </button>
+                        {ad.status}
+                      </span>
+                      <span className="text-[12px] font-bold text-muted-foreground">
+                        {ad.category}
+                      </span>
+                    </div>
 
-                      {ad.status === "Kedaluwarsa" && (
+                    <h3 className="line-clamp-2 text-base font-bold leading-5 text-charcoal">
+                      {ad.title}
+                    </h3>
+                    <p className="text-lg font-bold text-cta">{ad.priceLabel}</p>
+                    <p className="text-[13px] font-normal text-muted-foreground">
+                      {ad.location} · Diposting {ad.postedAt}
+                    </p>
+                  </div>
+
+                  <div className="mt-4 flex flex-col gap-2.5 border-t border-border-subtle pt-3">
+                    {isPending ? (
+                      <span className="flex h-9 items-center gap-2 px-2 text-[14px] text-muted-foreground">
+                        <span className="h-4 w-4 animate-spin rounded-full border-2 border-surface border-t-cta" />
+                        Memproses...
+                      </span>
+                    ) : (
+                      <>
                         <button
                           type="button"
-                          onClick={() => handleExtend(ad.id)}
-                          className="h-9 w-full rounded-pill bg-cta text-[14px] font-bold text-white transition-colors hover:bg-highlight"
+                          onClick={() => setEditingAdId(ad.id)}
+                          className="flex h-9 w-full items-center justify-center gap-1.5 rounded-pill border-2 border-ink bg-white text-[13px] font-bold text-charcoal shadow-[2px_2px_0_0_rgba(20,20,20,1)] transition-transform hover:-translate-y-0.5"
                         >
-                          Perpanjang Masa Tayang
+                          <EditIcon width={14} height={14} />
+                          Edit Detail Iklan
                         </button>
-                      )}
 
-                      <label className="flex items-center justify-between gap-2">
-                        <span className="text-[12px] font-bold text-muted-foreground">
-                          Ubah status
-                        </span>
-                        <select
-                          value={ad.status}
-                          disabled={pendingId !== null}
-                          onChange={(event) =>
-                            handleStatusChange(ad.id, event.target.value as AdStatus)
-                          }
-                          className="h-9 flex-1 rounded-input border border-border bg-white px-3 text-[14px] text-charcoal focus:border-cta focus:outline-none focus:ring-3 focus:ring-cta/10 disabled:bg-surface"
-                        >
-                          {statusFilters.map((status) => (
-                            <option key={status} value={status}>
-                              {status}
-                            </option>
-                          ))}
-                        </select>
-                      </label>
-                    </>
-                  )}
+                        {ad.status === "Kedaluwarsa" && (
+                          <button
+                            type="button"
+                            onClick={() => handleExtend(ad.id)}
+                            className="h-9 w-full rounded-pill bg-cta text-[14px] font-bold text-white transition-colors hover:bg-highlight"
+                          >
+                            Perpanjang Masa Tayang
+                          </button>
+                        )}
+
+                        <label className="flex items-center justify-between gap-2">
+                          <span className="text-[12px] font-bold text-muted-foreground">
+                            Ubah status
+                          </span>
+                          <select
+                            value={ad.status}
+                            disabled={pendingId !== null}
+                            onChange={(event) =>
+                              handleStatusChange(ad.id, event.target.value as AdStatus)
+                            }
+                            className="h-9 flex-1 rounded-input border border-border bg-white px-3 text-[14px] text-charcoal focus:border-cta focus:outline-none focus:ring-3 focus:ring-cta/10 disabled:bg-surface"
+                          >
+                            {statusFilters.map((status) => (
+                              <option key={status} value={status}>
+                                {status}
+                              </option>
+                            ))}
+                          </select>
+                        </label>
+                      </>
+                    )}
+                  </div>
                 </div>
               </div>
             );

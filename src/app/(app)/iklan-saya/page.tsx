@@ -23,7 +23,7 @@ export default async function IklanSayaPage() {
       const [{ data: adRows }, { data: sayembaraRows }] = await Promise.all([
         supabase
           .from("ads")
-          .select("id, status, category, title, price_label, location, created_at")
+          .select("id, status, category, title, price_label, location, created_at, ad_photos ( url, position )")
           .eq("owner_id", user.id)
           .order("created_at", { ascending: false }),
         supabase
@@ -33,15 +33,23 @@ export default async function IklanSayaPage() {
           .order("created_at", { ascending: false }),
       ]);
 
-      ads = (adRows ?? []).map((row) => ({
-        id: row.id,
-        status: row.status as AdStatus,
-        category: row.category,
-        title: row.title,
-        priceLabel: row.price_label,
-        location: row.location,
-        postedAt: formatRelativeTime(row.created_at),
-      }));
+      ads = (adRows ?? []).map((row) => {
+        const photos = (row.ad_photos ?? [])
+          .slice()
+          .sort((a, b) => a.position - b.position)
+          .map((p) => p.url);
+
+        return {
+          id: row.id,
+          status: row.status as AdStatus,
+          category: row.category,
+          title: row.title,
+          priceLabel: row.price_label,
+          location: row.location,
+          postedAt: formatRelativeTime(row.created_at),
+          coverPhoto: photos[0] ?? undefined,
+        };
+      });
 
       const sayembaraIds = (sayembaraRows ?? []).map((row) => row.id);
       const applicantCountById = new Map<string, number>();
