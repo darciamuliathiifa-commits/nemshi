@@ -1,17 +1,90 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { Header } from "@/components/layout/header";
 import { AdCard } from "@/components/ads/ad-card";
 import { useSavedAds } from "@/lib/saved-ads-store";
-import { mockAds } from "@/lib/mock-ads";
+import { supabase } from "@/lib/supabase/client";
+import type { Ad } from "@/lib/types";
+import { formatRelativeTime } from "@/lib/format-relative-time";
+import { SEED_OWNER_IDS } from "@/lib/constants";
 
 export default function TersimpanPage() {
   const { savedIds } = useSavedAds();
-  const savedAds = mockAds.filter((ad) => savedIds.includes(ad.id));
+  const [savedAds, setSavedAds] = useState<Ad[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!savedIds || savedIds.length === 0) {
+      setSavedAds([]);
+      setLoading(false);
+      return;
+    }
+
+    async function loadSavedAds() {
+      setLoading(true);
+      try {
+        if (!supabase) {
+          setSavedAds([]);
+          return;
+        }
+
+        const { data } = await supabase
+          .from("ads")
+          .select(
+            `id, kind, title, description, category, price_label, location, status,
+             condition, delivery_method, scope, estimated_duration, whatsapp_number,
+             created_at, owner_id,
+             profiles!owner_id ( name, created_at ),
+             ad_photos ( url, position )`,
+          )
+          .in("id", savedIds)
+          .eq("status", "Aktif")
+          .not("owner_id", "in", `(${SEED_OWNER_IDS.join(",")})`);
+
+        if (data) {
+          const ads: Ad[] = data.map((row: any) => {
+            const profile = Array.isArray(row.profiles) ? row.profiles[0] : row.profiles;
+            const photos = (row.ad_photos ?? [])
+              .slice()
+              .sort((a: any, b: any) => a.position - b.position)
+              .map((p: any) => p.url);
+
+            return {
+              id: row.id,
+              kind: row.kind,
+              title: row.title,
+              category: row.category,
+              priceLabel: row.price_label,
+              location: row.location,
+              status: row.status,
+              postedAt: formatRelativeTime(row.created_at),
+              coverPhoto: photos[0] ?? undefined,
+              photos,
+              sellerName: profile?.name ?? "Pengguna Nemsy!",
+              sellerJoinedYear: profile
+                ? new Date(profile.created_at).getFullYear()
+                : new Date().getFullYear(),
+              sellerActiveAds: 1,
+              whatsappNumber: row.whatsapp_number ?? "",
+              description: row.description,
+            };
+          });
+          setSavedAds(ads);
+        }
+      } catch (err) {
+        console.error("Gagal memuat iklan tersimpan:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadSavedAds();
+  }, [savedIds]);
 
   return (
     <>
-      <Header title="Iklan Tersimpan" />
+      <Header title="Iklan Tersimpan" containerClassName="max-w-7xl" />
 
       <main className="flex-1 px-6 py-8">
         <div className="mb-6">
@@ -21,7 +94,11 @@ export default function TersimpanPage() {
           </p>
         </div>
 
-        {savedAds.length > 0 ? (
+        {loading ? (
+          <div className="flex h-40 items-center justify-center">
+            <span className="h-8 w-8 animate-spin rounded-full border-4 border-surface border-t-cta" />
+          </div>
+        ) : savedAds.length > 0 ? (
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
             {savedAds.map((ad) => (
               <AdCard key={ad.id} ad={ad} />
