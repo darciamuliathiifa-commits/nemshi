@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Header } from "@/components/layout/header";
-import { ZapIcon } from "@/components/icons";
+import { CloseIcon, ZapIcon } from "@/components/icons";
 import { paymentMethods } from "@/lib/payment-methods";
 import type { PlanId, UserQuota } from "@/lib/server/quota-store";
 
@@ -87,6 +87,7 @@ export default function PaketPlusPage() {
   const [error, setError] = useState<string | null>(null);
   const [mobile, setMobile] = useState("");
   const [manualLink, setManualLink] = useState<string | null>(null);
+  const [paymentModalUrl, setPaymentModalUrl] = useState<string | null>(null);
 
   const selectedPlan = PLANS[selectedPlanId];
 
@@ -110,8 +111,7 @@ export default function PaketPlusPage() {
           if (isPlanFulfilled(planId, data, baseline)) {
             setQuota(data);
             setStep("success");
-            // This page load is the popup Mayar redirected after payment —
-            // close it automatically, the main tab is already polling too.
+            setPaymentModalUrl(null);
             if (window.opener) {
               setTimeout(() => window.close(), 2000);
             }
@@ -143,6 +143,7 @@ export default function PaketPlusPage() {
     setSelectedPlanId(planId);
     setError(null);
     setManualLink(null);
+    setPaymentModalUrl(null);
     setStep("checkout");
   }
 
@@ -155,13 +156,6 @@ export default function PaketPlusPage() {
     setStep("redirecting");
     setError(null);
     setManualLink(null);
-
-    // Open the popup synchronously, still inside the click's call stack —
-    // browsers only allow window.open() without being blocked when it's
-    // triggered directly by a user gesture. Doing this after an `await`
-    // (even a fast one) breaks that chain and gets it blocked. We navigate
-    // this blank window to the real URL once the async work below resolves.
-    const popup = window.open("", "mayarCheckout", "width=480,height=760,noopener=no");
 
     try {
       const quotaRes = await fetch("/api/mayar/quota");
@@ -177,26 +171,18 @@ export default function PaketPlusPage() {
       const result = await response.json().catch(() => ({}));
 
       if (!response.ok) {
-        throw new Error(result.error ?? "Gagal membuat invoice pembayaran.");
+        throw new Error(result.error ?? "Gagal membuat tagihan pembayaran.");
       }
 
       const bridgeUrl = `/paket-plus/checkout-bridge?link=${encodeURIComponent(result.link)}&label=${encodeURIComponent(selectedPlan.name)}`;
 
-      if (!popup || popup.closed) {
-        setManualLink(result.link);
-        setError(
-          "Popup diblokir browser. Klik tombol di bawah untuk buka pembayaran secara manual.",
-        );
-        setStep("checkout");
-        return;
-      }
-
-      popup.location.href = bridgeUrl;
+      setManualLink(result.link);
+      setPaymentModalUrl(bridgeUrl);
+      setStep("confirming");
       pollQuota(selectedPlanId, baseline);
     } catch (err) {
-      popup?.close();
       setError(
-        err instanceof Error ? err.message : "Gagal menghubungkan ke Mayar. Coba lagi.",
+        err instanceof Error ? err.message : "Gagal menyiapkan halaman pembayaran. Coba lagi.",
       );
       setStep("checkout");
     }
@@ -388,7 +374,7 @@ export default function PaketPlusPage() {
                 Ringkasan Pembayaran
               </h2>
               <p className="mt-1 text-[14px] font-normal text-muted-foreground">
-                Pembayaran diproses melalui gateway Mayar.
+                Pembayaran diproses otomatis dan aman.
               </p>
 
               <div className="mt-6 rounded-card border-[2.5px] border-ink bg-white p-6 shadow-[3px_3px_0_0_rgba(20,20,20,1)]">
@@ -426,7 +412,7 @@ export default function PaketPlusPage() {
                   onChange={(event) => setMobile(event.target.value)}
                 />
                 <p className="mt-1 text-[12px] font-normal text-muted-foreground">
-                  Dipakai Mayar untuk konfirmasi pembayaran.
+                  Digunakan untuk konfirmasi dan rincian transaksi.
                 </p>
               </div>
 
@@ -460,25 +446,13 @@ export default function PaketPlusPage() {
                 <p className="mt-3 text-[14px] font-normal text-error">{error}</p>
               )}
 
-              {manualLink ? (
-                <a
-                  href={manualLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => pollQuota(selectedPlanId, baselineQuota)}
-                  className="mt-6 flex h-11 w-full items-center justify-center rounded-pill bg-charcoal text-base font-bold text-white transition-colors hover:bg-black"
-                >
-                  Buka Pembayaran Mayar
-                </a>
-              ) : (
-                <button
-                  type="button"
-                  onClick={handlePay}
-                  className="mt-6 flex h-11 w-full items-center justify-center rounded-pill bg-charcoal text-base font-bold text-white transition-colors hover:bg-black"
-                >
-                  Bayar dengan Mayar
-                </button>
-              )}
+              <button
+                type="button"
+                onClick={handlePay}
+                className="mt-6 flex h-11 w-full items-center justify-center rounded-pill bg-charcoal text-base font-bold text-white transition-colors hover:bg-black"
+              >
+                Lanjutkan Pembayaran
+              </button>
             </>
           )}
 
@@ -486,7 +460,7 @@ export default function PaketPlusPage() {
             <div className="flex flex-col items-center rounded-card border-[2.5px] border-ink bg-white p-10 text-center shadow-[3px_3px_0_0_rgba(20,20,20,1)]">
               <span className="h-10 w-10 animate-spin rounded-full border-4 border-surface border-t-cta" />
               <p className="mt-4 text-base font-normal text-charcoal">
-                Menghubungkan ke Mayar...
+                Menyiapkan Halaman Pembayaran...
               </p>
             </div>
           )}
@@ -494,13 +468,21 @@ export default function PaketPlusPage() {
           {step === "confirming" && (
             <div className="flex flex-col items-center rounded-card border-[2.5px] border-ink bg-white p-10 text-center shadow-[3px_3px_0_0_rgba(20,20,20,1)]">
               <span className="h-10 w-10 animate-spin rounded-full border-4 border-surface border-t-cta" />
-              <p className="mt-4 text-base font-normal text-charcoal">
-                Mengonfirmasi pembayaran...
+              <p className="mt-4 text-base font-bold text-charcoal">
+                Mengonfirmasi Pembayaran...
               </p>
-              <p className="mt-1 max-w-sm text-[14px] font-normal text-muted-foreground">
-                Kami sedang menunggu konfirmasi dari Mayar. Ini biasanya cuma
-                beberapa detik.
+              <p className="mt-2 max-w-sm text-[14px] font-normal text-muted-foreground">
+                Kami sedang mengonfirmasi pembayaranmu secara otomatis. Ini biasanya cuma beberapa detik.
               </p>
+              {paymentModalUrl && (
+                <button
+                  type="button"
+                  onClick={() => setPaymentModalUrl(paymentModalUrl)}
+                  className="mt-4 text-[13px] font-bold text-cta hover:underline"
+                >
+                  Buka kembali pop-up pembayaran
+                </button>
+              )}
             </div>
           )}
 
@@ -513,9 +495,7 @@ export default function PaketPlusPage() {
                 Menunggu Konfirmasi Pembayaran
               </h2>
               <p className="mt-2 max-w-sm text-[14px] font-normal text-muted-foreground">
-                Belum ada konfirmasi dari Mayar. Kalau kamu sudah bayar, jatah
-                akan otomatis aktif begitu pembayaran terkonfirmasi. Cek lagi
-                profilmu sebentar lagi.
+                Pembayaranmu belum terdeteksi. Kalau kamu sudah bayar, jatah akan otomatis aktif begitu terkonfirmasi. Cek lagi sebentar ya!
               </p>
               <div className="mt-6 flex w-full max-w-xs gap-3">
                 <button
@@ -541,7 +521,7 @@ export default function PaketPlusPage() {
                 ✓
               </span>
               <h2 className="mt-4 text-xl font-bold text-charcoal">
-                Pembayaran Berhasil
+                Pembayaran Berhasil! 🎉
               </h2>
               <p className="mt-2 max-w-sm text-[14px] font-normal text-muted-foreground">
                 {selectedPlan.name} kamu sudah aktif. Jatah otomatis
@@ -590,6 +570,57 @@ export default function PaketPlusPage() {
           )}
         </div>
       </main>
+
+      {/* In-Page Payment Modal */}
+      {paymentModalUrl && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
+          <div className="relative flex h-[90vh] max-h-[720px] w-full max-w-xl flex-col overflow-hidden rounded-card border-[3px] border-ink bg-cream shadow-[6px_6px_0_0_rgba(20,20,20,1)]">
+            <div className="flex items-center justify-between border-b-[2.5px] border-ink bg-white px-5 py-3.5">
+              <div className="flex items-center gap-2">
+                <span className="flex h-7 w-7 items-center justify-center rounded-full border border-ink bg-brand text-xs font-bold text-charcoal">
+                  N
+                </span>
+                <p className="text-base font-bold text-charcoal">
+                  Pembayaran {selectedPlan.name}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setPaymentModalUrl(null)}
+                className="flex h-8 w-8 items-center justify-center rounded-full text-charcoal/60 transition-colors hover:bg-surface hover:text-charcoal"
+                title="Tutup Modal"
+              >
+                <CloseIcon width={18} height={18} />
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-hidden bg-white">
+              <iframe
+                src={paymentModalUrl}
+                title="Form Pembayaran Nemsy!"
+                className="h-full w-full border-0"
+              />
+            </div>
+
+            <div className="flex items-center justify-between border-t border-border-subtle bg-surface/80 px-4 py-3 text-[12px] font-medium text-muted-foreground">
+              <span className="flex items-center gap-2">
+                <span className="h-3 w-3 animate-spin rounded-full border-2 border-surface border-t-cta" />
+                Memeriksa status pembayaran...
+              </span>
+              {manualLink && (
+                <a
+                  href={manualLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-bold text-cta hover:underline"
+                >
+                  Buka di tab baru ↗
+                </a>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }

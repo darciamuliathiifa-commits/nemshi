@@ -39,8 +39,7 @@ function CheckoutBridgeContent() {
           Menghubungkan ke {selecting}
         </h1>
         <p className="mt-2 max-w-xs text-[14px] font-normal leading-5 text-muted-foreground">
-          Kamu akan diarahkan ke Mayar untuk menyelesaikan pembayaran via{" "}
-          {selecting}.
+          Kamu akan diarahkan untuk menyelesaikan pembayaran via {selecting}.
         </p>
         <span className="mt-6 h-9 w-9 animate-spin rounded-full border-4 border-surface border-t-cta" />
       </>
@@ -82,7 +81,7 @@ function CheckoutBridgeContent() {
 
       <div className="mt-5 flex items-center justify-center gap-2 text-[12px] font-bold text-charcoal/60">
         <ShieldCheckIcon width={14} height={14} className="shrink-0 text-success" />
-        Diproses lewat Mayar, mitra pembayaran resmi Nemsy!
+        Diproses secara aman melalui gerbang pembayaran resmi Nemsy!
       </div>
     </div>
   );
