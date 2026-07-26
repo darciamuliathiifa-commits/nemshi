@@ -2,6 +2,8 @@
 
 import { useMemo, useState } from "react";
 import type { AdStatus } from "@/lib/types";
+import { EditIcon } from "@/components/icons";
+import { EditAdDialog } from "@/components/ads/edit-ad-dialog";
 
 const statusFilters: AdStatus[] = [
   "Aktif",
@@ -35,6 +37,7 @@ export function MyAdsList({ ads: initialAds }: { ads: MyAd[] }) {
   const [ads, setAds] = useState(initialAds);
   const [activeStatus, setActiveStatus] = useState<AdStatus | "Semua">("Semua");
   const [pendingId, setPendingId] = useState<string | null>(null);
+  const [editingAdId, setEditingAdId] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
 
   const filteredAds = useMemo(() => {
@@ -52,6 +55,14 @@ export function MyAdsList({ ads: initialAds }: { ads: MyAd[] }) {
   function showToast(message: string) {
     setToast(message);
     setTimeout(() => setToast(null), 2500);
+  }
+
+  function handleEditSuccess(updated: Partial<MyAd>) {
+    if (!updated.id) return;
+    setAds((prev) =>
+      prev.map((ad) => (ad.id === updated.id ? { ...ad, ...updated } : ad)),
+    );
+    showToast("Detail iklan berhasil diperbarui!");
   }
 
   async function handleStatusChange(adId: string, status: AdStatus) {
@@ -100,7 +111,7 @@ export function MyAdsList({ ads: initialAds }: { ads: MyAd[] }) {
 
   return (
     <>
-      <div className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-5">
+      <div className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-6">
         {statusFilters.map((status) => (
           <div
             key={status}
@@ -146,7 +157,7 @@ export function MyAdsList({ ads: initialAds }: { ads: MyAd[] }) {
                 key={ad.id}
                 className="flex flex-col gap-3 rounded-card border-[2.5px] border-ink bg-white p-5 shadow-[3px_3px_0_0_rgba(20,20,20,1)]"
               >
-                <div className="flex items-center gap-2">
+                <div className="flex items-center justify-between gap-2">
                   <span
                     className={`rounded-badge px-3 py-1 text-[12px] leading-4 font-bold ${statusAccent[ad.status]}`}
                   >
@@ -165,7 +176,7 @@ export function MyAdsList({ ads: initialAds }: { ads: MyAd[] }) {
                   {ad.location} · Diposting {ad.postedAt}
                 </p>
 
-                <div className="mt-1 flex flex-col gap-2 border-t border-border-subtle pt-3">
+                <div className="mt-1 flex flex-col gap-2.5 border-t border-border-subtle pt-3">
                   {isPending ? (
                     <span className="flex h-9 items-center gap-2 px-2 text-[14px] text-muted-foreground">
                       <span className="h-4 w-4 animate-spin rounded-full border-2 border-surface border-t-cta" />
@@ -173,6 +184,15 @@ export function MyAdsList({ ads: initialAds }: { ads: MyAd[] }) {
                     </span>
                   ) : (
                     <>
+                      <button
+                        type="button"
+                        onClick={() => setEditingAdId(ad.id)}
+                        className="flex h-9 w-full items-center justify-center gap-1.5 rounded-pill border-2 border-ink bg-white text-[13px] font-bold text-charcoal shadow-[2px_2px_0_0_rgba(20,20,20,1)] transition-transform hover:-translate-y-0.5"
+                      >
+                        <EditIcon width={14} height={14} />
+                        Edit Detail Iklan
+                      </button>
+
                       {ad.status === "Kedaluwarsa" && (
                         <button
                           type="button"
@@ -222,6 +242,13 @@ export function MyAdsList({ ads: initialAds }: { ads: MyAd[] }) {
           {toast}
         </div>
       )}
+
+      <EditAdDialog
+        adId={editingAdId}
+        isOpen={editingAdId !== null}
+        onClose={() => setEditingAdId(null)}
+        onSuccess={handleEditSuccess}
+      />
     </>
   );
 }
