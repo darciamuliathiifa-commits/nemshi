@@ -7,13 +7,15 @@ import {
   CreditCardIcon,
   FlagIcon,
   GridIcon,
+  UserIcon,
 } from "@/components/icons";
 
 const navItems = [
   { href: "/admin", label: "Dasbor", icon: GridIcon },
   { href: "/admin/moderasi", label: "Moderasi Iklan", icon: CheckCircleIcon },
   { href: "/admin/laporan", label: "Laporan", icon: FlagIcon },
-  { href: "/admin/paket-plus", label: "Paket Plus", icon: CreditCardIcon },
+  { href: "/admin/pengguna", label: "Pengguna & Kuota", icon: UserIcon },
+  { href: "/admin/paket-plus", label: "Transaksi", icon: CreditCardIcon },
 ];
 
 export function AdminSidebar() {

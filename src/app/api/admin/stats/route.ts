@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/server/require-admin";
 
+import { SEED_OWNER_IDS } from "@/lib/constants";
+
 export async function GET() {
   const supabase = await createSupabaseServerClient();
   if (!supabase) {
@@ -33,10 +35,14 @@ export async function GET() {
     { count: activePlusCustomers },
     { data: monthlyTransactions },
   ] = await Promise.all([
-    supabase.from("profiles").select("id", { count: "exact", head: true }),
+    supabase
+      .from("profiles")
+      .select("id", { count: "exact", head: true })
+      .not("id", "in", `(${SEED_OWNER_IDS.join(",")})`),
     supabase
       .from("ads")
       .select("id", { count: "exact", head: true })
+      .not("owner_id", "in", `(${SEED_OWNER_IDS.join(",")})`)
       .eq("status", "Menunggu Validasi"),
     supabase
       .from("ad_reports")
@@ -45,10 +51,12 @@ export async function GET() {
     supabase
       .from("user_quotas")
       .select("user_id", { count: "exact", head: true })
+      .not("user_id", "in", `(${SEED_OWNER_IDS.join(",")})`)
       .eq("plan", "plus"),
     supabase
       .from("mayar_transactions")
       .select("amount")
+      .eq("status", "success")
       .gte("created_at", startOfMonth.toISOString()),
   ]);
 
