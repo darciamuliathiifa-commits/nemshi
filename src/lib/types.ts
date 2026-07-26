@@ -17,7 +17,7 @@ export const AD_CATEGORIES: AdCategory[] = [
 
 export type AdKind = "produk" | "jasa";
 
-export type AdStatus = "Aktif" | "Terjual" | "Selesai" | "Kedaluwarsa" | "Ditutup";
+export type AdStatus = "Aktif" | "Menunggu Validasi" | "Terjual" | "Selesai" | "Kedaluwarsa" | "Ditutup";
 
 export type AdCondition = "Baru" | "Bekas";
 

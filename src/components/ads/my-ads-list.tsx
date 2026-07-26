@@ -3,10 +3,18 @@
 import { useMemo, useState } from "react";
 import type { AdStatus } from "@/lib/types";
 
-const statusFilters: AdStatus[] = ["Aktif", "Terjual", "Selesai", "Kedaluwarsa", "Ditutup"];
+const statusFilters: AdStatus[] = [
+  "Aktif",
+  "Menunggu Validasi",
+  "Terjual",
+  "Selesai",
+  "Kedaluwarsa",
+  "Ditutup",
+];
 
 const statusAccent: Record<AdStatus, string> = {
   Aktif: "bg-success text-white",
+  "Menunggu Validasi": "bg-brand-dark text-charcoal",
   Terjual: "bg-charcoal text-white",
   Selesai: "bg-charcoal text-white",
   Kedaluwarsa: "bg-muted text-white",

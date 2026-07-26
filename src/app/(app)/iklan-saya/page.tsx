@@ -5,6 +5,9 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { formatRelativeTime } from "@/lib/format-relative-time";
 import type { AdStatus } from "@/lib/types";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default async function IklanSayaPage() {
   const supabase = await createSupabaseServerClient();
 
