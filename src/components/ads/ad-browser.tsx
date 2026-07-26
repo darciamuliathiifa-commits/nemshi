@@ -194,13 +194,14 @@ export function AdBrowser({ ads }: { ads: Ad[] }) {
   return (
     <main className="flex-1 px-6 py-8">
       <section className="relative overflow-hidden rounded-card border-[2.5px] border-ink bg-gradient-to-br from-brand-dark to-brand bg-dot-pattern shadow-[5px_5px_0_0_rgba(20,20,20,1)]">
-        <div className="relative flex h-[180px] items-center justify-center overflow-hidden sm:h-[220px]">
-          <span
-            aria-hidden
-            className="select-none whitespace-nowrap text-[110px] font-black leading-none tracking-tight text-white/15 sm:text-[170px]"
-          >
-            Eksplor
-          </span>
+        <div className="relative h-[180px] overflow-hidden sm:h-[220px]">
+          <Image
+            src="/banner-nemsy.png"
+            alt="Nemsy!: Satu Portal Untuk Usaha Masisir"
+            fill
+            className="object-contain"
+            priority
+          />
         </div>
 
         <div className="relative -mt-8 mx-4 mb-4 flex flex-col gap-4 rounded-card border-[2.5px] border-ink bg-white p-5 shadow-[3px_3px_0_0_rgba(20,20,20,1)] sm:mx-6 sm:mb-6 sm:flex-row sm:items-center sm:justify-between">
@@ -230,17 +231,6 @@ export function AdBrowser({ ads }: { ads: Ad[] }) {
           </label>
         </div>
       </section>
-
-      <div className="mt-6 overflow-hidden rounded-card border-[2.5px] border-ink shadow-[4px_4px_0_0_rgba(20,20,20,1)] sm:mt-8">
-        <Image
-          src="/banner-nemsy.png"
-          alt="Nemsy!: Satu Portal Untuk Usaha Masisir"
-          width={4218}
-          height={989}
-          className="h-auto w-full"
-          priority
-        />
-      </div>
 
       <div className="mt-8">
         <FeaturedCarousel ads={featuredAds} />
