@@ -196,12 +196,12 @@ export function AdBrowser({ ads }: { ads: Ad[] }) {
       <section className="relative overflow-hidden rounded-card border-[2.5px] border-ink bg-gradient-to-br from-brand-dark to-brand bg-dot-pattern shadow-[5px_5px_0_0_rgba(20,20,20,1)]">
         <HeroBanner />
 
-        <div className="relative -mt-16 mx-4 mb-4 flex flex-col gap-4 rounded-card border-[2.5px] border-ink bg-white p-5 shadow-[3px_3px_0_0_rgba(20,20,20,1)] sm:mx-6 sm:mb-6 sm:flex-row sm:items-center sm:justify-between sm:-mt-24 lg:-mt-32">
+        <div className="relative -mt-6 mx-4 mb-4 flex flex-col gap-3 rounded-card border-[2.5px] border-ink bg-white p-4 shadow-[3px_3px_0_0_rgba(20,20,20,1)] sm:mx-6 sm:mb-6 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:p-5 sm:-mt-24 lg:-mt-32">
           <div>
-            <h1 className="text-xl font-bold text-charcoal sm:text-2xl">
+            <h1 className="text-base font-bold text-charcoal sm:text-2xl">
               Temukan Semua yang Kamu Butuhkan
             </h1>
-            <p className="mt-1 text-[14px] font-normal text-muted-foreground">
+            <p className="mt-1 text-[13px] font-normal text-muted-foreground sm:text-[14px]">
               Produk dan jasa dari komunitas Masisir, langsung terhubung via
               WhatsApp.
             </p>
