@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { AD_CATEGORIES } from "@/lib/types";
+import { SEED_OWNER_IDS } from "@/lib/constants";
 import {
   consumeSayembaraSlot,
   getQuota,
@@ -50,6 +51,7 @@ export async function GET(request: Request) {
       `id, title, description, category, location, price_label, wa_nego, status, created_at,
        profiles!owner_id ( name )`,
     )
+    .not("owner_id", "in", `(${SEED_OWNER_IDS.join(",")})`)
     .order("created_at", { ascending: false })
     .limit(limit);
 

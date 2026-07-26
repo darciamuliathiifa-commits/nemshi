@@ -11,6 +11,7 @@ import { createSupabasePublicClient } from "@/lib/supabase/public";
 import { formatRelativeTime } from "@/lib/format-relative-time";
 import { TransactionDisclaimer } from "@/components/shared/transaction-disclaimer";
 import { AdGallery } from "@/components/ads/ad-gallery";
+import { SEED_OWNER_IDS } from "@/lib/constants";
 
 export const revalidate = 30;
 
@@ -183,6 +184,7 @@ export default async function AdDetailPage({
     .select("id, kind, title, category, price_label, location")
     .eq("category", row.category)
     .eq("status", "Aktif")
+    .not("owner_id", "in", `(${SEED_OWNER_IDS.join(",")})`)
     .or(`expires_at.is.null,expires_at.gt.${new Date().toISOString()}`)
     .neq("id", row.id)
     .order("created_at", { ascending: false })

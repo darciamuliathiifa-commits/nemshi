@@ -19,6 +19,8 @@ interface SayembaraRow {
   profiles: { name: string } | { name: string }[] | null;
 }
 
+import { SEED_OWNER_IDS } from "@/lib/constants";
+
 export default async function SayembaraPage() {
   const supabase = createSupabasePublicClient();
 
@@ -32,6 +34,7 @@ export default async function SayembaraPage() {
          profiles!owner_id ( name )`,
       )
       .eq("status", "Aktif")
+      .not("owner_id", "in", `(${SEED_OWNER_IDS.join(",")})`)
       .or(`expires_at.is.null,expires_at.gt.${new Date().toISOString()}`)
       .order("created_at", { ascending: false });
 
