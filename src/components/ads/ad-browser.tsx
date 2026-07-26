@@ -199,7 +199,7 @@ export function AdBrowser({ ads }: { ads: Ad[] }) {
             src="/banner-nemsy.png"
             alt="Nemsy!: Satu Portal Untuk Usaha Masisir"
             fill
-            className="object-contain"
+            className="object-cover"
             priority
           />
         </div>
