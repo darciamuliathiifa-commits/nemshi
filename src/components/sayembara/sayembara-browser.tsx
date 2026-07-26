@@ -131,7 +131,7 @@ export function SayembaraBrowser({ items }: { items: SayembaraListItem[] }) {
             src="/banner-nemsy.png"
             alt="Nemsy!: Satu Portal Untuk Usaha Masisir"
             fill
-            className="object-cover"
+            className="object-cover object-bottom"
             priority
           />
         </div>
