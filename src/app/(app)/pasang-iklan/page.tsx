@@ -194,7 +194,7 @@ export default function PasangIklanPage() {
 
   return (
     <>
-      <Header title="Pasang Iklan" />
+      <Header title="Pasang Iklan" containerClassName="max-w-2xl" />
 
       <main className="flex-1 px-6 py-8">
         <div className="mx-auto max-w-2xl">

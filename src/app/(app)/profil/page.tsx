@@ -113,7 +113,7 @@ export default function ProfilPage() {
 
   return (
     <>
-      <Header title="Profil" />
+      <Header title="Profil" containerClassName="max-w-2xl" />
 
       <main className="flex-1 px-6 py-8">
         <div className="mx-auto max-w-2xl">

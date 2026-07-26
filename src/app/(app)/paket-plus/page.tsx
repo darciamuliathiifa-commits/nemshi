@@ -204,7 +204,7 @@ export default function PaketPlusPage() {
 
   return (
     <>
-      <Header title="Paket Plus" />
+      <Header title="Paket Plus" containerClassName="max-w-3xl" />
 
       <main className="flex-1 px-6 py-8">
         <div className="mx-auto max-w-3xl">

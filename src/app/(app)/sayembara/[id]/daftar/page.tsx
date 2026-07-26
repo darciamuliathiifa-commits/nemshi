@@ -49,7 +49,7 @@ export default async function DaftarSayembaraPage({
 
   return (
     <>
-      <Header title="Daftar Sebagai Penyedia" />
+      <Header title="Daftar Sebagai Penyedia" containerClassName="max-w-xl" />
 
       <main className="flex-1 px-6 py-8">
         <Link

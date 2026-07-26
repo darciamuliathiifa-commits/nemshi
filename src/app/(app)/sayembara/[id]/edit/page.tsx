@@ -40,7 +40,7 @@ export default async function EditSayembaraPage({
 
   return (
     <>
-      <Header title="Edit Sayembara" />
+      <Header title="Edit Sayembara" containerClassName="max-w-xl" />
 
       <main className="flex-1 px-6 py-8">
         <Link

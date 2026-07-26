@@ -89,7 +89,7 @@ export default async function PublicProfilePage({
 
   return (
     <>
-      <Header title="Profil Pengiklan" />
+      <Header title="Profil Pengiklan" containerClassName="max-w-4xl" />
 
       <main className="flex-1 px-6 py-8">
         <div className="mx-auto max-w-4xl">

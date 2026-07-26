@@ -55,7 +55,7 @@ export default async function SayembaraPendaftarPage({
 
   return (
     <>
-      <Header title="Pendaftar Sayembara" />
+      <Header title="Pendaftar Sayembara" containerClassName="max-w-4xl" />
 
       <main className="flex-1 px-6 py-8">
         <Link

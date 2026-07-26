@@ -36,7 +36,7 @@ const rules = [
 export default function AturanPublikasiPage() {
   return (
     <>
-      <Header title="Aturan Publikasi" />
+      <Header title="Aturan Publikasi" containerClassName="max-w-2xl" />
 
       <main className="flex-1 px-6 py-8">
         <div className="mx-auto max-w-2xl">

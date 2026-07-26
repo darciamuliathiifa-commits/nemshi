@@ -53,7 +53,7 @@ const notResponsibleItems = [
 export default function TentangKamiPage() {
   return (
     <>
-      <Header title="Tentang Kami" />
+      <Header title="Tentang Kami" containerClassName="max-w-3xl" />
 
       <main className="mx-auto w-full max-w-3xl px-6 py-8">
         <section className="relative overflow-hidden rounded-card border-[2.5px] border-ink bg-gradient-to-br from-brand-dark to-brand bg-dot-pattern p-8 text-center shadow-[5px_5px_0_0_rgba(20,20,20,1)] sm:p-12">

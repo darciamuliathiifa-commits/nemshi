@@ -46,7 +46,7 @@ export default function PasangSayembaraPage() {
   if (submitted) {
     return (
       <>
-        <Header title="Pasang Sayembara" />
+        <Header title="Pasang Sayembara" containerClassName="max-w-xl" />
         <main className="flex-1 px-6 py-8">
           <div className="mx-auto max-w-xl">
             <div className="flex flex-col items-center rounded-card border-[2.5px] border-ink bg-white shadow-[3px_3px_0_0_rgba(20,20,20,1)] p-10 text-center">
@@ -84,7 +84,7 @@ export default function PasangSayembaraPage() {
 
   return (
     <>
-      <Header title="Pasang Sayembara" />
+      <Header title="Pasang Sayembara" containerClassName="max-w-xl" />
 
       <main className="flex-1 px-6 py-8">
         <div className="mx-auto max-w-xl">
