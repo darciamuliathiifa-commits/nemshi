@@ -4,6 +4,9 @@ import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { requireAdmin } from "@/lib/server/require-admin";
 import { SEED_OWNER_IDS } from "@/lib/constants";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 interface UserProfileRow {
   id: string;
   name: string;

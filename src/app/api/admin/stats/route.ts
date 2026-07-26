@@ -4,6 +4,9 @@ import { requireAdmin } from "@/lib/server/require-admin";
 
 import { SEED_OWNER_IDS } from "@/lib/constants";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export async function GET() {
   const supabase = await createSupabaseServerClient();
   if (!supabase) {
