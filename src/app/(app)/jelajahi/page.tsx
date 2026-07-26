@@ -36,6 +36,7 @@ interface AdRow {
   created_at: string;
   featured_until: string | null;
   profiles: SellerProfileRow | SellerProfileRow[] | null;
+  ad_photos: { url: string; position: number }[] | null;
 }
 
 export default async function EksplorPage() {
@@ -49,7 +50,8 @@ export default async function EksplorPage() {
         `id, owner_id, kind, title, description, category, price_label, location,
          status, condition, delivery_method, scope, estimated_duration,
          whatsapp_number, created_at, featured_until,
-         profiles!owner_id ( id, name, whatsapp_number, created_at )`,
+         profiles!owner_id ( id, name, whatsapp_number, created_at ),
+         ad_photos ( url, position )`,
       )
       .eq("status", "Aktif")
       .not("owner_id", "in", `(${SEED_OWNER_IDS.join(",")})`)
@@ -78,6 +80,11 @@ export default async function EksplorPage() {
 
     ads = rows.map((row) => {
       const profile = Array.isArray(row.profiles) ? row.profiles[0] : row.profiles;
+      const photos = (row.ad_photos ?? [])
+        .slice()
+        .sort((a, b) => a.position - b.position)
+        .map((p) => p.url);
+
       return {
         id: row.id,
         kind: row.kind,
@@ -88,6 +95,8 @@ export default async function EksplorPage() {
         status: row.status,
         postedAt: formatRelativeTime(row.created_at),
         createdAt: row.created_at,
+        coverPhoto: photos[0] ?? undefined,
+        photos,
         sellerName: profile?.name ?? "Pengguna Nemsy!",
         sellerJoinedYear: profile
           ? new Date(profile.created_at).getFullYear()

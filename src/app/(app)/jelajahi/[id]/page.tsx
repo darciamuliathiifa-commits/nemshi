@@ -10,6 +10,7 @@ import { ReportAdDialog } from "@/components/ads/report-ad-dialog";
 import { createSupabasePublicClient } from "@/lib/supabase/public";
 import { formatRelativeTime } from "@/lib/format-relative-time";
 import { TransactionDisclaimer } from "@/components/shared/transaction-disclaimer";
+import { AdGallery } from "@/components/ads/ad-gallery";
 
 export const revalidate = 30;
 
@@ -202,51 +203,13 @@ export default async function AdDetailPage({
         </Link>
 
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-[520px_1fr] lg:items-start">
-          <div
-            className={`relative aspect-[4/5] w-full overflow-hidden rounded-card border-[2.5px] border-ink bg-gradient-to-br shadow-[3px_3px_0_0_rgba(20,20,20,1)] ${categoryAccent[ad.category] ?? categoryAccent.Lainnya}`}
-          >
-            {photos.length > 0 && (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={photos[0]}
-                alt={ad.title}
-                className="absolute inset-0 h-full w-full object-cover"
-              />
-            )}
-            {photos.length > 0 && (
-              <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
-            )}
-
-            <div className="absolute inset-x-0 top-0 flex items-start justify-between p-5">
-              <span className="rounded-badge bg-highlight px-3 py-1 text-[12px] leading-4 font-bold text-white">
-                {ad.category}
-              </span>
-              <div className="flex flex-col items-end gap-2">
-                <span className="rounded-badge bg-charcoal/80 px-3 py-1 text-[12px] leading-4 font-bold text-white">
-                  {ad.kind === "produk" ? "Produk" : "Jasa"}
-                </span>
-                <span
-                  className={`rounded-badge px-3 py-1 text-[12px] leading-4 font-bold ${statusAccent[ad.status] ?? statusAccent.Aktif}`}
-                >
-                  {ad.status}
-                </span>
-              </div>
-            </div>
-
-            {photos.length > 1 && (
-              <div className="absolute inset-x-0 bottom-0 flex gap-2 overflow-x-auto p-4">
-                {photos.slice(0, 5).map((url) => (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    key={url}
-                    src={url}
-                    alt=""
-                    className="h-14 w-14 shrink-0 rounded-input border-2 border-white object-cover shadow-sm"
-                  />
-                ))}
-              </div>
-            )}
-          </div>
+          <AdGallery
+            photos={photos}
+            title={ad.title}
+            category={ad.category}
+            kind={ad.kind}
+            status={ad.status}
+          />
 
           <div className="flex flex-col gap-6">
             <div className="rounded-card border-[2.5px] border-ink bg-white p-6 shadow-[3px_3px_0_0_rgba(20,20,20,1)] sm:p-8">

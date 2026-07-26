@@ -33,6 +33,7 @@ interface AdRow {
   created_at: string;
   featured_until: string | null;
   profiles: SellerProfileRow | SellerProfileRow[] | null;
+  ad_photos: { url: string; position: number }[] | null;
 }
 
 export async function GET(request: Request) {
@@ -66,7 +67,8 @@ export async function GET(request: Request) {
       `id, owner_id, kind, title, description, category, price_label, location,
        status, condition, delivery_method, scope, estimated_duration,
        whatsapp_number, created_at, featured_until,
-       profiles!owner_id ( id, name, whatsapp_number, created_at )`,
+       profiles!owner_id ( id, name, whatsapp_number, created_at ),
+       ad_photos ( url, position )`,
       { count: "exact" },
     )
     .eq("status", "Aktif")
@@ -114,6 +116,10 @@ export async function GET(request: Request) {
 
   const ads = rows.map((row) => {
     const profile = Array.isArray(row.profiles) ? row.profiles[0] : row.profiles;
+    const photos = (row.ad_photos ?? [])
+      .slice()
+      .sort((a, b) => a.position - b.position)
+      .map((p) => p.url);
 
     return {
       id: row.id,
@@ -130,6 +136,8 @@ export async function GET(request: Request) {
       estimatedDuration: row.estimated_duration,
       whatsappNumber: row.whatsapp_number ?? profile?.whatsapp_number ?? null,
       createdAt: row.created_at,
+      coverPhoto: photos[0] ?? undefined,
+      photos,
       featured: !!row.featured_until && new Date(row.featured_until) > new Date(),
       seller: profile
         ? {

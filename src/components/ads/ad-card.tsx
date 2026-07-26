@@ -33,9 +33,17 @@ export const AdCard = memo(function AdCard({ ad }: { ad: Ad }) {
     <div className="relative flex flex-col overflow-hidden rounded-card border-2 border-ink bg-white shadow-[2px_2px_0_0_rgba(20,20,20,1)] transition-transform duration-200 hover:-translate-y-1 sm:border-[2.5px] sm:shadow-[3px_3px_0_0_rgba(20,20,20,1)]">
       <Link href={`/jelajahi/${ad.id}`} className="flex flex-1 flex-col">
         <div
-          className={`flex h-20 items-start justify-end bg-gradient-to-br px-2.5 py-2 sm:h-36 sm:px-4 sm:py-3 ${categoryAccent[ad.category]}`}
+          className={`relative flex h-24 items-start justify-end overflow-hidden bg-gradient-to-br px-2.5 py-2 sm:h-40 sm:px-4 sm:py-3 ${categoryAccent[ad.category]}`}
         >
-          <div className="flex flex-col items-end gap-1 sm:gap-2">
+          {ad.coverPhoto && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={ad.coverPhoto}
+              alt={ad.title}
+              className="absolute inset-0 h-full w-full object-cover"
+            />
+          )}
+          <div className="relative z-10 flex flex-col items-end gap-1 sm:gap-2">
             <div className="flex items-center gap-1.5">
               <ShareButton title={ad.title} path={`/jelajahi/${ad.id}`} compact />
               <button

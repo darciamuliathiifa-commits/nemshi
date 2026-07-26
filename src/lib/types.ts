@@ -40,5 +40,7 @@ export interface Ad {
   scope?: string;
   estimatedDuration?: string;
   createdAt?: string;
+  coverPhoto?: string;
+  photos?: string[];
   featured?: boolean;
 }
