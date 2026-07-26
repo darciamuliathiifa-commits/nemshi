@@ -1,11 +1,11 @@
 "use client";
 
 import { useLayoutEffect, useMemo, useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import type { Ad, AdCategory } from "@/lib/types";
 import { AdCard } from "@/components/ads/ad-card";
 import { FeaturedCarousel } from "@/components/ads/featured-carousel";
+import { HeroBanner } from "@/components/shared/hero-banner";
 import { Pagination } from "@/components/shared/pagination";
 import {
   BookIcon,
@@ -194,15 +194,7 @@ export function AdBrowser({ ads }: { ads: Ad[] }) {
   return (
     <main className="flex-1 px-6 py-8">
       <section className="relative overflow-hidden rounded-card border-[2.5px] border-ink bg-gradient-to-br from-brand-dark to-brand bg-dot-pattern shadow-[5px_5px_0_0_rgba(20,20,20,1)]">
-        <div className="relative h-[180px] overflow-hidden sm:h-[220px]">
-          <Image
-            src="/banner-nemsy.png"
-            alt="Nemsy!: Satu Portal Untuk Usaha Masisir"
-            fill
-            className="object-cover object-bottom"
-            priority
-          />
-        </div>
+        <HeroBanner />
 
         <div className="relative -mt-8 mx-4 mb-4 flex flex-col gap-4 rounded-card border-[2.5px] border-ink bg-white p-5 shadow-[3px_3px_0_0_rgba(20,20,20,1)] sm:mx-6 sm:mb-6 sm:flex-row sm:items-center sm:justify-between">
           <div>
