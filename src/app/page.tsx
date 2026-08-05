@@ -115,15 +115,15 @@ export default function LandingPage() {
             </div>
           </div>
 
-          <div className="relative mt-10 h-[340px] w-full max-w-sm sm:mt-12 sm:h-[480px] sm:max-w-4xl lg:absolute lg:inset-x-0 lg:bottom-5 lg:mx-auto lg:mt-0 lg:h-[370px] lg:max-w-3xl">
+          <div className="relative mt-10 h-[340px] w-full max-w-sm sm:mt-12 sm:h-[480px] sm:max-w-4xl lg:mx-auto lg:mt-8 lg:h-[330px] lg:max-w-3xl">
             {heroScreens.map((screen, index) => (
               <div
                 key={screen.title}
-                className={`absolute bottom-0 h-[300px] w-[48%] overflow-hidden rounded-[24px] border-[2.5px] border-[#005b4f] bg-[#fffefa] text-left shadow-[7px_9px_0_0_#006451] sm:h-[430px] sm:w-[34%] sm:rounded-[34px] lg:h-[350px] lg:w-[31%] lg:rounded-[28px] ${
+                className={`absolute bottom-0 h-[300px] w-[48%] overflow-hidden rounded-[24px] border-[2.5px] border-[#005b4f] bg-[#fffefa] text-left shadow-[7px_9px_0_0_#006451] sm:h-[430px] sm:w-[34%] sm:rounded-[34px] lg:h-[315px] lg:w-[31%] lg:rounded-[28px] ${
                   index === 0
                     ? "left-[1%] z-20 -rotate-6 sm:left-[5%]"
                     : index === 1
-                      ? "left-1/2 z-30 h-[325px] w-[52%] -translate-x-1/2 rotate-1 sm:h-[460px] sm:w-[36%] lg:h-[360px] lg:w-[33%]"
+                      ? "left-1/2 z-30 h-[325px] w-[52%] -translate-x-1/2 rotate-1 sm:h-[460px] sm:w-[36%] lg:h-[325px] lg:w-[33%]"
                       : "right-[1%] z-10 rotate-6 sm:right-[5%]"
                 }`}
               >
