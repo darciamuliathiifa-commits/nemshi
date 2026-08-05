@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import { AD_CATEGORIES, type AdCategory } from "@/lib/types";
 import { CloseIcon } from "@/components/icons";
 import { PhotoUploader } from "@/components/forms/photo-uploader";
-import { toUploadedPhotos, uploadPhotos, type UploadedPhoto } from "@/lib/upload";
+import { DescriptionEditor } from "@/components/forms/description-editor";
+import { uploadPhotos, type UploadedPhoto } from "@/lib/upload";
 import type { MyAd } from "@/components/ads/my-ads-list";
 
 interface EditAdDialogProps {
@@ -56,6 +57,8 @@ export function EditAdDialog({
   useEffect(() => {
     if (!isOpen || !adId) return;
 
+    // This reset belongs to the dialog-open transition, before the async request begins.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setLoading(true);
     setError(null);
 
@@ -323,13 +326,13 @@ export function EditAdDialog({
               <label htmlFor="edit-desc" className="text-[12px] font-bold text-muted-foreground">
                 Deskripsi Iklan
               </label>
-              <textarea
+              <DescriptionEditor
                 id="edit-desc"
                 rows={4}
                 value={description}
-                onChange={(e) => setDescription(e.target.value)}
+                onChange={setDescription}
                 required
-                className="mt-1 w-full rounded-input border border-border bg-white p-3 text-[14px] text-charcoal focus:border-cta focus:outline-none"
+                className="mt-1"
               />
             </div>
 

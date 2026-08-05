@@ -11,26 +11,11 @@ import { createSupabasePublicClient } from "@/lib/supabase/public";
 import { formatRelativeTime } from "@/lib/format-relative-time";
 import { TransactionDisclaimer } from "@/components/shared/transaction-disclaimer";
 import { AdGallery } from "@/components/ads/ad-gallery";
+import { DescriptionText } from "@/components/shared/description-text";
+import { stripDescriptionFormatting } from "@/lib/description-format";
 import { SEED_OWNER_IDS } from "@/lib/constants";
 
 export const revalidate = 30;
-
-const categoryAccent: Record<string, string> = {
-  Pendidikan: "from-blue-100 to-blue-50",
-  "Makanan & Minuman": "from-amber-100 to-amber-50",
-  "Kreatif & Digital": "from-violet-100 to-violet-50",
-  "Bantuan & Layanan Harian": "from-emerald-100 to-emerald-50",
-  "Barang Baru & Bekas": "from-rose-100 to-rose-50",
-  Lainnya: "from-zinc-100 to-zinc-50",
-};
-
-const statusAccent: Record<string, string> = {
-  Aktif: "bg-success text-white",
-  Terjual: "bg-charcoal text-white",
-  Selesai: "bg-charcoal text-white",
-  Kedaluwarsa: "bg-muted text-white",
-  Ditutup: "bg-error text-white",
-};
 
 interface SellerProfileRow {
   id: string;
@@ -93,7 +78,7 @@ export async function generateMetadata({
   if (!data) return { title: "Iklan tidak ditemukan | Nemsy!" };
 
   const title = `${data.title} · ${data.price_label} | Nemsy!`;
-  const description = data.description.slice(0, 160);
+  const description = stripDescriptionFormatting(data.description).slice(0, 160);
 
   return {
     title,
@@ -247,9 +232,10 @@ export default async function AdDetailPage({
                 <p className="text-[12px] font-bold text-muted-foreground">
                   Deskripsi
                 </p>
-                <p className="mt-2 text-base font-normal leading-6 text-charcoal">
-                  {ad.description}
-                </p>
+                <DescriptionText
+                  value={ad.description}
+                  className="mt-2 text-base font-normal leading-6 text-charcoal"
+                />
               </div>
             </div>
 

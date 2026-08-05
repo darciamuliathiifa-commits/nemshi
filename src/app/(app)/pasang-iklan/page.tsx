@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Header } from "@/components/layout/header";
 import { PhotoUploader } from "@/components/forms/photo-uploader";
+import { DescriptionEditor } from "@/components/forms/description-editor";
+import { DescriptionText } from "@/components/shared/description-text";
 import { QuotaExceededModal } from "@/components/shared/quota-exceeded-modal";
 import { uploadPhotos, type UploadedPhoto } from "@/lib/upload";
 import type { AdCategory, AdCondition, AdKind } from "@/lib/types";
@@ -330,13 +332,13 @@ export default function PasangIklanPage() {
                   <label className={labelClass} htmlFor="description">
                     Deskripsi
                   </label>
-                  <textarea
+                  <DescriptionEditor
                     id="description"
                     rows={4}
-                    className={`mt-1 ${inputClass} h-auto resize-none py-3`}
+                    className="mt-1"
                     placeholder="Jelaskan detail produk atau jasa yang kamu tawarkan"
                     value={form.description}
-                    onChange={(event) => updateForm("description", event.target.value)}
+                    onChange={(value) => updateForm("description", value)}
                   />
                 </div>
 
@@ -573,9 +575,10 @@ export default function PasangIklanPage() {
 
                 <div className="mt-4 border-t border-border-subtle pt-4">
                   <p className={labelClass}>Deskripsi</p>
-                  <p className="mt-1 text-base font-normal leading-6 text-charcoal">
-                    {form.description}
-                  </p>
+                  <DescriptionText
+                    value={form.description}
+                    className="mt-1 text-base font-normal leading-6 text-charcoal"
+                  />
                 </div>
 
                 {form.photos.length > 0 && (
