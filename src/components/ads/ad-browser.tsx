@@ -202,7 +202,7 @@ export function AdBrowser({ ads }: { ads: Ad[] }) {
       <section className="relative overflow-hidden rounded-card border-[2.5px] border-ink bg-brand-dark shadow-[5px_5px_0_0_#006451]">
         <HeroBanner />
 
-        <div className="relative -mt-6 mx-3 mb-4 flex flex-col gap-3 rounded-card border-[2.5px] border-ink bg-[#fffefa] p-4 shadow-[3px_3px_0_0_#006451] sm:mx-6 sm:mb-6 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:p-5 sm:-mt-20 lg:-mt-24">
+        <div className="relative -mt-5 mx-3 mb-4 flex flex-col gap-3 rounded-card border-[2.5px] border-ink bg-[#fffefa] p-4 shadow-[3px_3px_0_0_#006451] sm:mx-6 sm:mb-6 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:p-5 sm:-mt-14 lg:-mt-16">
           <div>
             <h1 className="text-xl uppercase leading-none text-charcoal sm:text-3xl">
               Temukan Semua yang Kamu Butuhkan

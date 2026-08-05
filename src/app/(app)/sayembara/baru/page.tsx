@@ -14,7 +14,10 @@ export default function PasangSayembaraPage() {
     const quotaRes = await fetch("/api/mayar/quota");
     if (quotaRes.ok) {
       const quota = await quotaRes.json();
-      const hasSlot = !quota.freeSayembaraSlotUsed || quota.extraSayembaraSlots > 0;
+      const hasSlot =
+        quota.isUnlimited ||
+        !quota.freeSayembaraSlotUsed ||
+        quota.extraSayembaraSlots > 0;
       if (!hasSlot) {
         setShowQuotaModal(true);
         return;

@@ -259,7 +259,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Belum masuk akun." }, { status: 401 });
   }
 
-  const quota = await getQuota(supabase, user.id);
+  const quota = await getQuota(supabase, user.id, user.email);
   if (!hasAdSlotAvailable(quota)) {
     return NextResponse.json(
       {
@@ -287,9 +287,11 @@ export async function POST(request: Request) {
   // or granted by Plus/Hemat): aktif 2 minggu, matching the pricing copy.
   const usingFreeSlot = !quota.freeAdSlotUsed;
   const durationDays = usingFreeSlot ? 3 : 14;
-  const expiresAt = new Date(
-    Date.now() + durationDays * 24 * 60 * 60 * 1000,
-  ).toISOString();
+  const expiresAt = quota.isUnlimited
+    ? null
+    : new Date(
+        Date.now() + durationDays * 24 * 60 * 60 * 1000,
+      ).toISOString();
 
   const { data: ad, error } = await supabase
     .from("ads")

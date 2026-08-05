@@ -1,5 +1,10 @@
 import { NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+import {
+  ensureMasterListingsUnlimited,
+  isMasterAccountEmail,
+} from "@/lib/server/quota-store";
 
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
@@ -26,6 +31,13 @@ export async function GET(request: Request) {
             data.user.user_metadata?.picture ??
             null,
         });
+
+        if (isMasterAccountEmail(data.user.email)) {
+          const admin = createSupabaseAdminClient();
+          if (admin) {
+            await ensureMasterListingsUnlimited(admin, data.user.id);
+          }
+        }
 
         return NextResponse.redirect(`${origin}${next}`);
       }

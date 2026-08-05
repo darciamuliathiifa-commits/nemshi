@@ -186,7 +186,11 @@ export default function ProfilPage() {
                   </div>
                   <div>
                     <p className="text-2xl font-bold text-charcoal">
-                      {quota?.plan === "plus" ? "Plus" : "Gratis"}
+                      {quota?.isUnlimited
+                        ? "Master"
+                        : quota?.plan === "plus"
+                          ? "Plus"
+                          : "Gratis"}
                     </p>
                     <p className="mt-1 text-[12px] font-bold text-muted-foreground">
                       Paket
@@ -233,7 +237,9 @@ export default function ProfilPage() {
                     Status Paket
                   </span>
                   <span className="text-base font-normal text-charcoal">
-                    {quota?.plan === "plus" && quota.planExpiresAt
+                    {quota?.isUnlimited
+                      ? "Akun Master · Unlimited"
+                      : quota?.plan === "plus" && quota.planExpiresAt
                       ? `Plus aktif hingga ${new Date(quota.planExpiresAt).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" })}`
                       : "Paket Gratis"}
                   </span>
@@ -244,7 +250,9 @@ export default function ProfilPage() {
                     Sisa Slot Iklan
                   </span>
                   <span className="text-base font-normal text-charcoal">
-                    {quota
+                    {quota?.isUnlimited
+                      ? "Unlimited"
+                      : quota
                       ? (quota.freeAdSlotUsed ? 0 : 1) + quota.extraAdSlots
                       : "–"}
                   </span>
@@ -255,13 +263,15 @@ export default function ProfilPage() {
                     Sisa Slot Sayembara
                   </span>
                   <span className="text-base font-normal text-charcoal">
-                    {quota
+                    {quota?.isUnlimited
+                      ? "Unlimited"
+                      : quota
                       ? (quota.freeSayembaraSlotUsed ? 0 : 1) + quota.extraSayembaraSlots
                       : "–"}
                   </span>
                 </div>
 
-                {quota?.plan !== "plus" && (
+                {quota && !quota.isUnlimited && quota.plan !== "plus" && (
                   <Link
                     href="/paket-plus"
                     className="mt-4 flex items-center justify-between gap-3 rounded-input border-2 border-ink bg-brand px-4 py-3 transition-transform hover:-translate-y-0.5"

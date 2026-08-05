@@ -150,7 +150,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Belum masuk akun." }, { status: 401 });
   }
 
-  const quota = await getQuota(supabase, user.id);
+  const quota = await getQuota(supabase, user.id, user.email);
   if (!hasSayembaraSlotAvailable(quota)) {
     return NextResponse.json(
       {
@@ -178,9 +178,11 @@ export async function POST(request: Request) {
   // so every source of an extra sayembara slot shares the same duration.
   const usingFreeSlot = !quota.freeSayembaraSlotUsed;
   const durationDays = usingFreeSlot ? 1 : 14;
-  const expiresAt = new Date(
-    Date.now() + durationDays * 24 * 60 * 60 * 1000,
-  ).toISOString();
+  const expiresAt = quota.isUnlimited
+    ? null
+    : new Date(
+        Date.now() + durationDays * 24 * 60 * 60 * 1000,
+      ).toISOString();
 
   const { data, error } = await supabase
     .from("sayembara")

@@ -4,12 +4,42 @@ export type PlanId = "plus" | "extra_ad" | "extra_sayembara" | "hemat";
 
 export interface UserQuota {
   userId: string;
+  isUnlimited: boolean;
   freeAdSlotUsed: boolean;
   freeSayembaraSlotUsed: boolean;
   extraAdSlots: number;
   extraSayembaraSlots: number;
   plan: "free" | "plus";
   planExpiresAt: string | null;
+}
+
+export const MASTER_ACCOUNT_EMAIL = "darciamuliathiifa@gmail.com";
+
+export function isMasterAccountEmail(email: string | null | undefined): boolean {
+  return email?.trim().toLowerCase() === MASTER_ACCOUNT_EMAIL;
+}
+
+export async function ensureMasterListingsUnlimited(
+  supabase: SupabaseClient,
+  userId: string,
+): Promise<void> {
+  await Promise.all([
+    supabase.from("ads").update({ expires_at: null }).eq("owner_id", userId),
+    supabase
+      .from("sayembara")
+      .update({ expires_at: null })
+      .eq("owner_id", userId),
+    supabase
+      .from("ads")
+      .update({ status: "Aktif", expires_at: null })
+      .eq("owner_id", userId)
+      .eq("status", "Kedaluwarsa"),
+    supabase
+      .from("sayembara")
+      .update({ status: "Aktif", expires_at: null })
+      .eq("owner_id", userId)
+      .eq("status", "Kedaluwarsa"),
+  ]);
 }
 
 interface PlanBenefit {
@@ -58,6 +88,7 @@ interface UserQuotaRow {
 function rowToQuota(row: UserQuotaRow): UserQuota {
   return {
     userId: row.user_id,
+    isUnlimited: false,
     freeAdSlotUsed: row.free_ad_slot_used,
     freeSayembaraSlotUsed: row.free_sayembara_slot_used,
     extraAdSlots: row.extra_ad_slots,
@@ -70,6 +101,7 @@ function rowToQuota(row: UserQuotaRow): UserQuota {
 function defaultQuota(userId: string): UserQuota {
   return {
     userId,
+    isUnlimited: false,
     freeAdSlotUsed: false,
     freeSayembaraSlotUsed: false,
     extraAdSlots: 0,
@@ -82,6 +114,7 @@ function defaultQuota(userId: string): UserQuota {
 export async function getQuota(
   supabase: SupabaseClient,
   userId: string,
+  email?: string | null,
 ): Promise<UserQuota> {
   const { data } = await supabase
     .from("user_quotas")
@@ -89,7 +122,8 @@ export async function getQuota(
     .eq("user_id", userId)
     .maybeSingle();
 
-  return data ? rowToQuota(data as UserQuotaRow) : defaultQuota(userId);
+  const quota = data ? rowToQuota(data as UserQuotaRow) : defaultQuota(userId);
+  return isMasterAccountEmail(email) ? { ...quota, isUnlimited: true } : quota;
 }
 
 // Grants plan benefits only — the caller owns writing/updating the
@@ -140,7 +174,7 @@ export async function activatePlan(
 }
 
 export function hasAdSlotAvailable(quota: UserQuota): boolean {
-  return !quota.freeAdSlotUsed || quota.extraAdSlots > 0;
+  return quota.isUnlimited || !quota.freeAdSlotUsed || quota.extraAdSlots > 0;
 }
 
 export async function consumeAdSlot(
@@ -148,6 +182,8 @@ export async function consumeAdSlot(
   userId: string,
   quota: UserQuota,
 ): Promise<void> {
+  if (quota.isUnlimited) return;
+
   await supabase.from("user_quotas").upsert(
     {
       user_id: userId,
@@ -165,7 +201,7 @@ export async function consumeAdSlot(
 }
 
 export function hasSayembaraSlotAvailable(quota: UserQuota): boolean {
-  return !quota.freeSayembaraSlotUsed || quota.extraSayembaraSlots > 0;
+  return quota.isUnlimited || !quota.freeSayembaraSlotUsed || quota.extraSayembaraSlots > 0;
 }
 
 export async function consumeSayembaraSlot(
@@ -173,6 +209,8 @@ export async function consumeSayembaraSlot(
   userId: string,
   quota: UserQuota,
 ): Promise<void> {
+  if (quota.isUnlimited) return;
+
   await supabase.from("user_quotas").upsert(
     {
       user_id: userId,

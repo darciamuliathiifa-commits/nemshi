@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { isMasterAccountEmail } from "@/lib/server/quota-store";
 
 const DEFAULT_EXTEND_DAYS = 14;
 const MAX_EXTEND_DAYS = 90;
@@ -58,6 +59,22 @@ export async function POST(
       { error: "Iklan tidak ditemukan atau bukan milikmu." },
       { status: 404 },
     );
+  }
+
+  if (isMasterAccountEmail(user.email)) {
+    const { data: updated, error: updateError } = await supabase
+      .from("ads")
+      .update({ expires_at: null, updated_at: new Date().toISOString() })
+      .eq("id", id)
+      .eq("owner_id", user.id)
+      .select("id, expires_at")
+      .maybeSingle();
+
+    if (updateError) {
+      return NextResponse.json({ error: updateError.message }, { status: 500 });
+    }
+
+    return NextResponse.json({ id: updated?.id, expiresAt: null });
   }
 
   const now = Date.now();

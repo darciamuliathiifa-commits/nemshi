@@ -38,10 +38,12 @@ const drawerNavItems = [
 
 function slotsLeft(quota: UserQuota | null) {
   if (!quota) return null;
-  return {
-    ads: (quota.freeAdSlotUsed ? 0 : 1) + quota.extraAdSlots,
-    sayembara: (quota.freeSayembaraSlotUsed ? 0 : 1) + quota.extraSayembaraSlots,
-  };
+  if (quota.isUnlimited) return "Unlimited";
+
+  const ads = (quota.freeAdSlotUsed ? 0 : 1) + quota.extraAdSlots;
+  const sayembara =
+    (quota.freeSayembaraSlotUsed ? 0 : 1) + quota.extraSayembaraSlots;
+  return `${ads} Iklan · ${sayembara} Sayembara`;
 }
 
 export function TopNav() {
@@ -96,7 +98,7 @@ export function TopNav() {
                 title="Jatah posting kamu"
               >
                 <ZapIcon width={13} height={13} />
-                Jatah: {slots.ads} Iklan · {slots.sayembara} Sayembara
+                Jatah: {slots}
               </Link>
             )}
             <Link
@@ -196,7 +198,7 @@ export function TopNav() {
               {slots && (
                 <div className="mt-4 flex items-center gap-2 rounded-pill border-2 border-ink bg-white px-3.5 py-2 text-[13px] font-bold text-charcoal shadow-[2px_2px_0_0_#006451]">
                   <ZapIcon width={14} height={14} className="shrink-0 text-cta" />
-                  Jatah: {slots.ads} Iklan · {slots.sayembara} Sayembara
+                  Jatah: {slots}
                 </div>
               )}
             </div>
