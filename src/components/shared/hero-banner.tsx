@@ -17,27 +17,20 @@ export function HeroBanner() {
         </p>
       </div>
 
-      <div className="absolute -bottom-14 right-6 hidden h-52 w-[320px] lg:block lg:right-10">
+      <div className="absolute right-10 top-1/2 hidden -translate-y-1/2 items-center gap-3 xl:flex">
         {[
-          { label: "Cari", icon: SearchIcon, className: "left-0 -rotate-6 bg-[#fffefa]" },
-          { label: "Jual", icon: StoreIcon, className: "left-1/2 z-20 -translate-x-1/2 bg-brand" },
-          { label: "Bantu", icon: MegaphoneIcon, className: "right-0 rotate-6 bg-[#fffefa]" },
+          { label: "Cari", icon: SearchIcon, className: "bg-[#fffefa]" },
+          { label: "Jual", icon: StoreIcon, className: "bg-brand" },
+          { label: "Bantu", icon: MegaphoneIcon, className: "bg-[#fffefa]" },
         ].map((item) => (
           <div
             key={item.label}
-            className={`absolute bottom-0 h-48 w-28 rounded-[18px] border-[2.5px] border-ink p-3 shadow-[5px_6px_0_0_#006451] ${item.className}`}
+            className={`flex h-24 w-24 flex-col items-center justify-center rounded-[8px] border-[2.5px] border-ink shadow-[4px_4px_0_0_#006451] ${item.className}`}
           >
-            <div className="mx-auto h-2.5 w-12 rounded-full bg-charcoal" />
-            <div className="mt-4 flex h-14 items-center justify-center rounded-[7px] bg-surface text-charcoal">
-              <item.icon width={22} height={22} />
-            </div>
-            <p className="mt-3 text-center text-xs font-extrabold uppercase text-charcoal">
+            <item.icon width={24} height={24} />
+            <p className="mt-2 text-center text-[11px] font-extrabold uppercase text-charcoal">
               {item.label}
             </p>
-            <div className="mt-2.5 space-y-1.5">
-              <div className="h-1.5 rounded-full bg-charcoal/15" />
-              <div className="h-1.5 w-3/4 rounded-full bg-charcoal/10" />
-            </div>
           </div>
         ))}
       </div>
