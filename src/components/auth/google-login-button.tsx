@@ -1,31 +1,81 @@
 "use client";
 
+import type { ReactNode } from "react";
 import { useState } from "react";
 import { supabase } from "@/lib/supabase/client";
 import { GoogleLogo } from "@/components/icons/google-logo";
 
-export function GoogleLoginButton({ compact = false }: { compact?: boolean }) {
+async function signInWithGoogle() {
+  if (!supabase) {
+    return "Login belum dikonfigurasi. Coba lagi nanti.";
+  }
+
+  const { error } = await supabase.auth.signInWithOAuth({
+    provider: "google",
+    options: {
+      redirectTo: `${window.location.origin}/auth/callback`,
+    },
+  });
+
+  return error ? "Gagal masuk dengan Google. Coba lagi." : null;
+}
+
+export function LandingLoginButton({
+  children,
+  className,
+  ariaLabel,
+  title,
+}: {
+  children: ReactNode;
+  className: string;
+  ariaLabel?: string;
+  title?: string;
+}) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   async function handleLogin() {
-    if (!supabase) {
-      setError("Login belum dikonfigurasi. Coba lagi nanti.");
-      return;
-    }
-
     setLoading(true);
     setError(null);
 
-    const { error: authError } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
-      },
-    });
+    const loginError = await signInWithGoogle();
+    if (loginError) {
+      setError(loginError);
+      setLoading(false);
+    }
+  }
 
-    if (authError) {
-      setError("Gagal masuk dengan Google. Coba lagi.");
+  return (
+    <button
+      type="button"
+      onClick={handleLogin}
+      disabled={loading}
+      aria-label={ariaLabel}
+      title={error ?? title}
+      className={`${className} disabled:cursor-wait disabled:opacity-65`}
+    >
+      {loading ? "Menghubungkan..." : error ? "Coba login lagi" : children}
+    </button>
+  );
+}
+
+export function GoogleLoginButton({
+  compact = false,
+  landing = false,
+}: {
+  compact?: boolean;
+  landing?: boolean;
+}) {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function handleLogin() {
+    setLoading(true);
+    setError(null);
+
+    const loginError = await signInWithGoogle();
+    if (loginError) {
+      setError(loginError);
       setLoading(false);
     }
   }
@@ -36,8 +86,16 @@ export function GoogleLoginButton({ compact = false }: { compact?: boolean }) {
         type="button"
         onClick={handleLogin}
         disabled={loading}
-        className={`flex shrink-0 items-center justify-center gap-2.5 whitespace-nowrap rounded-pill bg-charcoal font-bold text-white transition-colors hover:bg-black disabled:opacity-60 ${
-          compact ? "h-10 pl-3 pr-5 text-[14px]" : "h-12 pl-4 pr-7 text-base"
+        className={`flex shrink-0 items-center justify-center gap-2.5 whitespace-nowrap rounded-pill font-bold transition-colors disabled:opacity-60 ${
+          landing
+            ? "bg-transparent text-[#005b4f] hover:bg-[#005b4f]/8"
+            : "bg-charcoal text-white hover:bg-black"
+        } ${
+          compact
+            ? "h-10 pl-3 pr-5 text-[14px]"
+            : landing
+              ? "h-10 px-3 text-sm"
+              : "h-12 pl-4 pr-7 text-base"
         }`}
       >
         <span

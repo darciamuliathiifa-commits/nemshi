@@ -74,7 +74,7 @@ export function NotificationBell() {
             onClick={() => setOpen(false)}
             className="fixed inset-0 z-40 cursor-default"
           />
-          <div className="absolute right-0 z-50 mt-2 max-h-[70vh] w-80 max-w-[85vw] overflow-y-auto rounded-card border-2 border-ink bg-white shadow-[3px_3px_0_0_rgba(20,20,20,1)]">
+          <div className="absolute right-0 z-50 mt-2 max-h-[70vh] w-80 max-w-[85vw] overflow-y-auto rounded-card border-2 border-ink bg-white shadow-[3px_3px_0_0_#006451]">
             <div className="border-b border-border-subtle px-4 py-3">
               <p className="text-[14px] font-bold text-charcoal">Notifikasi</p>
             </div>

@@ -60,12 +60,12 @@ export function TopNav() {
   const slots = slotsLeft(quota);
 
   return (
-    <div className="sticky top-0 z-40 bg-brand">
+    <div className="sticky top-0 z-40 border-b-2 border-ink bg-brand">
       <TickerBar />
 
       <div className="px-6 py-3">
-        <div className="mx-auto flex w-full max-w-[1400px] items-center justify-between gap-3 rounded-pill bg-white/95 px-4 py-2.5 shadow-sm backdrop-blur">
-          <Link href="/jelajahi" className="shrink-0 text-lg font-bold tracking-tight text-charcoal">
+        <div className="mx-auto flex w-full max-w-[1400px] items-center justify-between gap-3 rounded-pill border-2 border-ink bg-[#fffefa] px-4 py-2.5 shadow-[3px_3px_0_0_#006451]">
+          <Link href="/jelajahi" className="font-landing-display shrink-0 text-xl uppercase leading-none text-charcoal">
             Nemsy!
           </Link>
 
@@ -78,7 +78,7 @@ export function TopNav() {
                   href={item.href}
                   className={`rounded-pill px-4 py-2 text-[14px] font-bold transition-colors ${
                     isActive
-                      ? "bg-charcoal text-white"
+                      ? "bg-charcoal text-brand"
                       : "text-charcoal hover:bg-surface"
                   }`}
                 >
@@ -120,7 +120,7 @@ export function TopNav() {
                 type="button"
                 onClick={() => setPostMenuOpen((prev) => !prev)}
                 aria-expanded={postMenuOpen}
-                className="flex h-10 shrink-0 items-center gap-1.5 rounded-pill bg-charcoal px-5 text-[14px] font-bold text-white transition-colors hover:bg-black"
+                className="flex h-10 shrink-0 items-center gap-1.5 rounded-pill bg-charcoal px-5 text-[14px] font-bold text-brand shadow-[2px_2px_0_0_#003f37] transition-transform hover:-translate-y-0.5"
               >
                 <PlusCircleIcon width={16} height={16} />
                 Pasang Iklan/Sayembara
@@ -135,7 +135,7 @@ export function TopNav() {
                     onClick={() => setPostMenuOpen(false)}
                     className="fixed inset-0 z-40 cursor-default"
                   />
-                  <div className="absolute right-0 z-50 mt-2 w-56 overflow-hidden rounded-card border-2 border-ink bg-white shadow-[3px_3px_0_0_rgba(20,20,20,1)]">
+                  <div className="absolute right-0 z-50 mt-2 w-56 overflow-hidden rounded-card border-2 border-ink bg-white shadow-[3px_3px_0_0_#006451]">
                     <Link
                       href="/pasang-iklan"
                       onClick={() => setPostMenuOpen(false)}
@@ -177,10 +177,10 @@ export function TopNav() {
             onClick={() => setMobileOpen(false)}
             className="absolute inset-0 bg-ink/40"
           />
-          <div className="absolute right-0 top-0 flex h-full w-80 max-w-[85vw] flex-col overflow-y-auto border-l-2 border-ink bg-white shadow-[-4px_0_0_0_rgba(20,20,20,1)]">
-            <div className="relative overflow-hidden bg-gradient-to-br from-brand-dark to-brand bg-dot-pattern px-5 py-6">
+          <div className="absolute right-0 top-0 flex h-full w-80 max-w-[85vw] flex-col overflow-y-auto border-l-2 border-ink bg-white shadow-[-4px_0_0_0_#006451]">
+            <div className="relative overflow-hidden bg-brand-dark bg-dot-pattern px-5 py-6">
               <div className="flex items-center justify-between">
-                <span className="text-xl font-bold tracking-tight text-charcoal">
+                <span className="font-landing-display text-2xl uppercase leading-none text-charcoal">
                   Nemsy!
                 </span>
                 <button
@@ -194,7 +194,7 @@ export function TopNav() {
               </div>
 
               {slots && (
-                <div className="mt-4 flex items-center gap-2 rounded-pill border-2 border-ink bg-white px-3.5 py-2 text-[13px] font-bold text-charcoal shadow-[2px_2px_0_0_rgba(20,20,20,1)]">
+                <div className="mt-4 flex items-center gap-2 rounded-pill border-2 border-ink bg-white px-3.5 py-2 text-[13px] font-bold text-charcoal shadow-[2px_2px_0_0_#006451]">
                   <ZapIcon width={14} height={14} className="shrink-0 text-cta" />
                   Jatah: {slots.ads} Iklan · {slots.sayembara} Sayembara
                 </div>
@@ -211,7 +211,7 @@ export function TopNav() {
                     href={item.href}
                     onClick={() => setMobileOpen(false)}
                     className={`flex items-center gap-3 rounded-pill px-3 py-2.5 text-[15px] font-bold transition-colors ${
-                      isActive ? "bg-charcoal text-white" : "text-charcoal hover:bg-surface"
+                      isActive ? "bg-charcoal text-brand" : "text-charcoal hover:bg-surface"
                     }`}
                   >
                     <span
@@ -231,7 +231,7 @@ export function TopNav() {
               <Link
                 href="/pasang-iklan"
                 onClick={() => setMobileOpen(false)}
-                className="flex items-center justify-center gap-2 rounded-pill border-2 border-ink bg-white px-4 py-3 text-[14px] font-bold text-charcoal shadow-[2px_2px_0_0_rgba(20,20,20,1)] transition-transform hover:-translate-y-0.5"
+                className="flex items-center justify-center gap-2 rounded-pill border-2 border-ink bg-white px-4 py-3 text-[14px] font-bold text-charcoal shadow-[2px_2px_0_0_#006451] transition-transform hover:-translate-y-0.5"
               >
                 <ListIcon width={18} height={18} />
                 Pasang Iklan
@@ -239,7 +239,7 @@ export function TopNav() {
               <Link
                 href="/sayembara/baru"
                 onClick={() => setMobileOpen(false)}
-                className="flex items-center justify-center gap-2 rounded-pill bg-charcoal px-4 py-3 text-[14px] font-bold text-white shadow-[2px_2px_0_0_rgba(20,20,20,1)] transition-transform hover:-translate-y-0.5"
+                className="flex items-center justify-center gap-2 rounded-pill bg-charcoal px-4 py-3 text-[14px] font-bold text-brand shadow-[2px_2px_0_0_#003f37] transition-transform hover:-translate-y-0.5"
               >
                 <MegaphoneIcon width={18} height={18} />
                 Pasang Sayembara

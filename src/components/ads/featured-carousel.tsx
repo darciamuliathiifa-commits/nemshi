@@ -18,7 +18,7 @@ export const FeaturedCarousel = memo(function FeaturedCarousel({ ads }: { ads: A
   if (ads.length === 0) return null;
 
   return (
-    <section className="mb-10 rounded-card border-[2.5px] border-ink bg-gradient-to-br from-brand-dark to-brand p-4 shadow-[5px_5px_0_0_rgba(20,20,20,1)] sm:p-8">
+    <section className="mb-10 rounded-card border-[2.5px] border-ink bg-brand-dark p-4 shadow-[5px_5px_0_0_#006451] sm:p-8">
       <div className="mb-4 flex items-center justify-between sm:mb-5">
         <div className="flex items-center gap-2 sm:gap-2.5">
           <StarIcon width={18} height={18} className="text-charcoal sm:hidden" />
@@ -58,7 +58,7 @@ export const FeaturedCarousel = memo(function FeaturedCarousel({ ads }: { ads: A
           <Link
             key={ad.id}
             href={`/jelajahi/${ad.id}`}
-            className="group relative flex w-[78vw] max-w-[260px] shrink-0 snap-start flex-col overflow-hidden rounded-card border-[2.5px] border-ink bg-white shadow-[3px_3px_0_0_rgba(20,20,20,1)] transition-transform hover:-translate-y-1 sm:w-[360px] sm:max-w-none"
+            className="group relative flex w-[78vw] max-w-[260px] shrink-0 snap-start flex-col overflow-hidden rounded-card border-[2.5px] border-ink bg-white shadow-[3px_3px_0_0_#006451] transition-transform hover:-translate-y-1 sm:w-[360px] sm:max-w-none"
           >
             <span className="absolute right-3 top-3 z-10 flex items-center gap-1 rounded-badge bg-charcoal px-2.5 py-1 text-[10.5px] leading-3 font-bold text-brand sm:right-4 sm:top-4 sm:px-3 sm:py-1.5 sm:text-[12px] sm:leading-4">
               <StarIcon width={11} height={11} />

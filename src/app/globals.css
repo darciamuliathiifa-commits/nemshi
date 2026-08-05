@@ -38,6 +38,212 @@ body {
   color: var(--foreground);
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
+.font-landing-body {
+  font-family: var(--font-manrope), sans-serif;
+}
+
+.font-landing-body h1,
+.font-landing-body h2,
+.font-landing-display {
+  font-family: var(--font-black-han-sans), sans-serif;
+  font-weight: 400;
+}
+
+.font-landing-body h1,
+.font-landing-body h2,
+.font-landing-body h3 {
+  text-transform: uppercase;
+}
+
+.nemsy-app {
+  --color-ink: #005b4f;
+  --color-charcoal: #005b4f;
+  --color-cream: #fffefa;
+  --color-surface: #dff8e8;
+  --color-cta: #005b4f;
+  --color-highlight: #ff9caf;
+  --color-brand: #fff47d;
+  --color-brand-dark: #80e6ad;
+  --color-success: #007f6e;
+  --color-muted: #9ab8b1;
+  --color-muted-foreground: #587d75;
+  --color-border-subtle: rgba(0, 91, 79, 0.1);
+  --color-border: rgba(0, 91, 79, 0.18);
+  --color-border-strong: rgba(0, 91, 79, 0.34);
+  --radius-card: 8px;
+
+  font-family: var(--font-manrope), sans-serif;
+}
+
+.nemsy-app h1,
+.nemsy-app h2 {
+  font-family: var(--font-black-han-sans), sans-serif;
+  font-weight: 400;
+}
+
+[data-landing-root][data-motion-ready="true"] [data-reveal] {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 800ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 800ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+[data-landing-root][data-motion-ready="true"] [data-reveal][data-visible="true"] {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.landing-stagger > [data-reveal]:nth-child(2) {
+  --reveal-delay: 90ms;
+}
+
+.landing-stagger > [data-reveal]:nth-child(3) {
+  --reveal-delay: 180ms;
+}
+
+.landing-stagger > [data-reveal]:nth-child(4) {
+  --reveal-delay: 270ms;
+}
+
+.landing-stagger > [data-reveal]:nth-child(n + 5) {
+  --reveal-delay: 360ms;
+}
+
+.landing-dots {
+  animation: landing-dots-drift 24s linear infinite;
+}
+
+.landing-phone-float {
+  animation: landing-phone-float 5.5s ease-in-out infinite;
+  animation-delay: var(--phone-delay, 0s);
+}
+
+.landing-phone-delay-1 {
+  --phone-delay: -1.8s;
+}
+
+.landing-phone-delay-2 {
+  --phone-delay: -3.6s;
+}
+
+.landing-card-lift {
+  transition:
+    translate 240ms ease,
+    box-shadow 240ms ease;
+}
+
+.landing-card-lift:hover {
+  translate: 0 -6px;
+  box-shadow: 8px 10px 0 #006451;
+}
+
+.landing-cta-pulse {
+  animation: landing-cta-pulse 3.2s ease-in-out infinite;
+}
+
+@keyframes landing-dots-drift {
+  to {
+    background-position: 48px 24px;
+  }
+}
+
+@keyframes landing-phone-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-9px);
+  }
+}
+
+@keyframes landing-cta-pulse {
+  0%,
+  100% {
+    box-shadow: 4px 4px 0 #003f37;
+  }
+  50% {
+    box-shadow: 7px 7px 0 #003f37;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-landing-root][data-motion-ready="true"] [data-reveal] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .landing-dots,
+  .landing-phone-float,
+  .landing-cta-pulse {
+    animation: none;
+  }
+
+  .landing-card-lift {
+    translate: none;
+    transition: none;
+  }
+}
+
+.cairo-community-map .leaflet-control-zoom a {
+  border-color: #005b4f;
+  background: #fffefa;
+  color: #005b4f;
+}
+
+.cairo-community-map .leaflet-control-attribution {
+  background: rgba(255, 254, 250, 0.86);
+  color: #005b4f;
+  font-family: var(--font-manrope), sans-serif;
+  font-size: 9px;
+}
+
+.cairo-community-map .leaflet-popup-content-wrapper,
+.cairo-community-map .leaflet-popup-tip {
+  background: #fffefa;
+  color: #005b4f;
+}
+
+.cairo-community-map .leaflet-popup-content-wrapper {
+  border: 2px solid #005b4f;
+  border-radius: 8px;
+  box-shadow: 4px 4px 0 #006451;
+}
+
+.cairo-community-map .leaflet-popup-content {
+  font-family: var(--font-manrope), sans-serif;
+  line-height: 1.5;
+}
+
+.nemsy-map-marker {
+  display: flex;
+  width: 38px;
+  height: 38px;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid #005b4f;
+  border-radius: 50% 50% 50% 8px;
+  background: #fff47d;
+  box-shadow: 4px 4px 0 #006451;
+  color: #005b4f;
+  font-family: var(--font-manrope), sans-serif;
+  font-size: 12px;
+  font-weight: 800;
+  transform: rotate(-45deg);
+}
+
+.nemsy-map-marker b {
+  font: inherit;
+  transform: rotate(45deg);
+}
+
 .bg-dot-pattern {
   background-image: radial-gradient(rgba(20, 20, 20, 0.08) 1.5px, transparent 1.5px);
   background-size: 22px 22px;

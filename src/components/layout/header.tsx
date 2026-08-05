@@ -18,13 +18,13 @@ export function Header({
   containerClassName,
 }: HeaderProps) {
   return (
-    <header className="w-full px-6 pb-2 pt-6">
+    <header className="w-full px-4 pb-2 pt-6 sm:px-6">
       <div
         className={`mx-auto flex flex-wrap items-center justify-between gap-4 ${
           containerClassName ?? "w-full"
         }`}
       >
-        <h1 className="text-2xl leading-[30px] font-bold text-charcoal">{title}</h1>
+        <h1 className="text-3xl uppercase leading-none text-charcoal">{title}</h1>
 
         {onSearchChange && (
           <label className="relative w-full max-w-sm">
@@ -38,7 +38,7 @@ export function Header({
               placeholder={searchPlaceholder}
               value={searchValue}
               onChange={(event) => onSearchChange(event.target.value)}
-              className="h-11 w-full rounded-pill border-2 border-ink bg-white pl-11 pr-4 text-[14px] font-normal text-charcoal placeholder:text-charcoal/40 focus:outline-none focus:ring-3 focus:ring-cta/10"
+              className="h-11 w-full rounded-pill border-2 border-ink bg-white pl-11 pr-4 text-[14px] font-normal text-charcoal shadow-[2px_2px_0_0_#006451] placeholder:text-charcoal/40 focus:outline-none focus:ring-3 focus:ring-cta/10"
             />
           </label>
         )}

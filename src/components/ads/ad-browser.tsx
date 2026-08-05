@@ -90,7 +90,7 @@ function FilterSection({
   children: React.ReactNode;
 }) {
   return (
-    <div className="rounded-card border-[2.5px] border-ink bg-white shadow-[3px_3px_0_0_rgba(20,20,20,1)]">
+    <div className="rounded-card border-[2.5px] border-ink bg-white shadow-[3px_3px_0_0_#006451]">
       <button
         type="button"
         onClick={onToggle}
@@ -198,13 +198,13 @@ export function AdBrowser({ ads }: { ads: Ad[] }) {
   }
 
   return (
-    <main className="flex-1 px-6 py-8">
-      <section className="relative overflow-hidden rounded-card border-[2.5px] border-ink bg-gradient-to-br from-brand-dark to-brand bg-dot-pattern shadow-[5px_5px_0_0_rgba(20,20,20,1)]">
+    <main className="flex-1 px-4 py-6 sm:px-6 sm:py-8">
+      <section className="relative overflow-hidden rounded-card border-[2.5px] border-ink bg-brand-dark shadow-[5px_5px_0_0_#006451]">
         <HeroBanner />
 
-        <div className="relative -mt-6 mx-4 mb-4 flex flex-col gap-3 rounded-card border-[2.5px] border-ink bg-white p-4 shadow-[3px_3px_0_0_rgba(20,20,20,1)] sm:mx-6 sm:mb-6 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:p-5 sm:-mt-24 lg:-mt-32">
+        <div className="relative -mt-6 mx-3 mb-4 flex flex-col gap-3 rounded-card border-[2.5px] border-ink bg-[#fffefa] p-4 shadow-[3px_3px_0_0_#006451] sm:mx-6 sm:mb-6 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:p-5 sm:-mt-20 lg:-mt-24">
           <div>
-            <h1 className="text-base font-bold text-charcoal sm:text-2xl">
+            <h1 className="text-xl uppercase leading-none text-charcoal sm:text-3xl">
               Temukan Semua yang Kamu Butuhkan
             </h1>
             <p className="mt-1 text-[13px] font-normal text-muted-foreground sm:text-[14px]">
@@ -224,7 +224,7 @@ export function AdBrowser({ ads }: { ads: Ad[] }) {
               placeholder="Cari di Nemsy!"
               value={keyword}
               onChange={(event) => changeKeyword(event.target.value)}
-              className="h-11 w-full rounded-pill border-2 border-ink bg-white pl-11 pr-4 text-[14px] font-normal text-charcoal placeholder:text-charcoal/40 focus:outline-none focus:ring-3 focus:ring-cta/10"
+              className="h-11 w-full rounded-pill border-2 border-ink bg-white pl-11 pr-4 text-[14px] font-normal text-charcoal shadow-[2px_2px_0_0_#006451] placeholder:text-charcoal/40 focus:outline-none focus:ring-3 focus:ring-cta/10"
             />
           </label>
         </div>
@@ -236,10 +236,10 @@ export function AdBrowser({ ads }: { ads: Ad[] }) {
 
       <Link
         href="/sayembara"
-        className="mb-8 flex flex-col items-start justify-between gap-4 rounded-card border-[2.5px] border-ink bg-white p-6 shadow-[3px_3px_0_0_rgba(20,20,20,1)] transition-transform hover:-translate-y-1 sm:flex-row sm:items-center"
+        className="mb-8 flex flex-col items-start justify-between gap-4 rounded-card border-[2.5px] border-ink bg-brand p-6 shadow-[3px_3px_0_0_#006451] transition-transform hover:-translate-y-1 sm:flex-row sm:items-center"
       >
         <div className="flex items-center gap-4">
-          <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand text-charcoal">
+          <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border-2 border-ink bg-white text-charcoal">
             <MegaphoneIcon width={22} height={22} />
           </span>
           <div>
@@ -252,14 +252,14 @@ export function AdBrowser({ ads }: { ads: Ad[] }) {
             </p>
           </div>
         </div>
-        <span className="flex h-10 shrink-0 items-center gap-1.5 rounded-pill bg-charcoal px-5 text-[14px] font-bold text-white">
+        <span className="flex h-10 shrink-0 items-center gap-1.5 rounded-pill bg-charcoal px-5 text-[14px] font-bold text-brand shadow-[2px_2px_0_0_#003f37]">
           Lihat Sayembara
           <ChevronRightIcon width={16} height={16} />
         </span>
       </Link>
 
       <div className="mb-6">
-        <h2 className="text-xl font-bold text-charcoal">Iklan Terbaru</h2>
+        <h2 className="text-3xl uppercase leading-none text-charcoal">Iklan Terbaru</h2>
         <p className="mt-1 text-[14px] font-normal text-muted-foreground">
           Produk dan jasa terbaru dari komunitas Masisir.
         </p>

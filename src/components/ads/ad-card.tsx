@@ -30,7 +30,7 @@ export const AdCard = memo(function AdCard({ ad }: { ad: Ad }) {
   )}`;
 
   return (
-    <div className="relative flex flex-col overflow-hidden rounded-card border-2 border-ink bg-white shadow-[2px_2px_0_0_rgba(20,20,20,1)] transition-transform duration-200 hover:-translate-y-1 sm:border-[2.5px] sm:shadow-[3px_3px_0_0_rgba(20,20,20,1)]">
+    <div className="relative flex flex-col overflow-hidden rounded-card border-2 border-ink bg-white shadow-[2px_2px_0_0_#006451] transition-transform duration-200 hover:-translate-y-1 sm:border-[2.5px] sm:shadow-[3px_3px_0_0_#006451]">
       <Link href={`/jelajahi/${ad.id}`} className="flex flex-1 flex-col">
         <div
           className={`relative flex h-24 items-start justify-end overflow-hidden bg-gradient-to-br px-2.5 py-2 sm:h-40 sm:px-4 sm:py-3 ${categoryAccent[ad.category]}`}
@@ -105,7 +105,7 @@ export const AdCard = memo(function AdCard({ ad }: { ad: Ad }) {
       <div className="flex items-center gap-1.5 p-2.5 pt-2 sm:gap-2 sm:p-5 sm:pt-4">
         <Link
           href={`/jelajahi/${ad.id}`}
-          className="flex h-7 flex-1 items-center justify-center rounded-pill border-2 border-ink text-[10.5px] font-bold text-charcoal transition-colors hover:bg-surface sm:h-10 sm:text-[13px]"
+          className="flex h-7 flex-1 items-center justify-center rounded-pill border-2 border-ink bg-white text-[10.5px] font-bold text-charcoal transition-colors hover:bg-surface sm:h-10 sm:text-[13px]"
         >
           Detail
         </Link>
