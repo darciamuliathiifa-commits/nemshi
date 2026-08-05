@@ -8,6 +8,11 @@ export function LandingMotion() {
     if (!root) return;
 
     const targets = root.querySelectorAll<HTMLElement>("[data-reveal]");
+    targets.forEach((target) => {
+      if (target.getBoundingClientRect().top < window.innerHeight * 0.95) {
+        target.dataset.visible = "true";
+      }
+    });
     root.dataset.motionReady = "true";
 
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
@@ -29,7 +34,16 @@ export function LandingMotion() {
     );
 
     targets.forEach((target) => observer.observe(target));
-    return () => observer.disconnect();
+    const fallback = window.setTimeout(() => {
+      targets.forEach((target) => {
+        target.dataset.visible = "true";
+      });
+    }, 1400);
+
+    return () => {
+      window.clearTimeout(fallback);
+      observer.disconnect();
+    };
   }, []);
 
   return null;

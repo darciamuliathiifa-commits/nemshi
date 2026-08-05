@@ -1,9 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import {
-  GoogleLoginButton,
-  LandingLoginButton,
-} from "@/components/auth/google-login-button";
+import { LandingLoginButton } from "@/components/auth/google-login-button";
 import { CairoCommunityMap } from "@/components/landing/cairo-community-map";
 import { LandingMotion } from "@/components/landing/landing-motion";
 import {
@@ -88,12 +85,12 @@ export default function LandingPage() {
         <div className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-[#80e6ad] [clip-path:ellipse(75%_58%_at_50%_100%)]" />
         <PublicNav />
 
-        <div className="relative mx-auto flex min-h-[92svh] w-full max-w-7xl flex-col items-center justify-center px-5 pb-10 pt-24 text-center sm:px-8 sm:pb-8 sm:pt-24 lg:px-10">
-          <div data-reveal className="flex w-full flex-col items-center">
+        <div className="relative mx-auto flex min-h-[92svh] w-full max-w-7xl flex-col items-center justify-center px-5 pb-10 pt-24 text-center sm:px-8 sm:pb-8 sm:pt-24 lg:justify-start lg:px-10 lg:pb-4 lg:pt-24">
+          <div data-reveal className="relative z-40 flex w-full flex-col items-center">
             <p className="text-[12px] font-black uppercase tracking-[0.42em] text-[#005b4f]/70 sm:text-[14px]">
               meet nemsyi
             </p>
-            <h1 className="mt-4 max-w-5xl text-[clamp(2.55rem,8vw,6.8rem)] font-black leading-[0.92] text-[#005b4f] sm:leading-[0.88]">
+            <h1 className="mt-4 max-w-5xl text-[clamp(2.55rem,8vw,6.8rem)] font-black leading-[0.92] text-[#005b4f] sm:leading-[0.88] lg:text-[4rem] xl:text-[4.5rem]">
               Portal kecil buat hidup Masisir yang rame.
             </h1>
             <p className="mt-5 max-w-2xl text-[15px] font-semibold leading-6 text-[#005b4f]/75 sm:mt-6 sm:text-xl sm:leading-7">
@@ -116,25 +113,22 @@ export default function LandingPage() {
                 Pasang iklan
               </LandingLoginButton>
             </div>
-            <div className="mt-2">
-              <GoogleLoginButton landing />
-            </div>
           </div>
 
-          <div className="relative mt-10 h-[340px] w-full max-w-sm sm:mt-12 sm:h-[480px] sm:max-w-4xl">
+          <div className="relative mt-10 h-[340px] w-full max-w-sm sm:mt-12 sm:h-[480px] sm:max-w-4xl lg:absolute lg:inset-x-0 lg:bottom-5 lg:mx-auto lg:mt-0 lg:h-[370px] lg:max-w-3xl">
             {heroScreens.map((screen, index) => (
               <div
                 key={screen.title}
-                className={`absolute bottom-0 h-[300px] w-[48%] overflow-hidden rounded-[24px] border-[2.5px] border-[#005b4f] bg-[#fffefa] text-left shadow-[7px_9px_0_0_#006451] sm:h-[430px] sm:w-[34%] sm:rounded-[34px] ${
+                className={`absolute bottom-0 h-[300px] w-[48%] overflow-hidden rounded-[24px] border-[2.5px] border-[#005b4f] bg-[#fffefa] text-left shadow-[7px_9px_0_0_#006451] sm:h-[430px] sm:w-[34%] sm:rounded-[34px] lg:h-[350px] lg:w-[31%] lg:rounded-[28px] ${
                   index === 0
                     ? "left-[1%] z-20 -rotate-6 sm:left-[5%]"
                     : index === 1
-                      ? "left-1/2 z-30 h-[325px] w-[52%] -translate-x-1/2 rotate-1 sm:h-[460px] sm:w-[36%]"
+                      ? "left-1/2 z-30 h-[325px] w-[52%] -translate-x-1/2 rotate-1 sm:h-[460px] sm:w-[36%] lg:h-[360px] lg:w-[33%]"
                       : "right-[1%] z-10 rotate-6 sm:right-[5%]"
                 }`}
               >
                 <div
-                  className={`landing-phone-float relative flex h-full flex-col p-2.5 sm:p-4 ${
+                  className={`landing-phone-float relative flex h-full flex-col p-2.5 sm:p-4 lg:p-3 ${
                     index === 1
                       ? "landing-phone-delay-1"
                       : index === 2
@@ -142,30 +136,30 @@ export default function LandingPage() {
                         : ""
                   }`}
                 >
-                  <div className="mb-3 flex items-center justify-between px-1 text-[7px] font-extrabold text-[#005b4f] sm:mb-5 sm:text-[10px]">
+                  <div className="mb-3 flex items-center justify-between px-1 text-[7px] font-extrabold text-[#005b4f] sm:mb-5 sm:text-[10px] lg:mb-3 lg:text-[8px]">
                     <span>9:41</span>
-                    <span className="absolute left-1/2 top-2.5 h-3 w-12 -translate-x-1/2 rounded-full bg-[#005b4f] sm:top-4 sm:h-4 sm:w-20" />
+                    <span className="absolute left-1/2 top-2.5 h-3 w-12 -translate-x-1/2 rounded-full bg-[#005b4f] sm:top-4 sm:h-4 sm:w-20 lg:top-3 lg:h-3 lg:w-16" />
                     <span>5G &#9679;</span>
                   </div>
 
                   <div className="min-w-0 px-1">
-                    <p className="text-[8px] font-extrabold uppercase tracking-[0.16em] text-[#005b4f]/65 sm:text-[11px]">
+                    <p className="text-[8px] font-extrabold uppercase tracking-[0.16em] text-[#005b4f]/65 sm:text-[11px] lg:text-[9px]">
                       Nemsyi portal
                     </p>
-                    <h2 className="mt-1 truncate text-[15px] leading-none text-[#005b4f] sm:text-[26px]">
+                    <h2 className="mt-1 truncate text-[15px] leading-none text-[#005b4f] sm:text-[26px] lg:text-xl">
                       {screen.title}
                     </h2>
-                    <p className="mt-1.5 line-clamp-2 text-[7px] font-semibold leading-[1.35] text-charcoal/55 sm:mt-2 sm:text-[10px]">
+                    <p className="mt-1.5 line-clamp-2 text-[7px] font-semibold leading-[1.35] text-charcoal/55 sm:mt-2 sm:text-[10px] lg:mt-1.5 lg:text-[8px]">
                       {screen.subtitle}
                     </p>
                   </div>
 
-                  <div className="mt-3 flex h-7 items-center gap-1.5 rounded-full bg-[#f3f1ec] px-2.5 text-[7px] font-bold text-charcoal/45 sm:mt-4 sm:h-10 sm:px-4 sm:text-[10px]">
+                  <div className="mt-3 flex h-7 items-center gap-1.5 rounded-full bg-[#f3f1ec] px-2.5 text-[7px] font-bold text-charcoal/45 sm:mt-4 sm:h-10 sm:px-4 sm:text-[10px] lg:mt-3 lg:h-8 lg:px-3 lg:text-[8px]">
                     <SearchIcon width={13} height={13} />
                     Cari kebutuhanmu
                   </div>
 
-                  <div className="mt-3 grid grid-cols-3 gap-1.5 sm:mt-4 sm:gap-2">
+                  <div className="mt-3 grid grid-cols-3 gap-1.5 sm:mt-4 sm:gap-2 lg:mt-3 lg:gap-1.5">
                     <div className="flex aspect-square items-center justify-center rounded-[8px] bg-[#ff9caf]">
                       <StoreIcon width={18} height={18} />
                     </div>
@@ -177,7 +171,7 @@ export default function LandingPage() {
                     </div>
                   </div>
 
-                  <div className="mt-3 space-y-1.5 sm:mt-4 sm:space-y-2">
+                  <div className="mt-3 space-y-1.5 sm:mt-4 sm:space-y-2 lg:mt-3 lg:space-y-1.5">
                     {["Populer di Kairo", "Baru ditambahkan"].map((label, itemIndex) => (
                       <div
                         key={label}
@@ -201,7 +195,7 @@ export default function LandingPage() {
                     ))}
                   </div>
 
-                  <div className="mt-auto grid h-8 grid-cols-4 items-center rounded-full border border-[#005b4f]/15 bg-white px-2 text-[#005b4f] sm:h-11 sm:px-4">
+                  <div className="mt-auto grid h-8 grid-cols-4 items-center rounded-full border border-[#005b4f]/15 bg-white px-2 text-[#005b4f] sm:h-11 sm:px-4 lg:h-8 lg:px-3">
                     <CompassIcon width={14} height={14} />
                     <SearchIcon width={14} height={14} />
                     <ChatIcon width={14} height={14} />
