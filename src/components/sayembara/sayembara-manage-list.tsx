@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { formatExpiryLabel, isNearingExpiry } from "@/lib/expiry";
 
 const statusOptions = ["Aktif", "Selesai", "Ditutup"] as const;
 type SayembaraStatus = (typeof statusOptions)[number];
@@ -11,6 +12,7 @@ const statusAccent: Record<string, string> = {
   Aktif: "bg-success text-white",
   Selesai: "bg-charcoal text-white",
   Ditutup: "bg-error text-white",
+  Kedaluwarsa: "bg-muted text-white",
 };
 
 export interface MySayembara {
@@ -22,6 +24,7 @@ export interface MySayembara {
   priceLabel: string | null;
   applicantCount: number;
   postedAt: string;
+  expiresAt: string | null;
 }
 
 export function SayembaraManageList({ items: initialItems }: { items: MySayembara[] }) {
@@ -51,6 +54,35 @@ export function SayembaraManageList({ items: initialItems }: { items: MySayembar
       showToast(`Status sayembara berhasil diubah ke ${status}.`);
     } catch (err) {
       showToast(err instanceof Error ? err.message : "Gagal mengubah status.");
+    } finally {
+      setPendingId(null);
+    }
+  }
+
+  async function handleExtend(id: string) {
+    setPendingId(id);
+    try {
+      const res = await fetch(`/api/sayembara/${id}/extend`, { method: "POST" });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        throw new Error(data.error ?? "Gagal memperpanjang masa tayang.");
+      }
+      setItems((prev) =>
+        prev.map((item) =>
+          item.id === id
+            ? {
+                ...item,
+                status: (data.status as string) ?? item.status,
+                expiresAt: (data.expiresAt as string | null) ?? null,
+              }
+            : item,
+        ),
+      );
+      showToast("Masa tayang sayembara berhasil diperpanjang.");
+    } catch (err) {
+      showToast(
+        err instanceof Error ? err.message : "Gagal memperpanjang masa tayang.",
+      );
     } finally {
       setPendingId(null);
     }
@@ -118,6 +150,15 @@ export function SayembaraManageList({ items: initialItems }: { items: MySayembar
               <p className="text-[13px] font-normal text-muted-foreground">
                 {item.location} · {item.applicantCount} pendaftar · Diposting {item.postedAt}
               </p>
+              {item.status === "Aktif" && formatExpiryLabel(item.expiresAt) && (
+                <p
+                  className={`text-[13px] font-bold ${
+                    isNearingExpiry(item.expiresAt) ? "text-error" : "text-muted-foreground"
+                  }`}
+                >
+                  {formatExpiryLabel(item.expiresAt)}
+                </p>
+              )}
 
               <div className="mt-1 flex flex-col gap-2 border-t border-border-subtle pt-3">
                 {isPending ? (
@@ -133,6 +174,22 @@ export function SayembaraManageList({ items: initialItems }: { items: MySayembar
                     >
                       Lihat Pendaftar ({item.applicantCount})
                     </Link>
+
+                    {/* Offered before expiry too, not just after — the H-2
+                        reminder sends owners here while the sayembara is
+                        still live, and renewing is free either way. */}
+                    {(item.status === "Kedaluwarsa" ||
+                      (item.status === "Aktif" && isNearingExpiry(item.expiresAt))) && (
+                      <button
+                        type="button"
+                        onClick={() => handleExtend(item.id)}
+                        className="h-9 w-full rounded-pill bg-cta text-[14px] font-bold text-white transition-colors hover:bg-highlight"
+                      >
+                        {item.status === "Kedaluwarsa"
+                          ? "Perpanjang Masa Tayang"
+                          : "Perpanjang, Masih Dibutuhkan"}
+                      </button>
+                    )}
                     <div className="flex gap-2">
                       <Link
                         href={`/sayembara/${item.id}/edit`}
@@ -160,6 +217,14 @@ export function SayembaraManageList({ items: initialItems }: { items: MySayembar
                         }
                         className="h-9 flex-1 rounded-input border border-border bg-white px-3 text-[14px] text-charcoal focus:border-cta focus:outline-none focus:ring-3 focus:ring-cta/10 disabled:bg-surface"
                       >
+                        {/* "Kedaluwarsa" is set by the expiry cron, not by the
+                            owner — list it only so the select can display it
+                            when it's the current value. */}
+                        {!statusOptions.includes(item.status as SayembaraStatus) && (
+                          <option value={item.status} disabled>
+                            {item.status}
+                          </option>
+                        )}
                         {statusOptions.map((status) => (
                           <option key={status} value={status}>
                             {status}

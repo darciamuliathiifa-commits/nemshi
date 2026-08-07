@@ -23,12 +23,12 @@ export default async function IklanSayaPage() {
       const [{ data: adRows }, { data: sayembaraRows }] = await Promise.all([
         supabase
           .from("ads")
-          .select("id, status, category, title, price_label, location, created_at, ad_photos ( url, position )")
+          .select("id, status, category, title, price_label, location, created_at, expires_at, ad_photos ( url, position )")
           .eq("owner_id", user.id)
           .order("created_at", { ascending: false }),
         supabase
           .from("sayembara")
-          .select("id, status, category, title, location, price_label, created_at")
+          .select("id, status, category, title, location, price_label, created_at, expires_at")
           .eq("owner_id", user.id)
           .order("created_at", { ascending: false }),
       ]);
@@ -47,6 +47,7 @@ export default async function IklanSayaPage() {
           priceLabel: row.price_label,
           location: row.location,
           postedAt: formatRelativeTime(row.created_at),
+          expiresAt: row.expires_at,
           coverPhoto: photos[0] ?? undefined,
         };
       });
@@ -76,6 +77,7 @@ export default async function IklanSayaPage() {
         priceLabel: row.price_label,
         applicantCount: applicantCountById.get(row.id) ?? 0,
         postedAt: formatRelativeTime(row.created_at),
+        expiresAt: row.expires_at,
       }));
     }
   }

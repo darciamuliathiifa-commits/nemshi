@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import type { AdStatus } from "@/lib/types";
 import { EditIcon } from "@/components/icons";
 import { EditAdDialog } from "@/components/ads/edit-ad-dialog";
+import { formatExpiryLabel, isNearingExpiry } from "@/lib/expiry";
 
 const statusFilters: AdStatus[] = [
   "Aktif",
@@ -40,6 +41,7 @@ export interface MyAd {
   priceLabel: string;
   location: string;
   postedAt: string;
+  expiresAt: string | null;
   coverPhoto?: string;
 }
 
@@ -100,13 +102,22 @@ export function MyAdsList({ ads: initialAds }: { ads: MyAd[] }) {
     setPendingId(adId);
     try {
       const res = await fetch(`/api/my-ads/${adId}/extend`, { method: "POST" });
+      const data = await res.json().catch(() => ({}));
       if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
         throw new Error(data.error ?? "Gagal memperpanjang masa tayang.");
       }
+      // Extending only revives a "Kedaluwarsa" ad — a sold or closed one keeps
+      // its status, so trust what the server actually wrote.
       setAds((prev) =>
         prev.map((ad) =>
-          ad.id === adId ? { ...ad, status: "Aktif", postedAt: "Baru saja diperpanjang" } : ad,
+          ad.id === adId
+            ? {
+                ...ad,
+                status: (data.status as MyAd["status"]) ?? ad.status,
+                expiresAt: (data.expiresAt as string | null) ?? null,
+                postedAt: "Baru saja diperpanjang",
+              }
+            : ad,
         ),
       );
       showToast("Masa tayang iklan berhasil diperpanjang.");
@@ -206,6 +217,15 @@ export function MyAdsList({ ads: initialAds }: { ads: MyAd[] }) {
                     <p className="text-[13px] font-normal text-muted-foreground">
                       {ad.location} · Diposting {ad.postedAt}
                     </p>
+                    {ad.status === "Aktif" && formatExpiryLabel(ad.expiresAt) && (
+                      <p
+                        className={`text-[13px] font-bold ${
+                          isNearingExpiry(ad.expiresAt) ? "text-error" : "text-muted-foreground"
+                        }`}
+                      >
+                        {formatExpiryLabel(ad.expiresAt)}
+                      </p>
+                    )}
                   </div>
 
                   <div className="mt-4 flex flex-col gap-2.5 border-t border-border-subtle pt-3">
@@ -225,13 +245,19 @@ export function MyAdsList({ ads: initialAds }: { ads: MyAd[] }) {
                           Edit Detail Iklan
                         </button>
 
-                        {ad.status === "Kedaluwarsa" && (
+                        {/* Offered before expiry too, not just after — the
+                            H-2 reminder sends owners here while the ad is
+                            still live, and renewing is free either way. */}
+                        {(ad.status === "Kedaluwarsa" ||
+                          (ad.status === "Aktif" && isNearingExpiry(ad.expiresAt))) && (
                           <button
                             type="button"
                             onClick={() => handleExtend(ad.id)}
                             className="h-9 w-full rounded-pill bg-cta text-[14px] font-bold text-white transition-colors hover:bg-highlight"
                           >
-                            Perpanjang Masa Tayang
+                            {ad.status === "Kedaluwarsa"
+                              ? "Perpanjang Masa Tayang"
+                              : "Perpanjang, Masih Ada"}
                           </button>
                         )}
 

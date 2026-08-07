@@ -2,7 +2,11 @@ import { NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { isMasterAccountEmail } from "@/lib/server/quota-store";
 
-const DEFAULT_EXTEND_DAYS = 14;
+// Mirrors /api/my-ads/[id]/extend. Kept shorter than the ads default (14) to
+// match the sayembara free window: a request for help is more time-sensitive
+// than a for-sale listing, so re-confirming it more often keeps the board
+// honest. Renewing is free and unlimited either way.
+const DEFAULT_EXTEND_DAYS = 7;
 const MAX_EXTEND_DAYS = 90;
 
 export async function POST(
@@ -44,8 +48,8 @@ export async function POST(
     return NextResponse.json({ error: "Belum masuk akun." }, { status: 401 });
   }
 
-  const { data: ad, error: fetchError } = await supabase
-    .from("ads")
+  const { data: sayembara, error: fetchError } = await supabase
+    .from("sayembara")
     .select("id, owner_id, expires_at, status")
     .eq("id", id)
     .maybeSingle();
@@ -54,31 +58,27 @@ export async function POST(
     return NextResponse.json({ error: fetchError.message }, { status: 500 });
   }
 
-  if (!ad || ad.owner_id !== user.id) {
+  if (!sayembara || sayembara.owner_id !== user.id) {
     return NextResponse.json(
-      { error: "Iklan tidak ditemukan atau bukan milikmu." },
+      { error: "Sayembara tidak ditemukan atau bukan milikmu." },
       { status: 404 },
     );
   }
 
   // Browse only shows status = 'Aktif', so renewing something the cron already
   // swept has to flip it back or it stays invisible. Only "Kedaluwarsa" is
-  // revived — a Terjual/Ditutup ad stays closed, and one still awaiting
+  // revived — a Selesai/Ditutup sayembara stays closed, and one still awaiting
   // moderation must not skip the queue just because it was extended.
-  const statusUpdate = ad.status === "Kedaluwarsa" ? { status: "Aktif" } : {};
+  const statusUpdate =
+    sayembara.status === "Kedaluwarsa" ? { status: "Aktif" } : {};
 
   // Extending re-arms the H-2 reminder for the new window.
   const reminderReset = { expiry_reminded_at: null };
 
   if (isMasterAccountEmail(user.email)) {
     const { data: updated, error: updateError } = await supabase
-      .from("ads")
-      .update({
-        ...statusUpdate,
-        ...reminderReset,
-        expires_at: null,
-        updated_at: new Date().toISOString(),
-      })
+      .from("sayembara")
+      .update({ ...statusUpdate, ...reminderReset, expires_at: null })
       .eq("id", id)
       .eq("owner_id", user.id)
       .select("id, expires_at, status")
@@ -96,18 +96,15 @@ export async function POST(
   }
 
   const now = Date.now();
-  const currentExpiry = ad.expires_at ? new Date(ad.expires_at).getTime() : now;
+  const currentExpiry = sayembara.expires_at
+    ? new Date(sayembara.expires_at).getTime()
+    : now;
   const base = Math.max(now, currentExpiry);
   const newExpiresAt = new Date(base + days * 24 * 60 * 60 * 1000).toISOString();
 
   const { data: updated, error: updateError } = await supabase
-    .from("ads")
-    .update({
-      ...statusUpdate,
-      ...reminderReset,
-      expires_at: newExpiresAt,
-      updated_at: new Date().toISOString(),
-    })
+    .from("sayembara")
+    .update({ ...statusUpdate, ...reminderReset, expires_at: newExpiresAt })
     .eq("id", id)
     .eq("owner_id", user.id)
     .select("id, expires_at, status")
