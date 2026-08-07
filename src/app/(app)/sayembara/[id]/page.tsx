@@ -4,7 +4,9 @@ import { notFound } from "next/navigation";
 import { Header } from "@/components/layout/header";
 import { MapPinIcon, UserIcon } from "@/components/icons";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { createSupabasePublicClient } from "@/lib/supabase/public";
 import { formatRelativeTime } from "@/lib/format-relative-time";
+import { DEFAULT_OG_IMAGE } from "@/lib/site-url";
 import { SayembaraOwnerActions } from "@/components/sayembara/sayembara-owner-actions";
 import { TransactionDisclaimer } from "@/components/shared/transaction-disclaimer";
 import { ShareButton } from "@/components/ads/share-button";
@@ -38,27 +40,48 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { id } = await params;
 
-  const supabase = await createSupabaseServerClient();
+  // Public read — a link preview must render for crawlers with no session, so
+  // this deliberately doesn't use the cookie-backed server client.
+  const supabase = createSupabasePublicClient();
   if (!supabase) return { title: "Nemsy!" };
 
   const { data } = await supabase
     .from("sayembara")
-    .select("title, description")
+    .select("title, description, price_label, location")
     .eq("id", id)
     .maybeSingle();
 
   if (!data) return { title: "Sayembara tidak ditemukan | Nemsy!" };
 
-  const title = `${data.title} | Nemsy!`;
-  const description = data.description.slice(0, 160);
+  // The reward is the hook when this gets pasted into a WhatsApp group, so it
+  // goes in the title rather than being buried in the description.
+  const reward = data.price_label?.trim();
+  const title = reward
+    ? `${data.title} · ${reward} | Nemsy!`
+    : `${data.title} | Nemsy!`;
+
+  const place = data.location?.trim();
+  const description = [place ? `Sayembara di ${place}.` : "Sayembara Masisir.", data.description]
+    .join(" ")
+    .slice(0, 160);
 
   return {
     title,
     description,
     openGraph: {
+      type: "article",
+      siteName: "Nemsy!",
+      locale: "id_ID",
       title,
       description,
-      images: ["/nemsy-logo-fix.png"],
+      url: `/sayembara/${id}`,
+      images: [DEFAULT_OG_IMAGE],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [DEFAULT_OG_IMAGE.url],
     },
   };
 }

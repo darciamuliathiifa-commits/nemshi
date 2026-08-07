@@ -14,6 +14,7 @@ import { AdGallery } from "@/components/ads/ad-gallery";
 import { DescriptionText } from "@/components/shared/description-text";
 import { stripDescriptionFormatting } from "@/lib/description-format";
 import { SEED_OWNER_IDS } from "@/lib/constants";
+import { DEFAULT_OG_IMAGE } from "@/lib/site-url";
 
 export const revalidate = 30;
 
@@ -71,7 +72,7 @@ export async function generateMetadata({
 
   const { data } = await supabase
     .from("ads")
-    .select("title, description, price_label")
+    .select("title, description, price_label, ad_photos ( url, position )")
     .eq("id", id)
     .maybeSingle();
 
@@ -80,13 +81,35 @@ export async function generateMetadata({
   const title = `${data.title} · ${data.price_label} | Nemsy!`;
   const description = stripDescriptionFormatting(data.description).slice(0, 160);
 
+  // Nearly every share happens by pasting the link into a WhatsApp group, so
+  // the preview image is the listing's real shop window — show the item, not
+  // the Nemsy logo. Storage URLs are already absolute, so metadataBase doesn't
+  // apply to them.
+  const photos = ((data.ad_photos ?? []) as { url: string; position: number }[])
+    .slice()
+    .sort((a, b) => a.position - b.position);
+
+  const images = photos.length > 0
+    ? [{ url: photos[0].url, alt: data.title }]
+    : [DEFAULT_OG_IMAGE];
+
   return {
     title,
     description,
     openGraph: {
+      type: "article",
+      siteName: "Nemsy!",
+      locale: "id_ID",
       title,
       description,
-      images: ["/nemsy-logo-fix.png"],
+      url: `/jelajahi/${id}`,
+      images,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [images[0].url],
     },
   };
 }

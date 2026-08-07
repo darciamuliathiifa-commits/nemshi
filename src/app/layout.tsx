@@ -3,6 +3,7 @@ import { Black_Han_Sans, Manrope } from "next/font/google";
 import localFont from "next/font/local";
 import "leaflet/dist/leaflet.css";
 import "./globals.css";
+import { DEFAULT_OG_IMAGE, getSiteUrl } from "@/lib/site-url";
 
 const sora = localFont({
   src: [
@@ -26,10 +27,27 @@ const manrope = Manrope({
   display: "swap",
 });
 
+const siteDescription =
+  "Nemsy! membantu mahasiswa Indonesia di Mesir mencari dan menawarkan produk maupun jasa dengan mudah.";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(getSiteUrl()),
   title: "Nemsy! Platform Iklan Baris Masisir",
-  description:
-    "Nemsy! membantu mahasiswa Indonesia di Mesir mencari dan menawarkan produk maupun jasa dengan mudah.",
+  description: siteDescription,
+  openGraph: {
+    type: "website",
+    siteName: "Nemsy!",
+    locale: "id_ID",
+    title: "Nemsy! Platform Iklan Baris Masisir",
+    description: siteDescription,
+    images: [DEFAULT_OG_IMAGE],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Nemsy! Platform Iklan Baris Masisir",
+    description: siteDescription,
+    images: [DEFAULT_OG_IMAGE.url],
+  },
   icons: {
     icon: [
       { url: "/icon.png", type: "image/png" },
