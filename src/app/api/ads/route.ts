@@ -8,6 +8,16 @@ import { consumeAdSlot, getQuota, hasAdSlotAvailable } from "@/lib/server/quota-
 const DEFAULT_LIMIT = 12;
 const MAX_LIMIT = 50;
 
+// How long a newly posted ad stays live. Free and paid slots are deliberately
+// equal for now: active inventory settles at (new listings/day × lifetime), so
+// a short free window caps how full the catalogue can ever get — which matters
+// far more early on than the upsell pressure it would create. Renewal from
+// "Iklan Saya" is free and unlimited, so this is a starting window, not a cap.
+// Shortening FREE_SLOT_DAYS is the lever to pull once listings reliably sell
+// inside a shorter window.
+const FREE_SLOT_DAYS = 14;
+const PAID_SLOT_DAYS = 14;
+
 interface SellerProfileRow {
   id: string;
   name: string;
@@ -283,10 +293,8 @@ export async function POST(request: Request) {
     ? new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString()
     : null;
 
-  // Free slot: aktif 3 hari. Any paid/bonus extra slot (one-off purchase,
-  // or granted by Plus/Hemat): aktif 2 minggu, matching the pricing copy.
   const usingFreeSlot = !quota.freeAdSlotUsed;
-  const durationDays = usingFreeSlot ? 3 : 14;
+  const durationDays = usingFreeSlot ? FREE_SLOT_DAYS : PAID_SLOT_DAYS;
   const expiresAt = quota.isUnlimited
     ? null
     : new Date(

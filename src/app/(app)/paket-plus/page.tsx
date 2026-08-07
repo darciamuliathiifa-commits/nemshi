@@ -221,7 +221,7 @@ export default function PaketPlusPage() {
                         Gratis
                       </p>
                       <p className="mt-0.5 text-[14px] font-normal text-charcoal">
-                        1x posting / bulan, aktif 3 hari
+                        1x posting / bulan, aktif 2 minggu
                       </p>
                     </div>
                     <div className="flex items-center justify-between gap-3 rounded-input bg-surface/60 px-4 py-3">
@@ -252,7 +252,7 @@ export default function PaketPlusPage() {
                         Gratis
                       </p>
                       <p className="mt-0.5 text-[14px] font-normal text-charcoal">
-                        1x posting, aktif 1 hari
+                        1x posting, aktif 1 minggu
                       </p>
                     </div>
                     <div className="flex items-center justify-between gap-3 rounded-input bg-surface/60 px-4 py-3">

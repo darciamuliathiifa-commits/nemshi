@@ -9,6 +9,13 @@ import {
   hasSayembaraSlotAvailable,
 } from "@/lib/server/quota-store";
 
+// How long a new sayembara stays live. A sayembara's whole advantage over
+// shouting in a WhatsApp group is that applicants accumulate and can be
+// compared, which needs more than a day or two to happen — so the free window
+// is generous even though it's shorter than a paid slot.
+const FREE_SLOT_DAYS = 7;
+const PAID_SLOT_DAYS = 14;
+
 interface CreateSayembaraBody {
   title?: string;
   description?: string;
@@ -173,11 +180,10 @@ export async function POST(request: Request) {
     ? new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString()
     : null;
 
-  // Free slot: aktif 1 hari. Any paid/bonus extra slot: aktif 2 minggu —
-  // the quota pool doesn't track which purchase granted a given extra slot,
+  // The quota pool doesn't track which purchase granted a given extra slot,
   // so every source of an extra sayembara slot shares the same duration.
   const usingFreeSlot = !quota.freeSayembaraSlotUsed;
-  const durationDays = usingFreeSlot ? 1 : 14;
+  const durationDays = usingFreeSlot ? FREE_SLOT_DAYS : PAID_SLOT_DAYS;
   const expiresAt = quota.isUnlimited
     ? null
     : new Date(
