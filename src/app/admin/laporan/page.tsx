@@ -74,18 +74,25 @@ export default function AdminLaporanPage() {
 
   return (
     <>
-      <header className="sticky top-0 z-10 border-b border-border-subtle bg-white/90 px-6 py-4 backdrop-blur">
-        <h1 className="text-2xl leading-[30px] font-bold text-charcoal">Laporan</h1>
+      <header className="sticky top-0 z-10 border-b-[2.5px] border-ink bg-cream/90 px-6 py-4 backdrop-blur-md">
+        <h1 className="text-2xl leading-[30px] font-bold text-charcoal">
+          Laporan Pengguna
+        </h1>
+        <p className="mt-0.5 text-[13px] font-normal text-muted-foreground">
+          Kelola laporan aduan konten atau iklan bermasalah dari pengguna.
+        </p>
       </header>
 
       <main className="flex-1 px-6 py-8">
         {loadState === "loading" && (
-          <p className="text-[14px] font-normal text-muted-foreground">Memuat...</p>
+          <div className="flex h-40 items-center justify-center">
+            <span className="h-8 w-8 animate-spin rounded-full border-4 border-surface border-t-cta" />
+          </div>
         )}
 
         {loadState === "error" && (
-          <div className="flex flex-col items-center justify-center rounded-input border border-dashed border-border-strong py-16 text-center">
-            <p className="text-base font-normal text-charcoal">
+          <div className="flex flex-col items-center justify-center rounded-card border-[2.5px] border-ink bg-white p-12 text-center shadow-[4px_4px_0_0_rgba(20,20,20,1)]">
+            <p className="text-base font-bold text-charcoal">
               Gagal memuat laporan.
             </p>
             <p className="mt-1 text-[14px] font-normal text-muted-foreground">
@@ -100,30 +107,30 @@ export default function AdminLaporanPage() {
               {newCount} laporan baru menunggu tindak lanjut.
             </p>
 
-            <div className="overflow-hidden rounded-input border border-border-subtle bg-white">
+            <div className="flex flex-col gap-4">
               {reports.map((report) => {
                 const isPending = pendingId === report.id;
                 return (
                   <div
                     key={report.id}
-                    className="flex flex-col gap-3 border-b border-border-subtle p-4 last:border-b-0 sm:flex-row sm:items-center sm:justify-between"
+                    className="flex flex-col gap-3 rounded-card border-[2.5px] border-ink bg-white p-5 shadow-[4px_4px_0_0_rgba(20,20,20,1)] sm:flex-row sm:items-center sm:justify-between transition-transform hover:-translate-y-0.5"
                   >
                     <div>
                       <div className="flex items-center gap-2">
                         <span
-                          className={`rounded-badge px-2.5 py-1 text-[12px] font-bold ${statusAccent[report.status]}`}
+                          className={`rounded-badge border border-ink px-2.5 py-1 text-[12px] font-bold ${statusAccent[report.status]}`}
                         >
                           {report.status}
                         </span>
-                        <span className="text-[12px] font-bold text-muted-foreground">
-                          {report.reason}
+                        <span className="rounded-input border border-border-subtle bg-surface px-2.5 py-1 text-[12px] font-bold text-charcoal">
+                          Alasan: {report.reason}
                         </span>
                       </div>
-                      <p className="mt-2 text-[14px] font-bold text-charcoal">
+                      <p className="mt-2 text-base font-bold text-charcoal">
                         {report.adTitle ?? "Iklan tidak ditemukan"}
                       </p>
                       <p className="mt-1 text-[12px] font-normal text-muted-foreground">
-                        Dilaporkan oleh {report.reporterName ?? "Tidak diketahui"} ·{" "}
+                        Dilaporkan oleh <strong className="text-charcoal">{report.reporterName ?? "Tidak diketahui"}</strong> ·{" "}
                         {new Date(report.createdAt).toLocaleDateString("id-ID", {
                           day: "numeric",
                           month: "long",
@@ -134,7 +141,7 @@ export default function AdminLaporanPage() {
 
                     {report.status !== "Selesai" &&
                       (isPending ? (
-                        <span className="flex h-9 items-center gap-2 px-2 text-[14px] text-muted-foreground">
+                        <span className="flex h-9 items-center gap-2 px-2 text-[14px] font-bold text-muted-foreground">
                           <span className="h-4 w-4 animate-spin rounded-full border-2 border-surface border-t-cta" />
                           Memproses...
                         </span>
@@ -142,7 +149,7 @@ export default function AdminLaporanPage() {
                         <button
                           type="button"
                           onClick={() => handleResolve(report)}
-                          className="h-9 shrink-0 rounded-pill bg-charcoal px-4 text-[14px] font-bold text-white transition-colors hover:bg-black"
+                          className="h-10 shrink-0 rounded-pill border-2 border-ink bg-charcoal px-5 text-[13px] font-bold text-white shadow-[2px_2px_0_0_rgba(20,20,20,1)] transition-transform hover:-translate-y-0.5 hover:bg-black"
                         >
                           Tandai Selesai
                         </button>

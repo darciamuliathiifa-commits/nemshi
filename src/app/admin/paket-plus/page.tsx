@@ -68,18 +68,25 @@ export default function AdminTransaksiPage() {
 
   return (
     <>
-      <header className="sticky top-0 z-10 border-b border-border-subtle bg-white/90 px-6 py-4 backdrop-blur">
-        <h1 className="text-2xl leading-[30px] font-bold text-charcoal">Paket Plus</h1>
+      <header className="sticky top-0 z-10 border-b-[2.5px] border-ink bg-cream/90 px-6 py-4 backdrop-blur-md">
+        <h1 className="text-2xl leading-[30px] font-bold text-charcoal">
+          Riwayat Transaksi
+        </h1>
+        <p className="mt-0.5 text-[13px] font-normal text-muted-foreground">
+          Kelola seluruh transaksi paket plus & slot iklan tambahan.
+        </p>
       </header>
 
       <main className="flex-1 px-6 py-8">
         {loadState === "loading" && (
-          <p className="text-[14px] font-normal text-muted-foreground">Memuat...</p>
+          <div className="flex h-40 items-center justify-center">
+            <span className="h-8 w-8 animate-spin rounded-full border-4 border-surface border-t-cta" />
+          </div>
         )}
 
         {loadState === "error" && (
-          <div className="flex flex-col items-center justify-center rounded-input border border-dashed border-border-strong py-16 text-center">
-            <p className="text-base font-normal text-charcoal">
+          <div className="flex flex-col items-center justify-center rounded-card border-[2.5px] border-ink bg-white p-12 text-center shadow-[4px_4px_0_0_rgba(20,20,20,1)]">
+            <p className="text-base font-bold text-charcoal">
               Gagal memuat transaksi.
             </p>
             <p className="mt-1 text-[14px] font-normal text-muted-foreground">
@@ -90,20 +97,20 @@ export default function AdminTransaksiPage() {
 
         {loadState === "ready" && (
           <>
-            <div className="mb-6 grid grid-cols-1 gap-3 sm:grid-cols-3">
-              <div className="rounded-input border border-border-subtle bg-white p-4">
-                <p className="text-2xl font-bold text-charcoal">{formatRupiah(totalRevenue)}</p>
+            <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
+              <div className="rounded-card border-[2.5px] border-ink bg-white p-5 shadow-[4px_4px_0_0_rgba(20,20,20,1)]">
+                <p className="text-2xl font-bold text-cta">{formatRupiah(totalRevenue)}</p>
                 <p className="mt-1 text-[12px] font-bold text-muted-foreground">
                   Total Pendapatan (Sukses)
                 </p>
               </div>
-              <div className="rounded-input border border-border-subtle bg-white p-4">
+              <div className="rounded-card border-[2.5px] border-ink bg-white p-5 shadow-[4px_4px_0_0_rgba(20,20,20,1)]">
                 <p className="text-2xl font-bold text-charcoal">{pendingCount}</p>
                 <p className="mt-1 text-[12px] font-bold text-muted-foreground">
                   Menunggu Konfirmasi
                 </p>
               </div>
-              <div className="rounded-input border border-border-subtle bg-white p-4">
+              <div className="rounded-card border-[2.5px] border-ink bg-white p-5 shadow-[4px_4px_0_0_rgba(20,20,20,1)]">
                 <p className={`text-2xl font-bold ${stuckCount > 0 ? "text-error" : "text-charcoal"}`}>
                   {stuckCount}
                 </p>
@@ -114,20 +121,22 @@ export default function AdminTransaksiPage() {
             </div>
 
             {stuckCount > 0 && (
-              <div className="mb-4 rounded-input border border-error/40 bg-error/5 px-4 py-3">
-                <p className="text-[14px] font-normal text-error">
-                  Ada {stuckCount} transaksi pending lebih dari 30 menit. Kemungkinan
-                  webhook Mayar gagal atau user belum menyelesaikan pembayaran — cek
-                  manual di dashboard Mayar kalau perlu.
+              <div className="mb-4 rounded-card border-[2.5px] border-error bg-error/10 px-5 py-4 text-error shadow-[3px_3px_0_0_rgba(20,20,20,1)]">
+                <p className="text-[14px] font-bold">
+                  ⚠️ Ada {stuckCount} transaksi pending lebih dari 30 menit. Kemungkinan
+                  webhook pembayaran gagal atau user belum menyelesaikan pembayaran — cek
+                  manual di dashboard gateway pembayaran jika perlu.
                 </p>
               </div>
             )}
 
-            <div className="overflow-hidden rounded-input border border-border-subtle bg-white">
+            <div className="flex flex-col gap-4">
               {transactions.length === 0 ? (
-                <p className="px-4 py-8 text-center text-[14px] font-normal text-muted-foreground">
-                  Belum ada transaksi.
-                </p>
+                <div className="flex flex-col items-center justify-center rounded-card border-[2.5px] border-ink bg-white p-12 text-center shadow-[4px_4px_0_0_rgba(20,20,20,1)]">
+                  <p className="text-base font-bold text-charcoal">
+                    Belum ada transaksi.
+                  </p>
+                </div>
               ) : (
                 transactions.map((t) => {
                   const isStuck =
@@ -138,27 +147,27 @@ export default function AdminTransaksiPage() {
                   return (
                     <div
                       key={t.id}
-                      className="flex flex-col gap-2 border-b border-border-subtle p-4 last:border-b-0 sm:flex-row sm:items-center sm:justify-between"
+                      className="flex flex-col gap-2 rounded-card border-[2.5px] border-ink bg-white p-5 shadow-[4px_4px_0_0_rgba(20,20,20,1)] sm:flex-row sm:items-center sm:justify-between transition-transform hover:-translate-y-0.5"
                     >
                       <div>
                         <div className="flex items-center gap-2">
                           <span
-                            className={`rounded-badge px-2.5 py-1 text-[12px] font-bold ${
+                            className={`rounded-badge border border-ink px-2.5 py-1 text-[12px] font-bold ${
                               statusAccent[t.status] ?? "bg-muted text-white"
                             }`}
                           >
                             {t.status}
                           </span>
                           {isStuck && (
-                            <span className="rounded-badge bg-error/10 px-2.5 py-1 text-[12px] font-bold text-error">
+                            <span className="rounded-badge border border-ink bg-error px-2.5 py-1 text-[12px] font-bold text-white">
                               Macet
                             </span>
                           )}
-                          <span className="text-[12px] font-bold text-muted-foreground">
+                          <span className="rounded-input border border-border-subtle bg-brand px-2.5 py-1 text-[12px] font-bold text-charcoal">
                             {planLabels[t.planId] ?? t.planId}
                           </span>
                         </div>
-                        <p className="mt-2 text-[14px] font-bold text-charcoal">
+                        <p className="mt-2 text-base font-bold text-charcoal">
                           {t.userName ?? "Pengguna tidak diketahui"}
                         </p>
                         <p className="mt-1 text-[12px] font-normal text-muted-foreground">
@@ -173,7 +182,7 @@ export default function AdminTransaksiPage() {
                         </p>
                       </div>
 
-                      <p className="text-base font-bold text-charcoal">
+                      <p className="text-xl font-bold text-cta">
                         {formatRupiah(t.amount)}
                       </p>
                     </div>

@@ -66,20 +66,25 @@ export default function AdminModerasiPage() {
 
   return (
     <>
-      <header className="sticky top-0 z-10 border-b border-border-subtle bg-white/90 px-6 py-4 backdrop-blur">
+      <header className="sticky top-0 z-10 border-b-[2.5px] border-ink bg-cream/90 px-6 py-4 backdrop-blur-md">
         <h1 className="text-2xl leading-[30px] font-bold text-charcoal">
           Moderasi Iklan
         </h1>
+        <p className="mt-0.5 text-[13px] font-normal text-muted-foreground">
+          Validasi dan setujui iklan pengguna sebelum tayang di publik.
+        </p>
       </header>
 
       <main className="flex-1 px-6 py-8">
         {loadState === "loading" && (
-          <p className="text-[14px] font-normal text-muted-foreground">Memuat...</p>
+          <div className="flex h-40 items-center justify-center">
+            <span className="h-8 w-8 animate-spin rounded-full border-4 border-surface border-t-cta" />
+          </div>
         )}
 
         {loadState === "error" && (
-          <div className="flex flex-col items-center justify-center rounded-input border border-dashed border-border-strong py-16 text-center">
-            <p className="text-base font-normal text-charcoal">
+          <div className="flex flex-col items-center justify-center rounded-card border-[2.5px] border-ink bg-white p-12 text-center shadow-[4px_4px_0_0_rgba(20,20,20,1)]">
+            <p className="text-base font-bold text-charcoal">
               Gagal memuat antrean moderasi.
             </p>
             <p className="mt-1 text-[14px] font-normal text-muted-foreground">
@@ -95,28 +100,28 @@ export default function AdminModerasiPage() {
             </p>
 
             {queue.length > 0 ? (
-              <div className="overflow-hidden rounded-input border border-border-subtle bg-white">
+              <div className="flex flex-col gap-4">
                 {queue.map((item) => {
                   const isPending = pendingId === item.id;
                   return (
                     <div
                       key={item.id}
-                      className="flex flex-col gap-3 border-b border-border-subtle p-4 last:border-b-0 sm:flex-row sm:items-center sm:justify-between"
+                      className="flex flex-col gap-3 rounded-card border-[2.5px] border-ink bg-white p-5 shadow-[4px_4px_0_0_rgba(20,20,20,1)] sm:flex-row sm:items-center sm:justify-between transition-transform hover:-translate-y-0.5"
                     >
                       <div>
                         <div className="flex items-center gap-2">
-                          <span className="rounded-badge bg-highlight px-2.5 py-1 text-[12px] font-bold text-white">
+                          <span className="rounded-badge border border-ink bg-brand px-2.5 py-1 text-[12px] font-bold text-charcoal">
                             {item.category}
                           </span>
-                          <span className="rounded-badge bg-charcoal/80 px-2.5 py-1 text-[12px] font-bold text-white">
+                          <span className="rounded-badge border border-ink bg-charcoal px-2.5 py-1 text-[12px] font-bold text-white">
                             {item.kind === "produk" ? "Produk" : "Jasa"}
                           </span>
                         </div>
-                        <p className="mt-2 text-[14px] font-bold text-charcoal">
+                        <p className="mt-2 text-base font-bold text-charcoal">
                           {item.title}
                         </p>
                         <p className="mt-1 text-[12px] font-normal text-muted-foreground">
-                          {item.submittedBy ?? "Tidak diketahui"} ·{" "}
+                          Oleh: <strong className="text-charcoal">{item.submittedBy ?? "Tidak diketahui"}</strong> ·{" "}
                           {new Date(item.createdAt).toLocaleDateString("id-ID", {
                             day: "numeric",
                             month: "long",
@@ -124,14 +129,14 @@ export default function AdminModerasiPage() {
                           })}
                         </p>
                         {item.flagReason && (
-                          <p className="mt-1 text-[12px] font-normal text-error">
-                            Terdeteksi: {item.flagReason}
+                          <p className="mt-1 text-[12px] font-bold text-error">
+                            ⚠️ Terdeteksi: {item.flagReason}
                           </p>
                         )}
                       </div>
 
                       {isPending ? (
-                        <span className="flex h-9 items-center gap-2 px-2 text-[14px] text-muted-foreground">
+                        <span className="flex h-9 items-center gap-2 px-2 text-[14px] font-bold text-muted-foreground">
                           <span className="h-4 w-4 animate-spin rounded-full border-2 border-surface border-t-cta" />
                           Memproses...
                         </span>
@@ -140,14 +145,14 @@ export default function AdminModerasiPage() {
                           <button
                             type="button"
                             onClick={() => handleAction(item, "Tolak")}
-                            className="h-9 rounded-pill border border-error px-4 text-[14px] font-bold text-error transition-colors hover:bg-error/10"
+                            className="h-10 rounded-pill border-2 border-error bg-white px-5 text-[13px] font-bold text-error shadow-[2px_2px_0_0_rgba(20,20,20,1)] transition-transform hover:-translate-y-0.5"
                           >
                             Tolak
                           </button>
                           <button
                             type="button"
                             onClick={() => handleAction(item, "Setujui")}
-                            className="h-9 rounded-pill bg-success px-4 text-[14px] font-bold text-white transition-colors hover:bg-success/90"
+                            className="h-10 rounded-pill border-2 border-ink bg-success px-5 text-[13px] font-bold text-white shadow-[2px_2px_0_0_rgba(20,20,20,1)] transition-transform hover:-translate-y-0.5"
                           >
                             Setujui
                           </button>
@@ -158,9 +163,12 @@ export default function AdminModerasiPage() {
                 })}
               </div>
             ) : (
-              <div className="flex flex-col items-center justify-center rounded-input border border-dashed border-border-strong py-16 text-center">
-                <p className="text-base font-normal text-charcoal">
-                  Semua iklan sudah divalidasi.
+              <div className="flex flex-col items-center justify-center rounded-card border-[2.5px] border-ink bg-white p-12 text-center shadow-[4px_4px_0_0_rgba(20,20,20,1)]">
+                <p className="text-base font-bold text-charcoal">
+                  Semua iklan sudah divalidasi 🎉
+                </p>
+                <p className="mt-1 text-[14px] font-normal text-muted-foreground">
+                  Tidak ada iklan baru yang tertahan di antrean.
                 </p>
               </div>
             )}
