@@ -150,9 +150,7 @@ export async function POST(request: Request) {
   const currentExtraAd = existingQuota?.extra_ad_slots ?? 0;
   const currentExtraSayembara = existingQuota?.extra_sayembara_slots ?? 0;
 
-  let updatePayload: Record<string, any> = {
-    updated_at: new Date().toISOString(),
-  };
+  let updatePayload: Record<string, any> = {};
 
   if (action === "grant_ad") {
     updatePayload.extra_ad_slots = Math.max(0, currentExtraAd + Number(amount));
