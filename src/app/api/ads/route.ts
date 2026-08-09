@@ -269,6 +269,28 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Belum masuk akun." }, { status: 401 });
   }
 
+  // Every deal on Nemsy happens over WhatsApp, so an ad with no reachable
+  // number is a dead listing that still looks live — the seller just concludes
+  // nobody is interested. Onboarding asks for the number but can be skipped,
+  // so this is enforced here rather than trusted to the form.
+  const { data: sellerProfile } = await supabase
+    .from("profiles")
+    .select("whatsapp_number")
+    .eq("id", user.id)
+    .maybeSingle();
+
+  const sellerWhatsapp = sellerProfile?.whatsapp_number?.trim();
+  if (!sellerWhatsapp) {
+    return NextResponse.json(
+      {
+        error:
+          "Nomor WhatsApp belum diisi. Lengkapi dulu di Profil biar pembeli bisa menghubungimu.",
+        code: "whatsapp_required",
+      },
+      { status: 400 },
+    );
+  }
+
   const quota = await getQuota(supabase, user.id, user.email);
   if (!hasAdSlotAvailable(quota)) {
     return NextResponse.json(

@@ -183,6 +183,9 @@ export default async function AdDetailPage({
           { label: "Estimasi Pengerjaan", value: ad.estimatedDuration },
         ];
 
+  // An empty number would render as "https://wa.me/?text=…", which opens
+  // WhatsApp with no recipient — a button that looks fine and goes nowhere.
+  const hasWhatsapp = Boolean(ad.whatsappNumber?.trim());
   const whatsappHref = `https://wa.me/${ad.whatsappNumber}?text=${encodeURIComponent(
     `Halo, saya tertarik dengan iklan "${ad.title}" di Nemsy!`,
   )}`;
@@ -290,14 +293,25 @@ export default async function AdDetailPage({
                 </div>
               </Link>
 
-              <a
-                href={whatsappHref}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-5 flex h-11 w-full items-center justify-center rounded-pill bg-charcoal text-base font-bold text-white transition-colors hover:bg-black"
-              >
-                Hubungi via WhatsApp
-              </a>
+              {hasWhatsapp ? (
+                <a
+                  href={whatsappHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-5 flex h-11 w-full items-center justify-center rounded-pill bg-charcoal text-base font-bold text-white transition-colors hover:bg-black"
+                >
+                  Hubungi via WhatsApp
+                </a>
+              ) : (
+                <div className="mt-5 rounded-input border border-border bg-surface px-4 py-3 text-center">
+                  <p className="text-[14px] font-bold text-charcoal">
+                    Kontak belum tersedia
+                  </p>
+                  <p className="mt-0.5 text-[13px] font-normal leading-5 text-muted-foreground">
+                    Penjual belum melengkapi nomor WhatsApp-nya.
+                  </p>
+                </div>
+              )}
 
               <div className="mt-3 flex gap-2">
                 <SaveButton adId={ad.id} />

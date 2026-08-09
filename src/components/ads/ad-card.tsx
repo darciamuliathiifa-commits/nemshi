@@ -25,6 +25,9 @@ export const AdCard = memo(function AdCard({ ad }: { ad: Ad }) {
       ? [ad.condition, ad.deliveryMethod].filter(Boolean).join(" · ")
       : [ad.scope, ad.estimatedDuration].filter(Boolean).join(" · ");
 
+  // Without a number this would be "https://wa.me/?text=…" — WhatsApp opens
+  // with no recipient, so send people to the detail page instead of a dead end.
+  const hasWhatsapp = Boolean(ad.whatsappNumber?.trim());
   const whatsappHref = `https://wa.me/${ad.whatsappNumber}?text=${encodeURIComponent(
     `Halo, saya tertarik dengan iklan "${ad.title}" di Nemsy!`,
   )}`;
@@ -109,15 +112,25 @@ export const AdCard = memo(function AdCard({ ad }: { ad: Ad }) {
         >
           Detail
         </Link>
-        <a
-          href={whatsappHref}
-          target="_blank"
-          rel="noopener noreferrer"
-          onClick={(event) => event.stopPropagation()}
-          className="flex h-7 flex-1 items-center justify-center rounded-pill bg-success text-[10.5px] font-bold text-white transition-colors hover:brightness-90 sm:h-10 sm:text-[13px]"
-        >
-          Chat WA
-        </a>
+        {hasWhatsapp ? (
+          <a
+            href={whatsappHref}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={(event) => event.stopPropagation()}
+            className="flex h-7 flex-1 items-center justify-center rounded-pill bg-success text-[10.5px] font-bold text-white transition-colors hover:brightness-90 sm:h-10 sm:text-[13px]"
+          >
+            Chat WA
+          </a>
+        ) : (
+          <span
+            aria-disabled="true"
+            title="Penjual belum melengkapi nomor WhatsApp"
+            className="flex h-7 flex-1 cursor-not-allowed items-center justify-center rounded-pill bg-surface text-[10.5px] font-bold text-muted-foreground sm:h-10 sm:text-[13px]"
+          >
+            Chat WA
+          </span>
+        )}
       </div>
     </div>
   );

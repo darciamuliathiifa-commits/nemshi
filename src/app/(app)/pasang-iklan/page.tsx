@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Header } from "@/components/layout/header";
@@ -119,6 +119,29 @@ export default function PasangIklanPage() {
   const [form, setForm] = useState<FormState>(initialForm);
   const [showQuotaModal, setShowQuotaModal] = useState(false);
 
+  // Buyers reach sellers over WhatsApp, so an ad without a number is dead on
+  // arrival. Onboarding collects it but is skippable, so ask here as well —
+  // this is the moment the seller actually cares, which is when they'll fill
+  // it in rather than dismiss it.
+  const [needsWhatsapp, setNeedsWhatsapp] = useState(false);
+  const [whatsappNumber, setWhatsappNumber] = useState("");
+
+  useEffect(() => {
+    let active = true;
+    fetch("/api/profile")
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (!active || !data) return;
+        setNeedsWhatsapp(!data.whatsappNumber?.trim());
+      })
+      .catch(() => {
+        // Offline or logged out — the server rejects the publish anyway.
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
+
   const canContinueStep1 = selectedKind !== null && selectedCategory !== null;
 
   const resolvedLocation =
@@ -128,6 +151,7 @@ export default function PasangIklanPage() {
     form.title.trim() !== "" &&
     form.description.trim() !== "" &&
     resolvedLocation !== "" &&
+    (!needsWhatsapp || whatsappNumber.trim() !== "") &&
     (selectedKind === "produk"
       ? form.priceAmount.trim() !== "" && form.condition !== "" && form.deliveryMethod !== ""
       : form.priceAmount.trim() !== "" && form.scope.trim() !== "" && form.estimatedDuration.trim() !== "");
@@ -145,6 +169,21 @@ export default function PasangIklanPage() {
     setPublishError(null);
 
     try {
+      // Save the number to the profile first, so it also serves every later ad
+      // and the server-side check passes.
+      if (needsWhatsapp && whatsappNumber.trim()) {
+        const profileRes = await fetch("/api/profile", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ whatsappNumber: whatsappNumber.trim() }),
+        });
+        if (!profileRes.ok) {
+          const data = await profileRes.json().catch(() => ({}));
+          throw new Error(data.error ?? "Gagal menyimpan nomor WhatsApp.");
+        }
+        setNeedsWhatsapp(false);
+      }
+
       const quotaRes = await fetch("/api/mayar/quota");
       if (quotaRes.ok) {
         const quota = await quotaRes.json();
@@ -371,6 +410,27 @@ export default function PasangIklanPage() {
                     />
                   )}
                 </div>
+
+                {needsWhatsapp && (
+                  <div>
+                    <label className={labelClass} htmlFor="whatsappNumber">
+                      Nomor WhatsApp
+                    </label>
+                    <input
+                      id="whatsappNumber"
+                      inputMode="tel"
+                      className={`mt-1 ${inputClass}`}
+                      placeholder="Contoh: 201234567890"
+                      value={whatsappNumber}
+                      onChange={(event) => setWhatsappNumber(onlyDigits(event.target.value))}
+                    />
+                    <p className="mt-1 text-[12px] font-normal leading-4 text-muted-foreground">
+                      Pembeli menghubungimu lewat WhatsApp, jadi nomor ini wajib
+                      diisi. Pakai kode negara tanpa tanda + (Mesir 20, Indonesia
+                      62). Nomor ini tersimpan di profilmu untuk iklan berikutnya.
+                    </p>
+                  </div>
+                )}
 
                 <div>
                   <label className={labelClass} htmlFor="price">

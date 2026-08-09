@@ -100,6 +100,7 @@ export default function LandingPage() {
             <div className="mt-6 flex w-full max-w-xs flex-col items-stretch gap-3 sm:w-auto sm:max-w-none sm:flex-row sm:items-center">
               <LandingLoginButton
                 ariaLabel="Login untuk mulai menjelajahi Nemsyi"
+                next="/jelajahi"
                 className="landing-cta-pulse flex h-12 items-center justify-center gap-2 rounded-pill border-[2.5px] border-[#005b4f] bg-[#005b4f] px-7 text-base font-black text-[#fff47d] transition-transform hover:-translate-y-1"
               >
                 <CompassIcon width={18} height={18} />
@@ -107,6 +108,7 @@ export default function LandingPage() {
               </LandingLoginButton>
               <LandingLoginButton
                 ariaLabel="Login untuk memasang iklan"
+                next="/pasang-iklan"
                 className="flex h-12 items-center justify-center gap-2 rounded-pill border-[2.5px] border-[#005b4f] bg-[#fffefa] px-7 text-base font-black text-[#005b4f] transition-transform hover:-translate-y-1"
               >
                 <PlusCircleIcon width={18} height={18} />
@@ -317,6 +319,7 @@ export default function LandingPage() {
               </div>
               <LandingLoginButton
                 ariaLabel="Login untuk membuat sayembara"
+                next="/sayembara/baru"
                 className="landing-cta-pulse mt-6 flex h-12 w-full items-center justify-center gap-2 rounded-pill bg-[#005b4f] px-6 text-base font-extrabold text-[#fff47d]"
               >
                 <MegaphoneIcon width={18} height={18} />
@@ -341,6 +344,7 @@ export default function LandingPage() {
             </p>
             <LandingLoginButton
               ariaLabel="Login untuk melanjutkan ke Nemsyi"
+              next="/tentang-kami"
               className="mt-7 inline-flex h-12 items-center justify-center rounded-pill border-[2.5px] border-[#005b4f] bg-[#fff47d] px-7 text-base font-black shadow-[4px_4px_0_0_#006451] transition-transform hover:-translate-y-1"
             >
               Cerita Nemsyi
@@ -367,6 +371,7 @@ export default function LandingPage() {
               </p>
               <LandingLoginButton
                 ariaLabel="Login untuk menjelajahi iklan sekitar"
+                next="/jelajahi"
                 className="mt-4 inline-flex h-11 items-center justify-center gap-2 rounded-pill bg-[#005b4f] px-5 text-sm font-extrabold text-[#fff47d] transition-transform hover:-translate-y-0.5"
               >
                 <SearchIcon width={17} height={17} />
@@ -451,6 +456,7 @@ export default function LandingPage() {
                 <div className="mt-7 grid gap-3">
                   <LandingLoginButton
                     ariaLabel="Login untuk menjelajahi event pembukaan"
+                    next="/jelajahi"
                     className="landing-cta-pulse flex h-12 items-center justify-center gap-2 rounded-pill bg-[#005b4f] px-6 text-base font-extrabold text-[#fff47d]"
                   >
                     <CompassIcon width={18} height={18} />
@@ -458,6 +464,7 @@ export default function LandingPage() {
                   </LandingLoginButton>
                   <LandingLoginButton
                     ariaLabel="Login untuk memasang iklan pertama"
+                    next="/pasang-iklan"
                     className="flex h-12 items-center justify-center gap-2 rounded-pill border-[2.5px] border-[#005b4f] px-6 text-base font-extrabold"
                   >
                     <PlusCircleIcon width={18} height={18} />
@@ -478,12 +485,14 @@ export default function LandingPage() {
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <LandingLoginButton
               ariaLabel="Login untuk mulai menjelajahi Nemsyi"
+              next="/jelajahi"
               className="landing-cta-pulse flex h-12 items-center justify-center rounded-pill border-[2.5px] border-[#fff47d] bg-[#fff47d] px-7 text-base font-black text-[#005b4f] transition-transform hover:-translate-y-1"
             >
               Mulai jelajahi
             </LandingLoginButton>
             <LandingLoginButton
               ariaLabel="Login untuk memasang iklan"
+              next="/pasang-iklan"
               className="flex h-12 items-center justify-center rounded-pill border-[2.5px] border-[#fffefa] bg-transparent px-7 text-base font-black text-[#fffefa] transition-transform hover:-translate-y-1"
             >
               Pasang iklan

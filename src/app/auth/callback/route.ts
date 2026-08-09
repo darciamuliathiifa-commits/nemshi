@@ -6,10 +6,24 @@ import {
   isMasterAccountEmail,
 } from "@/lib/server/quota-store";
 
+const DEFAULT_NEXT = "/jelajahi";
+
+/**
+ * `next` rides in on a query string, so it can't be trusted. Only same-site
+ * paths are allowed: anything starting with "//" (or "/\") is read by browsers
+ * as protocol-relative and would turn this callback into an open redirect
+ * pointing at another host.
+ */
+function safeNext(raw: string | null): string {
+  if (!raw || !raw.startsWith("/")) return DEFAULT_NEXT;
+  if (raw.startsWith("//") || raw.startsWith("/\\")) return DEFAULT_NEXT;
+  return raw;
+}
+
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get("code");
-  const next = searchParams.get("next") ?? "/jelajahi";
+  const next = safeNext(searchParams.get("next"));
 
   if (code) {
     const supabase = await createSupabaseServerClient();

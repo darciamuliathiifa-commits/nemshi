@@ -5,15 +5,21 @@ import { useState } from "react";
 import { supabase } from "@/lib/supabase/client";
 import { GoogleLogo } from "@/components/icons/google-logo";
 
-async function signInWithGoogle() {
+async function signInWithGoogle(next?: string) {
   if (!supabase) {
     return "Login belum dikonfigurasi. Coba lagi nanti.";
   }
 
+  // Carry the button's intent through the OAuth round-trip. Without this every
+  // CTA lands on /jelajahi, so someone who pressed "Pasang iklan" gets dropped
+  // into the browse page instead of the form they asked for.
+  const callback = new URL("/auth/callback", window.location.origin);
+  if (next) callback.searchParams.set("next", next);
+
   const { error } = await supabase.auth.signInWithOAuth({
     provider: "google",
     options: {
-      redirectTo: `${window.location.origin}/auth/callback`,
+      redirectTo: callback.toString(),
     },
   });
 
@@ -25,11 +31,14 @@ export function LandingLoginButton({
   className,
   ariaLabel,
   title,
+  next,
 }: {
   children: ReactNode;
   className: string;
   ariaLabel?: string;
   title?: string;
+  /** Where to land after login — should match what the button says it does. */
+  next?: string;
 }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -38,7 +47,7 @@ export function LandingLoginButton({
     setLoading(true);
     setError(null);
 
-    const loginError = await signInWithGoogle();
+    const loginError = await signInWithGoogle(next);
     if (loginError) {
       setError(loginError);
       setLoading(false);
