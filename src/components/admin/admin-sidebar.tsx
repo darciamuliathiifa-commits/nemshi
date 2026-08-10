@@ -9,6 +9,7 @@ import {
   CreditCardIcon,
   FlagIcon,
   GridIcon,
+  MegaphoneIcon,
   MenuIcon,
   StoreIcon,
   UserIcon,
@@ -21,6 +22,7 @@ const navItems = [
   { href: "/admin/laporan", label: "Laporan", icon: FlagIcon },
   { href: "/admin/pengguna", label: "Pengguna & Kuota", icon: UserIcon },
   { href: "/admin/paket-plus", label: "Transaksi", icon: CreditCardIcon },
+  { href: "/admin/promosi", label: "Script Promosi", icon: MegaphoneIcon },
 ];
 
 function Brand() {
