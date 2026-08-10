@@ -32,7 +32,7 @@ function linkify(text: string, keyPrefix: string): ReactNode[] {
         href={href}
         target="_blank"
         rel="noopener noreferrer"
-        className="font-bold text-cta underline underline-offset-2 hover:text-highlight"
+        className="break-all font-bold text-cta underline underline-offset-2 hover:text-highlight"
       >
         {url}
       </a>,
@@ -89,7 +89,7 @@ export function DescriptionText({
   className?: string;
 }) {
   return (
-    <div className={`whitespace-pre-wrap ${className ?? ""}`}>
+    <div className={`whitespace-pre-wrap break-words ${className ?? ""}`}>
       {renderInlineFormatting(value)}
     </div>
   );
