@@ -38,6 +38,11 @@ body {
   color: var(--foreground);
 }
 
+html,
+body {
+  overscroll-behavior: none;
+}
+
 html {
   scroll-behavior: smooth;
 }

@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Black_Han_Sans, Manrope } from "next/font/google";
 import localFont from "next/font/local";
 import "leaflet/dist/leaflet.css";
@@ -29,6 +29,13 @@ const manrope = Manrope({
 
 const siteDescription =
   "Nemsy! membantu mahasiswa Indonesia di Mesir mencari dan menawarkan produk maupun jasa dengan mudah.";
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL(getSiteUrl()),
