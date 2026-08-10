@@ -19,6 +19,7 @@ const categoryOptions: AdCategory[] = [
   "Barang Baru & Bekas",
   "Perjalanan & Travel",
   "Titipan & Bagasi",
+  "Komunitas & Organisasi",
   "Lainnya",
 ];
 

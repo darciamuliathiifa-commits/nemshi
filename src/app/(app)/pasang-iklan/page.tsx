@@ -19,6 +19,7 @@ import {
   MegaphoneIcon,
   SparklesIcon,
   TagIcon,
+  UsersIcon,
   UtensilsIcon,
 } from "@/components/icons";
 import {
@@ -51,6 +52,7 @@ const categoryOptions: AdCategory[] = [
   "Barang Baru & Bekas",
   "Perjalanan & Travel",
   "Titipan & Bagasi",
+  "Komunitas & Organisasi",
   "Lainnya",
 ];
 
@@ -62,6 +64,7 @@ const categoryIcons: Record<AdCategory, (props: { width?: number; height?: numbe
   "Barang Baru & Bekas": BoxIcon,
   "Perjalanan & Travel": CompassIcon,
   "Titipan & Bagasi": LuggageIcon,
+  "Komunitas & Organisasi": UsersIcon,
   Lainnya: TagIcon,
 };
 

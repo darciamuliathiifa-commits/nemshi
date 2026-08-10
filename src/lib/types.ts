@@ -6,6 +6,7 @@ export type AdCategory =
   | "Barang Baru & Bekas"
   | "Perjalanan & Travel"
   | "Titipan & Bagasi"
+  | "Komunitas & Organisasi"
   | "Lainnya";
 
 export const AD_CATEGORIES: AdCategory[] = [
@@ -16,6 +17,7 @@ export const AD_CATEGORIES: AdCategory[] = [
   "Barang Baru & Bekas",
   "Perjalanan & Travel",
   "Titipan & Bagasi",
+  "Komunitas & Organisasi",
   "Lainnya",
 ];
 
