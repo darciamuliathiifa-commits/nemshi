@@ -21,6 +21,8 @@ interface AdRow {
   estimated_duration: string | null;
   whatsapp_number: string | null;
   created_at: string;
+  cover_focal_point: string | null;
+  ad_photos: { url: string; position: number }[] | null;
 }
 
 export default async function PublicProfilePage({
@@ -50,7 +52,8 @@ export default async function PublicProfilePage({
       .from("ads")
       .select(
         `id, kind, title, description, category, price_label, location, status,
-         condition, delivery_method, scope, estimated_duration, whatsapp_number, created_at`,
+         condition, delivery_method, scope, estimated_duration, whatsapp_number, created_at,
+         cover_focal_point, ad_photos ( url, position )`,
       )
       .eq("owner_id", profile.id)
       .eq("status", "Aktif")
@@ -67,25 +70,35 @@ export default async function PublicProfilePage({
   const joinedYear = new Date(profile.created_at).getFullYear();
   const rows = (adRows ?? []) as unknown as AdRow[];
 
-  const ads: Ad[] = rows.map((row) => ({
-    id: row.id,
-    kind: row.kind,
-    title: row.title,
-    category: row.category,
-    priceLabel: row.price_label,
-    location: row.location,
-    status: row.status,
-    postedAt: formatRelativeTime(row.created_at),
-    sellerName: profile.name,
-    sellerJoinedYear: joinedYear,
-    sellerActiveAds: activeAdsCount ?? 0,
-    whatsappNumber: row.whatsapp_number ?? profile.whatsapp_number ?? "",
-    description: row.description,
-    condition: row.condition ?? undefined,
-    deliveryMethod: row.delivery_method ?? undefined,
-    scope: row.scope ?? undefined,
-    estimatedDuration: row.estimated_duration ?? undefined,
-  }));
+  const ads: Ad[] = rows.map((row) => {
+    const photos = (row.ad_photos ?? [])
+      .slice()
+      .sort((a, b) => a.position - b.position)
+      .map((photo) => photo.url);
+
+    return {
+      id: row.id,
+      kind: row.kind,
+      title: row.title,
+      category: row.category,
+      priceLabel: row.price_label,
+      location: row.location,
+      status: row.status,
+      postedAt: formatRelativeTime(row.created_at),
+      sellerName: profile.name,
+      sellerJoinedYear: joinedYear,
+      sellerActiveAds: activeAdsCount ?? 0,
+      whatsappNumber: row.whatsapp_number ?? profile.whatsapp_number ?? "",
+      description: row.description,
+      condition: row.condition ?? undefined,
+      deliveryMethod: row.delivery_method ?? undefined,
+      scope: row.scope ?? undefined,
+      estimatedDuration: row.estimated_duration ?? undefined,
+      coverPhoto: photos[0] ?? undefined,
+      coverFocalPoint: row.cover_focal_point ?? "50% 0%",
+      photos,
+    };
+  });
 
   return (
     <>
