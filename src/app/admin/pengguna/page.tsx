@@ -153,22 +153,32 @@ export default function AdminPenggunaPage() {
           </p>
         </div>
 
-        <div className="relative w-full max-w-xs">
-          <SearchIcon
-            width={16}
-            height={16}
-            className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-charcoal/50"
-          />
-          <input
-            type="search"
-            placeholder="Cari nama, email, atau WA..."
-            value={search}
-            onChange={(e) => {
-              setSearch(e.target.value);
-              setCurrentPage(1);
-            }}
-            className="h-10 w-full rounded-pill border border-border bg-white pl-10 pr-4 text-[13px] text-charcoal placeholder:text-muted focus:border-cta focus:outline-none focus:ring-3 focus:ring-cta/10"
-          />
+        <div className="flex w-full max-w-xl gap-2">
+          <div className="relative flex-1">
+            <SearchIcon
+              width={16}
+              height={16}
+              className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-charcoal/50"
+            />
+            <input
+              type="search"
+              placeholder="Cari nama, email, atau WA..."
+              value={search}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setCurrentPage(1);
+              }}
+              className="h-10 w-full rounded-pill border border-border bg-white pl-10 pr-4 text-[13px] text-charcoal placeholder:text-muted focus:border-cta focus:outline-none focus:ring-3 focus:ring-cta/10"
+            />
+          </div>
+          <button
+            type="button"
+            onClick={loadUsers}
+            disabled={loadState === "loading"}
+            className="h-10 shrink-0 rounded-pill border-2 border-ink bg-white px-4 text-[13px] font-bold text-charcoal shadow-[2px_2px_0_0_rgba(20,20,20,1)] transition-transform hover:-translate-y-0.5 disabled:opacity-60"
+          >
+            {loadState === "loading" ? "Memuat..." : "Muat Ulang"}
+          </button>
         </div>
       </header>
 
