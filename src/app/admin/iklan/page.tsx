@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import type { AdCategory, AdKind, AdStatus } from "@/lib/types";
 import { SearchIcon, StarIcon, CloseIcon } from "@/components/icons";
 import { FocalPointPicker } from "@/components/ads/focal-point-picker";
+import { AdminEditAdDialog } from "@/components/admin/admin-edit-ad-dialog";
 
 interface AdminAdItem {
   id: string;
@@ -53,6 +54,7 @@ export default function AdminIklanPage() {
   const [focalEditItem, setFocalEditItem] = useState<AdminAdItem | null>(null);
   const [focalDraft, setFocalDraft] = useState("50% 0%");
   const [savingFocal, setSavingFocal] = useState(false);
+  const [editingAdId, setEditingAdId] = useState<string | null>(null);
 
   useEffect(() => {
     setLoadState("loading");
@@ -307,6 +309,13 @@ export default function AdminIklanPage() {
                           </span>
                         ) : (
                           <>
+                            <button
+                              type="button"
+                              onClick={() => setEditingAdId(item.id)}
+                              className="h-10 rounded-pill border-2 border-ink bg-white px-5 text-[13px] font-bold text-charcoal shadow-[2px_2px_0_0_rgba(20,20,20,1)] transition-transform hover:-translate-y-0.5"
+                            >
+                              Edit Iklan
+                            </button>
                             {item.coverPhoto && (
                               <button
                                 type="button"
@@ -411,6 +420,28 @@ export default function AdminIklanPage() {
           </div>
         </div>
       )}
+
+      <AdminEditAdDialog
+        adId={editingAdId}
+        isOpen={editingAdId !== null}
+        onClose={() => setEditingAdId(null)}
+        onSuccess={(updated) => {
+          setAds((prev) =>
+            prev.map((entry) =>
+              entry.id === updated.id
+                ? {
+                    ...entry,
+                    title: updated.title,
+                    category: updated.category,
+                    priceLabel: updated.priceLabel,
+                    location: updated.location,
+                  }
+                : entry,
+            ),
+          );
+          showToast(`"${updated.title}" berhasil diperbarui.`);
+        }}
+      />
     </>
   );
 }
