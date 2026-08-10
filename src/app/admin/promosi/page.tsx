@@ -44,6 +44,36 @@ Terima kasih banyak sebelumnya sidi 🙏`,
     description: "Buat yang lagi beres-beres kosan / mau pulang ke Indonesia.",
     body: `Eh lo kan mau pulang bulan depan — daripada barangnya numpuk atau dibuang, mending titip jual aja di Nemsyi. Portal baru buat Masisir, iklan pertama gratis, langsung nyambung ke WA pas ada yang minat. Coba pasang [barangnya], 2 menit doang: https://nemsyi.sbs`,
   },
+  {
+    id: "ajak-pengurus",
+    title: "Minta tolong pengurus kekeluargaan sebar",
+    description: "Chat personal ke pengurus/orang dipercaya di kekeluargaan daerah — minta mereka share pakai kata-kata sendiri, bukan lo yang broadcast.",
+    body: `Assalamualaikum kak [Nama Pengurus], izin ganggu waktunya kak.
+
+Saya [Nama Kamu], lagi bangun Nemsyi — portal kecil buat jual-beli barang/jasa sama minta bantuan (sayembara) khusus Masisir, biar nggak keubur di grup WA yang udah rame. https://nemsyi.sbs
+
+Sekarang udah ada [Jumlah] usaha/produk Masisir asli yang gabung, jadi bukan portal kosong lagi. Saya mau minta tolong kak — kalau berkenan, boleh minta tolong share ke grup [Nama Kekeluargaan] pakai kata-kata kakak sendiri? Soalnya kalau dari orang yang udah dikenal di grup, biasanya lebih dipercaya daripada saya broadcast sendiri.
+
+Nggak masalah kalau kakak mau tulis ulang sesuai gaya kakak ya, saya kasih poin-poin pentingnya aja:
+- Nemsyi: portal jual-beli barang/jasa + sayembara minta bantuan buat Masisir
+- Iklan pertama gratis
+- Udah [Jumlah] usaha Masisir asli gabung
+- Link: https://nemsyi.sbs
+
+Makasih banyak kak sebelumnya 🙏`,
+  },
+  {
+    id: "draft-post-grup",
+    title: "Draft post buat pengurus share ke grup",
+    description: "Teks siap-pakai yang bisa dikirim ke pengurus tadi, buat mereka tinggal post atau adaptasi sendiri.",
+    body: `Halo semua! 👋
+
+Mau share portal baru khusus buat Masisir: Nemsyi (https://nemsyi.sbs) — tempat jual-beli barang/jasa dan minta bantuan (sayembara) sesama Masisir, biar nggak keubur di grup chat yang udah rame.
+
+Udah ada [Jumlah] usaha/produk asli Masisir yang gabung di sana. Iklan pertama gratis, langsung connect ke WhatsApp kalau ada yang minat.
+
+Yuk dicoba, siapa tau ada yang lagi butuh atau mau jualan juga 🙌`,
+  },
 ];
 
 const PLACEHOLDER_PATTERN = /\[([^\]]+)\]/g;
