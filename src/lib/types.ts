@@ -41,6 +41,7 @@ export interface Ad {
   estimatedDuration?: string;
   createdAt?: string;
   coverPhoto?: string;
+  coverFocalPoint?: string;
   photos?: string[];
   featured?: boolean;
 }

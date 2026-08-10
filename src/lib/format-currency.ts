@@ -21,6 +21,25 @@ export function composePriceLabel(currency: CurrencyCode, amountDigits: string):
   return amountDigits ? `${prefix}${formatThousands(amountDigits)}` : "";
 }
 
+export const VARIABLE_PRICE_SUFFIX = " (harga bervariasi)";
+
+export function hasVariablePriceNote(label: string | null | undefined): boolean {
+  return !!label?.trim().endsWith(VARIABLE_PRICE_SUFFIX.trim());
+}
+
+export function stripVariablePriceNote(label: string): string {
+  const trimmed = label.trimEnd();
+  return trimmed.endsWith(VARIABLE_PRICE_SUFFIX.trim())
+    ? trimmed.slice(0, trimmed.length - VARIABLE_PRICE_SUFFIX.trim().length).trimEnd()
+    : label;
+}
+
+export function withVariablePriceNote(label: string, enabled: boolean): string {
+  const base = stripVariablePriceNote(label);
+  if (!base) return base;
+  return enabled ? `${base}${VARIABLE_PRICE_SUFFIX}` : base;
+}
+
 export function parsePriceLabel(
   label: string | null | undefined,
 ): { currency: CurrencyCode; amount: string } {

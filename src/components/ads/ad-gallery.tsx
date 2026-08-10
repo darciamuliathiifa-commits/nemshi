@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { ChevronLeftIcon, ChevronRightIcon, CloseIcon } from "@/components/icons";
 
 const categoryAccent: Record<string, string> = {
   Pendidikan: "from-blue-100 to-blue-50",
@@ -36,20 +37,36 @@ export function AdGallery({
   status,
 }: AdGalleryProps) {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
 
   const activePhoto = photos[activeIndex] ?? photos[0];
+
+  function showPrev() {
+    setActiveIndex((prev) => (prev - 1 + photos.length) % photos.length);
+  }
+
+  function showNext() {
+    setActiveIndex((prev) => (prev + 1) % photos.length);
+  }
 
   return (
     <div
       className={`relative aspect-[4/5] w-full overflow-hidden rounded-card border-[2.5px] border-ink bg-gradient-to-br shadow-[3px_3px_0_0_rgba(20,20,20,1)] ${categoryAccent[category] ?? categoryAccent.Lainnya}`}
     >
       {activePhoto && (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={activePhoto}
-          alt={title}
-          className="absolute inset-0 h-full w-full object-cover transition-opacity duration-300"
-        />
+        <button
+          type="button"
+          onClick={() => setLightboxOpen(true)}
+          aria-label="Lihat foto ukuran penuh"
+          className="absolute inset-0 h-full w-full cursor-zoom-in"
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={activePhoto}
+            alt={title}
+            className="h-full w-full object-cover transition-opacity duration-300"
+          />
+        </button>
       )}
 
       {activePhoto && (
@@ -99,6 +116,66 @@ export function AdGallery({
               </button>
             );
           })}
+        </div>
+      )}
+
+      {lightboxOpen && activePhoto && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/90 p-4">
+          <button
+            type="button"
+            aria-label="Tutup foto ukuran penuh"
+            onClick={() => setLightboxOpen(false)}
+            className="absolute inset-0 h-full w-full cursor-zoom-out"
+          />
+
+          <button
+            type="button"
+            onClick={() => setLightboxOpen(false)}
+            aria-label="Tutup"
+            className="absolute right-4 top-4 z-10 flex h-10 w-10 items-center justify-center rounded-full border-2 border-white/80 bg-black/40 text-white transition-colors hover:bg-white hover:text-charcoal"
+          >
+            <CloseIcon width={18} height={18} />
+          </button>
+
+          {photos.length > 1 && (
+            <>
+              <button
+                type="button"
+                onClick={(event) => {
+                  event.stopPropagation();
+                  showPrev();
+                }}
+                aria-label="Foto sebelumnya"
+                className="absolute left-3 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border-2 border-white/80 bg-black/40 text-white transition-colors hover:bg-white hover:text-charcoal sm:left-6"
+              >
+                <ChevronLeftIcon width={20} height={20} />
+              </button>
+              <button
+                type="button"
+                onClick={(event) => {
+                  event.stopPropagation();
+                  showNext();
+                }}
+                aria-label="Foto berikutnya"
+                className="absolute right-3 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border-2 border-white/80 bg-black/40 text-white transition-colors hover:bg-white hover:text-charcoal sm:right-6"
+              >
+                <ChevronRightIcon width={20} height={20} />
+              </button>
+            </>
+          )}
+
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={activePhoto}
+            alt={title}
+            className="relative z-0 max-h-full max-w-full object-contain"
+          />
+
+          {photos.length > 1 && (
+            <span className="absolute bottom-5 left-1/2 z-10 -translate-x-1/2 rounded-pill bg-black/50 px-3 py-1 text-[12px] font-bold text-white">
+              {activeIndex + 1} / {photos.length}
+            </span>
+          )}
         </div>
       )}
     </div>

@@ -4,6 +4,12 @@ import { useEffect, useState } from "react";
 import { AD_CATEGORIES, type AdCategory } from "@/lib/types";
 import { CloseIcon } from "@/components/icons";
 import { PhotoUploader } from "@/components/forms/photo-uploader";
+import { FocalPointPicker } from "@/components/ads/focal-point-picker";
+import {
+  hasVariablePriceNote,
+  stripVariablePriceNote,
+  withVariablePriceNote,
+} from "@/lib/format-currency";
 import { DescriptionEditor } from "@/components/forms/description-editor";
 import { uploadPhotos, type UploadedPhoto } from "@/lib/upload";
 import type { MyAd } from "@/components/ads/my-ads-list";
@@ -29,6 +35,7 @@ interface AdDetail {
   scope?: string;
   estimatedDuration?: string;
   photos: string[];
+  coverFocalPoint?: string;
 }
 
 export function EditAdDialog({
@@ -46,6 +53,7 @@ export function EditAdDialog({
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState<AdCategory>("Pendidikan");
   const [priceLabel, setPriceLabel] = useState("");
+  const [variablePrice, setVariablePrice] = useState(false);
   const [location, setLocation] = useState("");
   const [condition, setCondition] = useState<"Baru" | "Bekas">("Bekas");
   const [deliveryMethod, setDeliveryMethod] = useState("");
@@ -53,6 +61,7 @@ export function EditAdDialog({
   const [estimatedDuration, setEstimatedDuration] = useState("");
   const [photos, setPhotos] = useState<UploadedPhoto[]>([]);
   const [existingPhotos, setExistingPhotos] = useState<string[]>([]);
+  const [coverFocalPoint, setCoverFocalPoint] = useState("50% 0%");
 
   useEffect(() => {
     if (!isOpen || !adId) return;
@@ -72,7 +81,8 @@ export function EditAdDialog({
         setTitle(data.title ?? "");
         setDescription(data.description ?? "");
         setCategory(data.category ?? "Pendidikan");
-        setPriceLabel(data.priceLabel ?? "");
+        setPriceLabel(stripVariablePriceNote(data.priceLabel ?? ""));
+        setVariablePrice(hasVariablePriceNote(data.priceLabel));
         setLocation(data.location ?? "");
         setCondition(data.condition ?? "Bekas");
         setDeliveryMethod(data.deliveryMethod ?? "");
@@ -80,6 +90,7 @@ export function EditAdDialog({
         setEstimatedDuration(data.estimatedDuration ?? "");
         setExistingPhotos(data.photos ?? []);
         setPhotos([]);
+        setCoverFocalPoint(data.coverFocalPoint ?? "50% 0%");
       })
       .catch((err) => {
         setError(err instanceof Error ? err.message : "Gagal memuat iklan.");
@@ -112,6 +123,7 @@ export function EditAdDialog({
     try {
       const newUploadedPhotoUrls = await uploadPhotos(photos);
       const allPhotoUrls = [...existingPhotos, ...newUploadedPhotoUrls];
+      const finalPriceLabel = withVariablePriceNote(priceLabel, variablePrice);
 
       const res = await fetch(`/api/my-ads/${adId}`, {
         method: "PATCH",
@@ -120,13 +132,14 @@ export function EditAdDialog({
           title,
           description,
           category,
-          priceLabel,
+          priceLabel: finalPriceLabel,
           location,
           condition: detail?.kind === "produk" ? condition : undefined,
           deliveryMethod: detail?.kind === "produk" ? deliveryMethod : undefined,
           scope: detail?.kind === "jasa" ? scope : undefined,
           estimatedDuration: detail?.kind === "jasa" ? estimatedDuration : undefined,
           photos: allPhotoUrls,
+          coverFocalPoint,
         }),
       });
 
@@ -143,6 +156,7 @@ export function EditAdDialog({
         priceLabel: data.priceLabel ?? priceLabel,
         location: data.location ?? location,
         status: data.status,
+        coverFocalPoint: data.coverFocalPoint ?? coverFocalPoint,
       });
       onClose();
     } catch (err) {
@@ -239,6 +253,17 @@ export function EditAdDialog({
                   required
                   className="mt-1 h-11 w-full rounded-input border border-border bg-white px-3 text-[14px] text-charcoal focus:border-cta focus:outline-none"
                 />
+                <label className="mt-2 flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    checked={variablePrice}
+                    onChange={(e) => setVariablePrice(e.target.checked)}
+                    className="h-4 w-4 rounded border-border text-cta focus:ring-cta/30"
+                  />
+                  <span className="text-[13px] font-normal text-charcoal">
+                    Harga bervariasi
+                  </span>
+                </label>
               </div>
 
               <div>
@@ -375,6 +400,14 @@ export function EditAdDialog({
               photos={photos}
               onChange={setPhotos}
             />
+
+            {(existingPhotos[0] || photos[0]?.previewUrl) && (
+              <FocalPointPicker
+                imageUrl={existingPhotos[0] ?? photos[0]?.previewUrl ?? ""}
+                value={coverFocalPoint}
+                onChange={setCoverFocalPoint}
+              />
+            )}
 
             <div className="mt-4 flex items-center justify-end gap-3 border-t border-border-subtle pt-4">
               <button

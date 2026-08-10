@@ -42,6 +42,7 @@ interface AdRow {
   whatsapp_number: string | null;
   created_at: string;
   featured_until: string | null;
+  cover_focal_point: string | null;
   profiles: SellerProfileRow | SellerProfileRow[] | null;
   ad_photos: { url: string; position: number }[] | null;
 }
@@ -76,7 +77,7 @@ export async function GET(request: Request) {
     .select(
       `id, owner_id, kind, title, description, category, price_label, location,
        status, condition, delivery_method, scope, estimated_duration,
-       whatsapp_number, created_at, featured_until,
+       whatsapp_number, created_at, featured_until, cover_focal_point,
        profiles!owner_id ( id, name, whatsapp_number, created_at ),
        ad_photos ( url, position )`,
       { count: "exact" },
@@ -147,6 +148,7 @@ export async function GET(request: Request) {
       whatsappNumber: row.whatsapp_number ?? profile?.whatsapp_number ?? null,
       createdAt: row.created_at,
       coverPhoto: photos[0] ?? undefined,
+      coverFocalPoint: row.cover_focal_point ?? "50% 0%",
       photos,
       featured: !!row.featured_until && new Date(row.featured_until) > new Date(),
       seller: profile
@@ -185,6 +187,7 @@ interface CreateAdBody {
   scope?: string;
   estimatedDuration?: string;
   photos?: string[];
+  coverFocalPoint?: string;
 }
 
 export async function POST(request: Request) {
@@ -222,6 +225,12 @@ export async function POST(request: Request) {
       { status: 400 },
     );
   }
+
+  const FOCAL_POINT_PATTERN = /^\d{1,3}%\s+\d{1,3}%$/;
+  const coverFocalPoint =
+    body.coverFocalPoint && FOCAL_POINT_PATTERN.test(body.coverFocalPoint)
+      ? body.coverFocalPoint
+      : "50% 0%";
 
   const condition = body.condition?.trim();
   const deliveryMethod = body.deliveryMethod?.trim();
@@ -341,6 +350,7 @@ export async function POST(request: Request) {
       flag_reason: flagged ? reasons.join("; ") : null,
       featured_until: featuredUntil,
       expires_at: expiresAt,
+      cover_focal_point: coverFocalPoint,
     })
     .select("id, status")
     .single();

@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import type { AdCategory, AdKind, AdStatus } from "@/lib/types";
-import { SearchIcon, StarIcon } from "@/components/icons";
+import { SearchIcon, StarIcon, CloseIcon } from "@/components/icons";
+import { FocalPointPicker } from "@/components/ads/focal-point-picker";
 
 interface AdminAdItem {
   id: string;
@@ -17,6 +18,8 @@ interface AdminAdItem {
   createdAt: string;
   featured: boolean;
   featuredUntil: string | null;
+  coverPhoto: string | null;
+  coverFocalPoint: string;
 }
 
 type LoadState = "loading" | "ready" | "error";
@@ -47,6 +50,9 @@ export default function AdminIklanPage() {
   const [search, setSearch] = useState("");
   const [pendingId, setPendingId] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
+  const [focalEditItem, setFocalEditItem] = useState<AdminAdItem | null>(null);
+  const [focalDraft, setFocalDraft] = useState("50% 0%");
+  const [savingFocal, setSavingFocal] = useState(false);
 
   useEffect(() => {
     setLoadState("loading");
@@ -106,6 +112,40 @@ export default function AdminIklanPage() {
       );
     } finally {
       setPendingId(null);
+    }
+  }
+
+  function openFocalEditor(item: AdminAdItem) {
+    setFocalEditItem(item);
+    setFocalDraft(item.coverFocalPoint || "50% 0%");
+  }
+
+  async function handleSaveFocal() {
+    if (!focalEditItem) return;
+    setSavingFocal(true);
+    try {
+      const res = await fetch(`/api/admin/ads/${focalEditItem.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ coverFocalPoint: focalDraft }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        throw new Error(data.error ?? "Gagal menyimpan titik fokus.");
+      }
+      setAds((prev) =>
+        prev.map((entry) =>
+          entry.id === focalEditItem.id
+            ? { ...entry, coverFocalPoint: data.coverFocalPoint ?? focalDraft }
+            : entry,
+        ),
+      );
+      showToast(`Titik fokus foto "${focalEditItem.title}" berhasil disimpan.`);
+      setFocalEditItem(null);
+    } catch (err) {
+      showToast(err instanceof Error ? err.message : "Gagal menyimpan titik fokus.");
+    } finally {
+      setSavingFocal(false);
     }
   }
 
@@ -267,6 +307,15 @@ export default function AdminIklanPage() {
                           </span>
                         ) : (
                           <>
+                            {item.coverPhoto && (
+                              <button
+                                type="button"
+                                onClick={() => openFocalEditor(item)}
+                                className="h-10 rounded-pill border-2 border-ink bg-white px-5 text-[13px] font-bold text-charcoal shadow-[2px_2px_0_0_rgba(20,20,20,1)] transition-transform hover:-translate-y-0.5"
+                              >
+                                Atur Fokus Foto
+                              </button>
+                            )}
                             <button
                               type="button"
                               onClick={() => handleToggleFeatured(item)}
@@ -307,6 +356,59 @@ export default function AdminIklanPage() {
       {toast && (
         <div className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2 rounded-pill bg-charcoal px-5 py-3 text-[14px] font-bold text-white shadow-lg">
           {toast}
+        </div>
+      )}
+
+      {focalEditItem && focalEditItem.coverPhoto && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <button
+            type="button"
+            aria-label="Tutup dialog"
+            onClick={() => setFocalEditItem(null)}
+            className="absolute inset-0 bg-ink/50 backdrop-blur-sm"
+          />
+          <div className="relative z-10 w-full max-w-md rounded-card border-[2.5px] border-ink bg-white p-6 shadow-[5px_5px_0_0_rgba(20,20,20,1)]">
+            <div className="flex items-center justify-between border-b border-border-subtle pb-4">
+              <h2 className="text-base font-bold text-charcoal">
+                Atur Fokus Foto — {focalEditItem.title}
+              </h2>
+              <button
+                type="button"
+                onClick={() => setFocalEditItem(null)}
+                aria-label="Tutup dialog"
+                className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-ink bg-white text-charcoal hover:bg-surface"
+              >
+                <CloseIcon width={16} height={16} />
+              </button>
+            </div>
+
+            <div className="mt-5">
+              <FocalPointPicker
+                imageUrl={focalEditItem.coverPhoto}
+                value={focalDraft}
+                onChange={setFocalDraft}
+              />
+            </div>
+
+            <div className="mt-5 flex justify-end gap-3">
+              <button
+                type="button"
+                onClick={() => setFocalEditItem(null)}
+                disabled={savingFocal}
+                className="h-10 rounded-pill border-2 border-ink bg-white px-5 text-[13px] font-bold text-charcoal transition-colors hover:bg-surface disabled:opacity-50"
+              >
+                Batal
+              </button>
+              <button
+                type="button"
+                onClick={handleSaveFocal}
+                disabled={savingFocal}
+                className="h-10 rounded-pill bg-charcoal px-5 text-[13px] font-bold text-white transition-colors hover:bg-black disabled:opacity-50"
+              >
+                {savingFocal ? "Menyimpan..." : "Simpan"}
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </>

@@ -13,7 +13,9 @@ interface AdminAdRow {
   flag_reason: string | null;
   created_at: string;
   featured_until: string | null;
+  cover_focal_point: string | null;
   profiles: { name: string } | { name: string }[] | null;
+  ad_photos: { url: string; position: number }[] | null;
 }
 
 export async function GET(request: Request) {
@@ -46,7 +48,7 @@ export async function GET(request: Request) {
   let query = supabase
     .from("ads")
     .select(
-      `id, title, kind, category, status, price_label, location, flag_reason, created_at, featured_until, profiles!owner_id ( name )`,
+      `id, title, kind, category, status, price_label, location, flag_reason, created_at, featured_until, cover_focal_point, profiles!owner_id ( name ), ad_photos ( url, position )`,
     );
 
   if (status && status !== "Semua") {
@@ -68,6 +70,9 @@ export async function GET(request: Request) {
 
   const ads = rows.map((row) => {
     const profile = Array.isArray(row.profiles) ? row.profiles[0] : row.profiles;
+    const coverPhoto = (row.ad_photos ?? [])
+      .slice()
+      .sort((a, b) => a.position - b.position)[0]?.url;
     return {
       id: row.id,
       title: row.title,
@@ -81,6 +86,8 @@ export async function GET(request: Request) {
       submittedBy: profile?.name ?? null,
       featured: !!row.featured_until && new Date(row.featured_until) > new Date(),
       featuredUntil: row.featured_until,
+      coverPhoto: coverPhoto ?? null,
+      coverFocalPoint: row.cover_focal_point ?? "50% 0%",
     };
   });
 

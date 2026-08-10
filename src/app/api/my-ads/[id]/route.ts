@@ -38,7 +38,7 @@ export async function GET(
     .select(
       `id, kind, title, description, category, price_label, location, status,
        condition, delivery_method, scope, estimated_duration, whatsapp_number,
-       created_at`,
+       created_at, cover_focal_point`,
     )
     .eq("id", id)
     .eq("owner_id", user.id)
@@ -76,6 +76,7 @@ export async function GET(
     estimatedDuration: ad.estimated_duration,
     whatsappNumber: ad.whatsapp_number,
     createdAt: ad.created_at,
+    coverFocalPoint: ad.cover_focal_point ?? "50% 0%",
     photos: (photoRows ?? []).map((p) => p.url),
   });
 }
@@ -163,6 +164,11 @@ export async function PATCH(
   const estimatedDuration =
     typeof body.estimatedDuration === "string" ? body.estimatedDuration.trim() : null;
   const statusInput = typeof body.status === "string" ? body.status : undefined;
+  const FOCAL_POINT_PATTERN = /^\d{1,3}%\s+\d{1,3}%$/;
+  const coverFocalPoint =
+    typeof body.coverFocalPoint === "string" && FOCAL_POINT_PATTERN.test(body.coverFocalPoint)
+      ? body.coverFocalPoint
+      : undefined;
 
   if (title !== undefined && title.length < 5) {
     return NextResponse.json(
@@ -211,13 +217,14 @@ export async function PATCH(
   if (body.deliveryMethod !== undefined) updatePayload.delivery_method = deliveryMethod;
   if (body.scope !== undefined) updatePayload.scope = scope;
   if (body.estimatedDuration !== undefined) updatePayload.estimated_duration = estimatedDuration;
+  if (coverFocalPoint !== undefined) updatePayload.cover_focal_point = coverFocalPoint;
 
   const { data: updatedAd, error: updateError } = await supabase
     .from("ads")
     .update(updatePayload)
     .eq("id", id)
     .eq("owner_id", user.id)
-    .select("id, status, title, category, price_label, location")
+    .select("id, status, title, category, price_label, location, cover_focal_point")
     .single();
 
   if (updateError) {
@@ -242,6 +249,7 @@ export async function PATCH(
     category: updatedAd.category,
     priceLabel: updatedAd.price_label,
     location: updatedAd.location,
+    coverFocalPoint: updatedAd.cover_focal_point,
   });
 }
 

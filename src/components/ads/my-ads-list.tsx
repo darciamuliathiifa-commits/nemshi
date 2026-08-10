@@ -43,6 +43,7 @@ export interface MyAd {
   postedAt: string;
   expiresAt: string | null;
   coverPhoto?: string;
+  coverFocalPoint?: string;
 }
 
 export function MyAdsList({ ads: initialAds }: { ads: MyAd[] }) {
@@ -213,6 +214,7 @@ export function MyAdsList({ ads: initialAds }: { ads: MyAd[] }) {
                       src={ad.coverPhoto}
                       alt={ad.title}
                       className="h-full w-full object-cover"
+                      style={{ objectPosition: ad.coverFocalPoint || "50% 0%" }}
                     />
                   ) : (
                     <div className="flex h-full w-full items-center justify-center p-4 text-center text-[13px] font-bold text-charcoal/60">

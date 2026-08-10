@@ -44,6 +44,7 @@ export const AdCard = memo(function AdCard({ ad }: { ad: Ad }) {
               src={ad.coverPhoto}
               alt={ad.title}
               className="absolute inset-0 h-full w-full object-cover"
+              style={{ objectPosition: ad.coverFocalPoint || "50% 0%" }}
             />
           )}
           <div className="relative z-10 flex flex-col items-end gap-1 sm:gap-2">

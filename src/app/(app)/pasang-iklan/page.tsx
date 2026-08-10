@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Header } from "@/components/layout/header";
 import { PhotoUploader } from "@/components/forms/photo-uploader";
+import { FocalPointPicker } from "@/components/ads/focal-point-picker";
 import { DescriptionEditor } from "@/components/forms/description-editor";
 import { DescriptionText } from "@/components/shared/description-text";
 import { QuotaExceededModal } from "@/components/shared/quota-exceeded-modal";
@@ -23,6 +24,7 @@ import {
   currencyOptions,
   formatThousands,
   onlyDigits,
+  withVariablePriceNote,
   type CurrencyCode,
 } from "@/lib/format-currency";
 
@@ -86,11 +88,13 @@ interface FormState {
   customLocation: string;
   priceAmount: string;
   currency: CurrencyCode;
+  variablePrice: boolean;
   condition: AdCondition | "";
   deliveryMethod: string;
   scope: string;
   estimatedDuration: string;
   photos: UploadedPhoto[];
+  coverFocalPoint: string;
 }
 
 const initialForm: FormState = {
@@ -100,11 +104,13 @@ const initialForm: FormState = {
   customLocation: "",
   priceAmount: "",
   currency: "IDR",
+  variablePrice: false,
   condition: "",
   deliveryMethod: "",
   scope: "",
   estimatedDuration: "",
   photos: [],
+  coverFocalPoint: "50% 0%",
 };
 
 export default function PasangIklanPage() {
@@ -156,11 +162,31 @@ export default function PasangIklanPage() {
       ? form.priceAmount.trim() !== "" && form.condition !== "" && form.deliveryMethod !== ""
       : form.priceAmount.trim() !== "" && form.scope.trim() !== "" && form.estimatedDuration.trim() !== "");
 
+  const missingStep2Fields: string[] = [];
+  if (form.title.trim() === "") missingStep2Fields.push("Judul Iklan");
+  if (form.description.trim() === "") missingStep2Fields.push("Deskripsi");
+  if (resolvedLocation === "") missingStep2Fields.push("Lokasi");
+  if (needsWhatsapp && whatsappNumber.trim() === "")
+    missingStep2Fields.push("Nomor WhatsApp");
+  if (form.priceAmount.trim() === "")
+    missingStep2Fields.push(selectedKind === "produk" ? "Harga" : "Harga Awal");
+  if (selectedKind === "produk") {
+    if (form.condition === "") missingStep2Fields.push("Kondisi (Baru/Bekas)");
+    if (form.deliveryMethod === "") missingStep2Fields.push("Metode Penyerahan");
+  } else {
+    if (form.scope.trim() === "") missingStep2Fields.push("Cakupan Layanan");
+    if (form.estimatedDuration.trim() === "")
+      missingStep2Fields.push("Estimasi Pengerjaan");
+  }
+
   function updateForm<K extends keyof FormState>(key: K, value: FormState[K]) {
     setForm((prev) => ({ ...prev, [key]: value }));
   }
 
-  const priceLabel = composePriceLabel(form.currency, form.priceAmount);
+  const priceLabel = withVariablePriceNote(
+    composePriceLabel(form.currency, form.priceAmount),
+    form.variablePrice,
+  );
 
   async function handlePublish() {
     if (!selectedKind || !selectedCategory) return;
@@ -213,6 +239,7 @@ export default function PasangIklanPage() {
           scope: selectedKind === "jasa" ? form.scope : undefined,
           estimatedDuration: selectedKind === "jasa" ? form.estimatedDuration : undefined,
           photos: photoUrls,
+          coverFocalPoint: form.photos.length > 0 ? form.coverFocalPoint : undefined,
         }),
       });
 
@@ -462,6 +489,17 @@ export default function PasangIklanPage() {
                       }
                     />
                   </div>
+                  <label className="mt-2 flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      checked={form.variablePrice}
+                      onChange={(event) => updateForm("variablePrice", event.target.checked)}
+                      className="h-4 w-4 rounded border-border text-cta focus:ring-cta/30"
+                    />
+                    <span className="text-[13px] font-normal text-charcoal">
+                      Harga bervariasi (ada beberapa varian/pilihan harga)
+                    </span>
+                  </label>
                 </div>
 
                 {selectedKind === "produk" ? (
@@ -517,6 +555,14 @@ export default function PasangIklanPage() {
                       photos={form.photos}
                       onChange={(photos) => updateForm("photos", photos)}
                     />
+
+                    {form.photos[0] && (
+                      <FocalPointPicker
+                        imageUrl={form.photos[0].previewUrl}
+                        value={form.coverFocalPoint}
+                        onChange={(value) => updateForm("coverFocalPoint", value)}
+                      />
+                    )}
                   </>
                 ) : (
                   <>
@@ -554,9 +600,23 @@ export default function PasangIklanPage() {
                       photos={form.photos}
                       onChange={(photos) => updateForm("photos", photos)}
                     />
+
+                    {form.photos[0] && (
+                      <FocalPointPicker
+                        imageUrl={form.photos[0].previewUrl}
+                        value={form.coverFocalPoint}
+                        onChange={(value) => updateForm("coverFocalPoint", value)}
+                      />
+                    )}
                   </>
                 )}
               </form>
+
+              {!canContinueStep2 && missingStep2Fields.length > 0 && (
+                <p className="mt-3 text-[13px] font-normal text-error">
+                  Lengkapi dulu: {missingStep2Fields.join(", ")}.
+                </p>
+              )}
 
               <div className="mt-6 flex gap-3">
                 <button
