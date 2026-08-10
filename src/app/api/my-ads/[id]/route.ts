@@ -38,7 +38,7 @@ export async function GET(
     .select(
       `id, kind, title, description, category, price_label, location, status,
        condition, delivery_method, scope, estimated_duration, whatsapp_number,
-       created_at, cover_focal_point`,
+       created_at, cover_focal_point, social_media`,
     )
     .eq("id", id)
     .eq("owner_id", user.id)
@@ -77,6 +77,7 @@ export async function GET(
     whatsappNumber: ad.whatsapp_number,
     createdAt: ad.created_at,
     coverFocalPoint: ad.cover_focal_point ?? "50% 0%",
+    socialMedia: ad.social_media ?? "",
     photos: (photoRows ?? []).map((p) => p.url),
   });
 }
@@ -218,13 +219,15 @@ export async function PATCH(
   if (body.scope !== undefined) updatePayload.scope = scope;
   if (body.estimatedDuration !== undefined) updatePayload.estimated_duration = estimatedDuration;
   if (coverFocalPoint !== undefined) updatePayload.cover_focal_point = coverFocalPoint;
+  if (typeof body.socialMedia === "string")
+    updatePayload.social_media = body.socialMedia.trim() || null;
 
   const { data: updatedAd, error: updateError } = await supabase
     .from("ads")
     .update(updatePayload)
     .eq("id", id)
     .eq("owner_id", user.id)
-    .select("id, status, title, category, price_label, location, cover_focal_point")
+    .select("id, status, title, category, price_label, location, cover_focal_point, social_media")
     .single();
 
   if (updateError) {
@@ -250,6 +253,7 @@ export async function PATCH(
     priceLabel: updatedAd.price_label,
     location: updatedAd.location,
     coverFocalPoint: updatedAd.cover_focal_point,
+    socialMedia: updatedAd.social_media,
   });
 }
 

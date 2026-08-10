@@ -188,6 +188,7 @@ interface CreateAdBody {
   estimatedDuration?: string;
   photos?: string[];
   coverFocalPoint?: string;
+  socialMedia?: string;
 }
 
 export async function POST(request: Request) {
@@ -202,7 +203,10 @@ export async function POST(request: Request) {
   const title = body.title?.trim();
   const description = body.description?.trim();
   const location = body.location?.trim();
-  const priceLabel = body.priceLabel?.trim();
+  // Empty is valid on purpose — a community/event listing has no price to
+  // show, and the UI simply omits the price line when this is "".
+  const priceLabel = body.priceLabel?.trim() ?? "";
+  const socialMedia = body.socialMedia?.trim() || null;
 
   if (!kind) {
     return NextResponse.json({ error: "Tipe iklan tidak valid." }, { status: 400 });
@@ -215,9 +219,6 @@ export async function POST(request: Request) {
   }
   if (!location) {
     return NextResponse.json({ error: "Lokasi wajib diisi." }, { status: 400 });
-  }
-  if (!priceLabel) {
-    return NextResponse.json({ error: "Harga wajib diisi." }, { status: 400 });
   }
   if (!body.category || !AD_CATEGORIES.includes(body.category as (typeof AD_CATEGORIES)[number])) {
     return NextResponse.json(
@@ -351,6 +352,7 @@ export async function POST(request: Request) {
       featured_until: featuredUntil,
       expires_at: expiresAt,
       cover_focal_point: coverFocalPoint,
+      social_media: socialMedia,
     })
     .select("id, status")
     .single();

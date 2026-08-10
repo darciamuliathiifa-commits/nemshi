@@ -41,9 +41,17 @@ interface AdDetailRow {
   scope: string | null;
   estimated_duration: string | null;
   whatsapp_number: string | null;
+  social_media: string | null;
   created_at: string;
   profiles: SellerProfileRow | SellerProfileRow[] | null;
   ad_photos: { url: string; position: number }[] | null;
+}
+
+function socialMediaHref(value: string): string {
+  const trimmed = value.trim();
+  if (/^https?:\/\//i.test(trimmed)) return trimmed;
+  const handle = trimmed.replace(/^@/, "");
+  return `https://instagram.com/${handle}`;
 }
 
 async function ActiveAdsCount({ ownerId }: { ownerId: string }) {
@@ -131,7 +139,7 @@ export default async function AdDetailPage({
     .select(
       `id, owner_id, kind, title, description, category, price_label, location,
        status, condition, delivery_method, scope, estimated_duration,
-       whatsapp_number, created_at,
+       whatsapp_number, social_media, created_at,
        profiles!owner_id ( id, name, whatsapp_number, location, created_at ),
        ad_photos ( url, position )`,
     )
@@ -165,6 +173,7 @@ export default async function AdDetailPage({
     scope: row.scope,
     estimatedDuration: row.estimated_duration,
     whatsappNumber: row.whatsapp_number ?? profile?.whatsapp_number ?? "",
+    socialMedia: row.social_media ?? "",
     sellerId: row.owner_id,
     sellerName: profile?.name ?? "Pengguna Nemsy!",
     sellerJoinedYear: profile
@@ -275,7 +284,9 @@ export default async function AdDetailPage({
               <h2 className="text-2xl leading-[30px] font-bold text-charcoal">
                 {ad.title}
               </h2>
-              <p className="mt-2 text-2xl font-bold text-cta">{ad.priceLabel}</p>
+              {ad.priceLabel && (
+                <p className="mt-2 text-2xl font-bold text-cta">{ad.priceLabel}</p>
+              )}
 
               <div className="mt-3 flex items-center gap-1.5 text-[14px] font-normal text-muted-foreground">
                 <MapPinIcon width={16} height={16} />
@@ -357,6 +368,17 @@ export default async function AdDetailPage({
                     Penjual belum melengkapi nomor WhatsApp-nya.
                   </p>
                 </div>
+              )}
+
+              {ad.socialMedia && (
+                <a
+                  href={socialMediaHref(ad.socialMedia)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-2.5 flex h-11 w-full items-center justify-center rounded-pill border-2 border-ink text-base font-bold text-charcoal transition-colors hover:bg-surface"
+                >
+                  Lihat Media Sosial
+                </a>
               )}
 
               <div className="mt-3 flex gap-2">

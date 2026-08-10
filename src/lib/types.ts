@@ -6,7 +6,7 @@ export type AdCategory =
   | "Barang Baru & Bekas"
   | "Perjalanan & Travel"
   | "Titipan & Bagasi"
-  | "Komunitas & Organisasi"
+  | "Event & Komunitas"
   | "Lainnya";
 
 export const AD_CATEGORIES: AdCategory[] = [
@@ -17,7 +17,7 @@ export const AD_CATEGORIES: AdCategory[] = [
   "Barang Baru & Bekas",
   "Perjalanan & Travel",
   "Titipan & Bagasi",
-  "Komunitas & Organisasi",
+  "Event & Komunitas",
   "Lainnya",
 ];
 
@@ -40,6 +40,7 @@ export interface Ad {
   sellerJoinedYear: number;
   sellerActiveAds: number;
   whatsappNumber: string;
+  socialMedia?: string;
   description: string;
   condition?: AdCondition;
   deliveryMethod?: string;

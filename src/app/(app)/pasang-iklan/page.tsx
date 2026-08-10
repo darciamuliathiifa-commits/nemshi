@@ -52,7 +52,7 @@ const categoryOptions: AdCategory[] = [
   "Barang Baru & Bekas",
   "Perjalanan & Travel",
   "Titipan & Bagasi",
-  "Komunitas & Organisasi",
+  "Event & Komunitas",
   "Lainnya",
 ];
 
@@ -64,7 +64,7 @@ const categoryIcons: Record<AdCategory, (props: { width?: number; height?: numbe
   "Barang Baru & Bekas": BoxIcon,
   "Perjalanan & Travel": CompassIcon,
   "Titipan & Bagasi": LuggageIcon,
-  "Komunitas & Organisasi": UsersIcon,
+  "Event & Komunitas": UsersIcon,
   Lainnya: TagIcon,
 };
 
@@ -90,6 +90,8 @@ const inputClass =
   "h-11 w-full rounded-input border border-border bg-white px-4 text-[14px] text-charcoal placeholder:text-muted focus:border-cta focus:outline-none focus:ring-3 focus:ring-cta/10";
 const labelClass = "text-[12px] font-bold text-muted-foreground";
 
+type PriceMode = "fixed" | "variable" | "none";
+
 interface FormState {
   title: string;
   description: string;
@@ -97,13 +99,14 @@ interface FormState {
   customLocation: string;
   priceAmount: string;
   currency: CurrencyCode;
-  variablePrice: boolean;
+  priceMode: PriceMode;
   condition: AdCondition | "";
   deliveryMethod: string;
   scope: string;
   estimatedDuration: string;
   photos: UploadedPhoto[];
   coverFocalPoint: string;
+  socialMedia: string;
 }
 
 const initialForm: FormState = {
@@ -113,13 +116,14 @@ const initialForm: FormState = {
   customLocation: "",
   priceAmount: "",
   currency: "IDR",
-  variablePrice: false,
+  priceMode: "fixed",
   condition: "",
   deliveryMethod: "",
   scope: "",
   estimatedDuration: "",
   photos: [],
   coverFocalPoint: "50% 0%",
+  socialMedia: "",
 };
 
 export default function PasangIklanPage() {
@@ -162,7 +166,7 @@ export default function PasangIklanPage() {
   const resolvedLocation =
     form.location === CUSTOM_LOCATION_VALUE ? form.customLocation.trim() : form.location;
 
-  const priceProvided = form.variablePrice || form.priceAmount.trim() !== "";
+  const priceProvided = form.priceMode !== "fixed" || form.priceAmount.trim() !== "";
 
   const canContinueStep2 =
     form.title.trim() !== "" &&
@@ -194,9 +198,12 @@ export default function PasangIklanPage() {
     setForm((prev) => ({ ...prev, [key]: value }));
   }
 
-  const priceLabel = form.variablePrice
-    ? VARIABLE_PRICE_LABEL
-    : composePriceLabel(form.currency, form.priceAmount);
+  const priceLabel =
+    form.priceMode === "variable"
+      ? VARIABLE_PRICE_LABEL
+      : form.priceMode === "none"
+        ? ""
+        : composePriceLabel(form.currency, form.priceAmount);
 
   async function handlePublish() {
     if (!selectedKind || !selectedCategory) return;
@@ -250,6 +257,7 @@ export default function PasangIklanPage() {
           estimatedDuration: selectedKind === "jasa" ? form.estimatedDuration : undefined,
           photos: photoUrls,
           coverFocalPoint: form.photos.length > 0 ? form.coverFocalPoint : undefined,
+          socialMedia: form.socialMedia.trim() || undefined,
         }),
       });
 
@@ -480,27 +488,63 @@ export default function PasangIklanPage() {
                 )}
 
                 <div>
+                  <label className={labelClass} htmlFor="socialMedia">
+                    Media Sosial (opsional)
+                  </label>
+                  <input
+                    id="socialMedia"
+                    className={`mt-1 ${inputClass}`}
+                    placeholder="Contoh: instagram.com/namaakun atau @namaakun"
+                    value={form.socialMedia}
+                    onChange={(event) => updateForm("socialMedia", event.target.value)}
+                  />
+                </div>
+
+                <div>
                   <label className={labelClass} htmlFor="price">
                     {selectedKind === "produk" ? "Harga" : "Harga Awal / Estimasi Biaya"}
                   </label>
 
-                  <label className="mt-1 flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      checked={form.variablePrice}
-                      onChange={(event) => updateForm("variablePrice", event.target.checked)}
-                      className="h-4 w-4 rounded border-border text-cta focus:ring-cta/30"
-                    />
-                    <span className="text-[13px] font-normal text-charcoal">
-                      Harga bervariasi (ada beberapa varian/pilihan harga)
-                    </span>
-                  </label>
+                  <div className="mt-1 flex flex-wrap gap-2">
+                    {(
+                      [
+                        { value: "fixed", label: "Ada harga" },
+                        { value: "variable", label: "Harga bervariasi" },
+                        { value: "none", label: "Tanpa harga" },
+                      ] as { value: PriceMode; label: string }[]
+                    ).map((option) => {
+                      const isActive = form.priceMode === option.value;
+                      return (
+                        <button
+                          key={option.value}
+                          type="button"
+                          onClick={() => updateForm("priceMode", option.value)}
+                          aria-pressed={isActive}
+                          className={`h-9 rounded-pill border px-4 text-[14px] font-bold transition-colors ${
+                            isActive
+                              ? "border-charcoal bg-charcoal text-white"
+                              : "border-border bg-transparent text-charcoal hover:bg-surface"
+                          }`}
+                        >
+                          {option.label}
+                        </button>
+                      );
+                    })}
+                  </div>
 
-                  {form.variablePrice ? (
+                  {form.priceMode === "variable" && (
                     <p className="mt-2 text-[13px] font-normal text-muted-foreground">
                       Harga akan ditampilkan sebagai <strong className="text-charcoal">&ldquo;Harga bervariasi&rdquo;</strong>, nggak perlu isi nominal.
                     </p>
-                  ) : (
+                  )}
+
+                  {form.priceMode === "none" && (
+                    <p className="mt-2 text-[13px] font-normal text-muted-foreground">
+                      Harga nggak akan ditampilkan sama sekali di iklan — cocok buat listing komunitas/event.
+                    </p>
+                  )}
+
+                  {form.priceMode === "fixed" && (
                     <div className="mt-2 flex gap-2">
                       <select
                         aria-label="Mata uang"
@@ -686,7 +730,9 @@ export default function PasangIklanPage() {
                 <h3 className="mt-4 text-xl font-normal leading-[26px] text-charcoal">
                   {form.title}
                 </h3>
-                <p className="mt-1 text-base font-bold text-cta">{priceLabel}</p>
+                {priceLabel && (
+                  <p className="mt-1 text-base font-bold text-cta">{priceLabel}</p>
+                )}
                 <p className="mt-3 text-[14px] font-normal text-muted-foreground">
                   {resolvedLocation}
                 </p>

@@ -15,7 +15,7 @@ const categoryAccent: Record<Ad["category"], string> = {
   "Barang Baru & Bekas": "from-rose-100 to-rose-50",
   "Perjalanan & Travel": "from-sky-100 to-sky-50",
   "Titipan & Bagasi": "from-orange-100 to-orange-50",
-  "Komunitas & Organisasi": "from-indigo-100 to-indigo-50",
+  "Event & Komunitas": "from-indigo-100 to-indigo-50",
   Lainnya: "from-zinc-100 to-zinc-50",
 };
 
@@ -83,9 +83,11 @@ export const AdCard = memo(function AdCard({ ad }: { ad: Ad }) {
             {ad.title}
           </h3>
 
-          <p className="mt-1 text-[13px] font-bold leading-4 text-success sm:mt-2 sm:text-lg sm:leading-6">
-            {ad.priceLabel}
-          </p>
+          {ad.priceLabel && (
+            <p className="mt-1 text-[13px] font-bold leading-4 text-success sm:mt-2 sm:text-lg sm:leading-6">
+              {ad.priceLabel}
+            </p>
+          )}
 
           <div className="mt-1.5 flex items-center gap-1 text-[10.5px] leading-3 font-normal text-muted-foreground sm:mt-3 sm:gap-1.5 sm:text-[13px] sm:leading-4">
             <MapPinIcon width={11} height={11} className="shrink-0" />

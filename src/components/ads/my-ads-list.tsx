@@ -32,7 +32,7 @@ const categoryAccent: Record<string, string> = {
   "Barang Baru & Bekas": "from-rose-100 to-rose-50",
   "Perjalanan & Travel": "from-sky-100 to-sky-50",
   "Titipan & Bagasi": "from-orange-100 to-orange-50",
-  "Komunitas & Organisasi": "from-indigo-100 to-indigo-50",
+  "Event & Komunitas": "from-indigo-100 to-indigo-50",
   Lainnya: "from-zinc-100 to-zinc-50",
 };
 
@@ -243,7 +243,9 @@ export function MyAdsList({ ads: initialAds }: { ads: MyAd[] }) {
                     <h3 className="line-clamp-2 text-base font-bold leading-5 text-charcoal">
                       {ad.title}
                     </h3>
-                    <p className="text-lg font-bold text-cta">{ad.priceLabel}</p>
+                    {ad.priceLabel && (
+                      <p className="text-lg font-bold text-cta">{ad.priceLabel}</p>
+                    )}
                     <p className="text-[13px] font-normal text-muted-foreground">
                       {ad.location} · Diposting {ad.postedAt}
                     </p>

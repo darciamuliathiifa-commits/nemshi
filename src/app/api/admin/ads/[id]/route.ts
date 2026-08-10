@@ -88,7 +88,7 @@ export async function GET(
     .from("ads")
     .select(
       `id, kind, title, description, category, price_label, location, status,
-       condition, delivery_method, scope, estimated_duration, cover_focal_point`,
+       condition, delivery_method, scope, estimated_duration, cover_focal_point, social_media`,
     )
     .eq("id", id)
     .maybeSingle();
@@ -115,6 +115,7 @@ export async function GET(
     scope: ad.scope,
     estimatedDuration: ad.estimated_duration,
     coverFocalPoint: ad.cover_focal_point,
+    socialMedia: ad.social_media,
   });
 }
 
@@ -187,14 +188,11 @@ export async function PATCH(
   }
 
   if (typeof body.category === "string") updatePayload.category = body.category;
-  if (typeof body.priceLabel === "string") {
-    const priceLabel = body.priceLabel.trim();
-    if (!priceLabel) {
-      return NextResponse.json({ error: "Label harga wajib diisi." }, { status: 400 });
-    }
-    updatePayload.price_label = priceLabel;
-  }
+  // Empty is valid on purpose — see the ads POST route for why.
+  if (typeof body.priceLabel === "string") updatePayload.price_label = body.priceLabel.trim();
   if (typeof body.location === "string") updatePayload.location = body.location.trim();
+  if (typeof body.socialMedia === "string")
+    updatePayload.social_media = body.socialMedia.trim() || null;
   if (body.condition !== undefined) {
     updatePayload.condition = typeof body.condition === "string" ? body.condition : null;
   }
@@ -217,7 +215,7 @@ export async function PATCH(
     .update(updatePayload)
     .eq("id", id)
     .select(
-      "id, title, category, price_label, location, cover_focal_point, condition, delivery_method, scope, estimated_duration",
+      "id, title, category, price_label, location, cover_focal_point, condition, delivery_method, scope, estimated_duration, social_media",
     )
     .maybeSingle();
 
@@ -240,5 +238,6 @@ export async function PATCH(
     deliveryMethod: data.delivery_method,
     scope: data.scope,
     estimatedDuration: data.estimated_duration,
+    socialMedia: data.social_media,
   });
 }

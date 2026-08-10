@@ -32,7 +32,10 @@ interface AdDetail {
   estimatedDuration?: string;
   photos: string[];
   coverFocalPoint?: string;
+  socialMedia?: string;
 }
+
+type PriceMode = "fixed" | "variable" | "none";
 
 export function EditAdDialog({
   adId,
@@ -49,8 +52,9 @@ export function EditAdDialog({
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState<AdCategory>("Pendidikan");
   const [priceLabel, setPriceLabel] = useState("");
-  const [variablePrice, setVariablePrice] = useState(false);
+  const [priceMode, setPriceMode] = useState<PriceMode>("fixed");
   const [location, setLocation] = useState("");
+  const [socialMedia, setSocialMedia] = useState("");
   const [condition, setCondition] = useState<"Baru" | "Bekas">("Bekas");
   const [deliveryMethod, setDeliveryMethod] = useState("");
   const [scope, setScope] = useState("");
@@ -77,10 +81,15 @@ export function EditAdDialog({
         setTitle(data.title ?? "");
         setDescription(data.description ?? "");
         setCategory(data.category ?? "Pendidikan");
-        const variable = isVariablePriceLabel(data.priceLabel);
-        setPriceLabel(variable ? "" : data.priceLabel ?? "");
-        setVariablePrice(variable);
+        const mode: PriceMode = isVariablePriceLabel(data.priceLabel)
+          ? "variable"
+          : (data.priceLabel ?? "").trim() === ""
+            ? "none"
+            : "fixed";
+        setPriceMode(mode);
+        setPriceLabel(mode === "fixed" ? data.priceLabel ?? "" : "");
         setLocation(data.location ?? "");
+        setSocialMedia(data.socialMedia ?? "");
         setCondition(data.condition ?? "Bekas");
         setDeliveryMethod(data.deliveryMethod ?? "");
         setScope(data.scope ?? "");
@@ -113,8 +122,8 @@ export function EditAdDialog({
       setError("Deskripsi iklan minimal 15 karakter.");
       return;
     }
-    if (!variablePrice && priceLabel.trim() === "") {
-      setError("Label harga wajib diisi, atau centang \"Harga bervariasi\".");
+    if (priceMode === "fixed" && priceLabel.trim() === "") {
+      setError('Label harga wajib diisi, atau pilih "Harga bervariasi"/"Tanpa harga".');
       return;
     }
 
@@ -124,7 +133,8 @@ export function EditAdDialog({
     try {
       const newUploadedPhotoUrls = await uploadPhotos(photos);
       const allPhotoUrls = [...existingPhotos, ...newUploadedPhotoUrls];
-      const finalPriceLabel = variablePrice ? VARIABLE_PRICE_LABEL : priceLabel;
+      const finalPriceLabel =
+        priceMode === "variable" ? VARIABLE_PRICE_LABEL : priceMode === "none" ? "" : priceLabel;
 
       const res = await fetch(`/api/my-ads/${adId}`, {
         method: "PATCH",
@@ -141,6 +151,7 @@ export function EditAdDialog({
           estimatedDuration: detail?.kind === "jasa" ? estimatedDuration : undefined,
           photos: allPhotoUrls,
           coverFocalPoint,
+          socialMedia,
         }),
       });
 
@@ -154,7 +165,7 @@ export function EditAdDialog({
         id: adId,
         title: data.title ?? title,
         category: data.category ?? category,
-        priceLabel: data.priceLabel ?? priceLabel,
+        priceLabel: data.priceLabel ?? finalPriceLabel,
         location: data.location ?? location,
         status: data.status,
         coverFocalPoint: data.coverFocalPoint ?? coverFocalPoint,
@@ -246,23 +257,46 @@ export function EditAdDialog({
                   Label Harga
                 </label>
 
-                <label className="mt-1 flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    checked={variablePrice}
-                    onChange={(e) => setVariablePrice(e.target.checked)}
-                    className="h-4 w-4 rounded border-border text-cta focus:ring-cta/30"
-                  />
-                  <span className="text-[13px] font-normal text-charcoal">
-                    Harga bervariasi
-                  </span>
-                </label>
+                <div className="mt-1 flex flex-wrap gap-2">
+                  {(
+                    [
+                      { value: "fixed", label: "Ada harga" },
+                      { value: "variable", label: "Harga bervariasi" },
+                      { value: "none", label: "Tanpa harga" },
+                    ] as { value: PriceMode; label: string }[]
+                  ).map((option) => {
+                    const isActive = priceMode === option.value;
+                    return (
+                      <button
+                        key={option.value}
+                        type="button"
+                        onClick={() => setPriceMode(option.value)}
+                        aria-pressed={isActive}
+                        className={`h-8 rounded-pill border px-3 text-[12px] font-bold transition-colors ${
+                          isActive
+                            ? "border-charcoal bg-charcoal text-white"
+                            : "border-border bg-transparent text-charcoal hover:bg-surface"
+                        }`}
+                      >
+                        {option.label}
+                      </button>
+                    );
+                  })}
+                </div>
 
-                {variablePrice ? (
+                {priceMode === "variable" && (
                   <p className="mt-2 text-[13px] font-normal text-muted-foreground">
                     Akan ditampilkan sebagai &ldquo;Harga bervariasi&rdquo;.
                   </p>
-                ) : (
+                )}
+
+                {priceMode === "none" && (
+                  <p className="mt-2 text-[13px] font-normal text-muted-foreground">
+                    Harga nggak akan ditampilkan sama sekali.
+                  </p>
+                )}
+
+                {priceMode === "fixed" && (
                   <input
                     id="edit-price"
                     type="text"
@@ -288,6 +322,20 @@ export function EditAdDialog({
                   className="mt-1 h-11 w-full rounded-input border border-border bg-white px-3 text-[14px] text-charcoal focus:border-cta focus:outline-none"
                 />
               </div>
+            </div>
+
+            <div>
+              <label htmlFor="edit-social" className="text-[12px] font-bold text-muted-foreground">
+                Media Sosial (opsional)
+              </label>
+              <input
+                id="edit-social"
+                type="text"
+                value={socialMedia}
+                onChange={(e) => setSocialMedia(e.target.value)}
+                placeholder="Contoh: instagram.com/namaakun atau @namaakun"
+                className="mt-1 h-11 w-full rounded-input border border-border bg-white px-3 text-[14px] text-charcoal focus:border-cta focus:outline-none"
+              />
             </div>
 
             {detail?.kind === "produk" && (

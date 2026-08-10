@@ -79,7 +79,9 @@ export const FeaturedCarousel = memo(function FeaturedCarousel({ ads }: { ads: A
               <h3 className="line-clamp-2 text-[14px] font-bold leading-5 text-charcoal sm:text-lg sm:leading-6">
                 {ad.title}
               </h3>
-              <p className="text-base font-bold text-success sm:text-lg">{ad.priceLabel}</p>
+              {ad.priceLabel && (
+                <p className="text-base font-bold text-success sm:text-lg">{ad.priceLabel}</p>
+              )}
               <div className="mt-0.5 flex items-center gap-1.5 text-[12px] font-normal text-muted-foreground sm:mt-1 sm:text-[14px]">
                 <MapPinIcon width={13} height={13} className="shrink-0" />
                 <span className="truncate">{ad.location}</span>

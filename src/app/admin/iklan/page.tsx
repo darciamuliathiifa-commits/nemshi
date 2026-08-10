@@ -284,7 +284,7 @@ export default function AdminIklanPage() {
                           {item.title}
                         </p>
                         <p className="mt-1 text-[13px] font-bold text-cta">
-                          {item.priceLabel} · {item.location}
+                          {item.priceLabel || "Tanpa harga"} · {item.location}
                         </p>
                         <p className="mt-1 text-[12px] font-normal text-muted-foreground">
                           Oleh: <strong className="text-charcoal">{item.submittedBy ?? "Tidak diketahui"}</strong> ·{" "}
