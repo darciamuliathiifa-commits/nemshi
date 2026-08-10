@@ -98,6 +98,31 @@ export function MyAdsList({ ads: initialAds }: { ads: MyAd[] }) {
     }
   }
 
+  async function handleDelete(ad: MyAd) {
+    if (
+      !window.confirm(
+        `Yakin mau hapus "${ad.title}"? Tindakan ini tidak bisa dibatalkan.`,
+      )
+    ) {
+      return;
+    }
+
+    setPendingId(ad.id);
+    try {
+      const res = await fetch(`/api/my-ads/${ad.id}`, { method: "DELETE" });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error ?? "Gagal menghapus iklan.");
+      }
+      setAds((prev) => prev.filter((entry) => entry.id !== ad.id));
+      showToast(`"${ad.title}" berhasil dihapus.`);
+    } catch (err) {
+      showToast(err instanceof Error ? err.message : "Gagal menghapus iklan.");
+    } finally {
+      setPendingId(null);
+    }
+  }
+
   async function handleExtend(adId: string) {
     setPendingId(adId);
     try {
@@ -236,14 +261,23 @@ export function MyAdsList({ ads: initialAds }: { ads: MyAd[] }) {
                       </span>
                     ) : (
                       <>
-                        <button
-                          type="button"
-                          onClick={() => setEditingAdId(ad.id)}
-                          className="flex h-9 w-full items-center justify-center gap-1.5 rounded-pill border-2 border-ink bg-white text-[13px] font-bold text-charcoal shadow-[2px_2px_0_0_rgba(20,20,20,1)] transition-transform hover:-translate-y-0.5"
-                        >
-                          <EditIcon width={14} height={14} />
-                          Edit Detail Iklan
-                        </button>
+                        <div className="flex gap-2">
+                          <button
+                            type="button"
+                            onClick={() => setEditingAdId(ad.id)}
+                            className="flex h-9 flex-1 items-center justify-center gap-1.5 rounded-pill border-2 border-ink bg-white text-[13px] font-bold text-charcoal shadow-[2px_2px_0_0_rgba(20,20,20,1)] transition-transform hover:-translate-y-0.5"
+                          >
+                            <EditIcon width={14} height={14} />
+                            Edit
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleDelete(ad)}
+                            className="flex h-9 flex-1 items-center justify-center gap-1.5 rounded-pill border-2 border-error text-[13px] font-bold text-error transition-colors hover:bg-error/10"
+                          >
+                            Hapus
+                          </button>
+                        </div>
 
                         {/* Offered before expiry too, not just after — the
                             H-2 reminder sends owners here while the ad is

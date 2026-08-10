@@ -8,6 +8,8 @@ interface AdminAdRow {
   kind: "produk" | "jasa";
   category: string;
   status: string;
+  price_label: string;
+  location: string;
   flag_reason: string | null;
   created_at: string;
   profiles: { name: string } | { name: string }[] | null;
@@ -15,7 +17,8 @@ interface AdminAdRow {
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  const status = searchParams.get("status") ?? "Menunggu Validasi";
+  const status = searchParams.get("status");
+  const q = searchParams.get("q")?.trim();
 
   const supabase = await createSupabaseServerClient();
   if (!supabase) {
@@ -36,11 +39,25 @@ export async function GET(request: Request) {
   const forbidden = await requireAdmin(supabase, user.id);
   if (forbidden) return forbidden;
 
-  const { data, error } = await supabase
+  // No status (or "Semua") lists every ad for the admin ads browser; the
+  // moderation queue always passes a specific status and relies on the
+  // ascending order below to show the oldest-waiting ad first.
+  let query = supabase
     .from("ads")
-    .select(`id, title, kind, category, status, flag_reason, created_at, profiles!owner_id ( name )`)
-    .eq("status", status)
-    .order("created_at", { ascending: true });
+    .select(
+      `id, title, kind, category, status, price_label, location, flag_reason, created_at, profiles!owner_id ( name )`,
+    );
+
+  if (status && status !== "Semua") {
+    query = query.eq("status", status);
+  }
+  if (q) {
+    query = query.ilike("title", `%${q}%`);
+  }
+
+  const { data, error } = await query.order("created_at", {
+    ascending: Boolean(status),
+  });
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
@@ -56,6 +73,8 @@ export async function GET(request: Request) {
       kind: row.kind,
       category: row.category,
       status: row.status,
+      priceLabel: row.price_label,
+      location: row.location,
       flagReason: row.flag_reason,
       createdAt: row.created_at,
       submittedBy: profile?.name ?? null,

@@ -244,3 +244,47 @@ export async function PATCH(
     location: updatedAd.location,
   });
 }
+
+export async function DELETE(
+  _request: Request,
+  { params }: { params: Promise<{ id: string }> },
+) {
+  const { id } = await params;
+
+  const supabase = await createSupabaseServerClient();
+  if (!supabase) {
+    return NextResponse.json(
+      { error: "Supabase belum dikonfigurasi." },
+      { status: 500 },
+    );
+  }
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return NextResponse.json({ error: "Belum masuk akun." }, { status: 401 });
+  }
+
+  const { data, error } = await supabase
+    .from("ads")
+    .delete()
+    .eq("id", id)
+    .eq("owner_id", user.id)
+    .select("id")
+    .maybeSingle();
+
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+
+  if (!data) {
+    return NextResponse.json(
+      { error: "Iklan tidak ditemukan atau bukan milikmu." },
+      { status: 404 },
+    );
+  }
+
+  return NextResponse.json({ status: "ok" });
+}

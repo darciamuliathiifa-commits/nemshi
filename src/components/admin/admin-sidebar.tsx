@@ -7,11 +7,13 @@ import {
   CreditCardIcon,
   FlagIcon,
   GridIcon,
+  StoreIcon,
   UserIcon,
 } from "@/components/icons";
 
 const navItems = [
   { href: "/admin", label: "Dasbor", icon: GridIcon },
+  { href: "/admin/iklan", label: "Semua Iklan", icon: StoreIcon },
   { href: "/admin/moderasi", label: "Moderasi Iklan", icon: CheckCircleIcon },
   { href: "/admin/laporan", label: "Laporan", icon: FlagIcon },
   { href: "/admin/pengguna", label: "Pengguna & Kuota", icon: UserIcon },
