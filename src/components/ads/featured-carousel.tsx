@@ -26,7 +26,7 @@ export const FeaturedCarousel = memo(function FeaturedCarousel({ ads }: { ads: A
           <div>
             <h2 className="text-lg font-bold text-charcoal sm:text-2xl">Iklan Unggulan</h2>
             <p className="text-[11px] font-normal text-charcoal/70 sm:text-[12px]">
-              Slot eksklusif Paket Plus, tayang 3 hari
+              Pilihan tim Nemsyi & slot eksklusif Paket Plus
             </p>
           </div>
         </div>

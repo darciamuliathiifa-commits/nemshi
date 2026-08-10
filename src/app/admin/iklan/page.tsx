@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import type { AdCategory, AdKind, AdStatus } from "@/lib/types";
-import { SearchIcon } from "@/components/icons";
+import { SearchIcon, StarIcon } from "@/components/icons";
 
 interface AdminAdItem {
   id: string;
@@ -15,6 +15,8 @@ interface AdminAdItem {
   submittedBy: string | null;
   flagReason: string | null;
   createdAt: string;
+  featured: boolean;
+  featuredUntil: string | null;
 }
 
 type LoadState = "loading" | "ready" | "error";
@@ -71,6 +73,40 @@ export default function AdminIklanPage() {
   function showToast(message: string) {
     setToast(message);
     setTimeout(() => setToast(null), 2500);
+  }
+
+  async function handleToggleFeatured(item: AdminAdItem) {
+    const nextFeatured = !item.featured;
+    setPendingId(item.id);
+    try {
+      const res = await fetch(`/api/admin/ads/${item.id}/feature`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ featured: nextFeatured }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        throw new Error(data.error ?? "Gagal mengubah status rekomendasi.");
+      }
+      setAds((prev) =>
+        prev.map((entry) =>
+          entry.id === item.id
+            ? { ...entry, featured: nextFeatured, featuredUntil: data.featuredUntil ?? null }
+            : entry,
+        ),
+      );
+      showToast(
+        nextFeatured
+          ? `"${item.title}" dijadikan iklan rekomendasi selama 7 hari.`
+          : `"${item.title}" dikeluarkan dari rekomendasi.`,
+      );
+    } catch (err) {
+      showToast(
+        err instanceof Error ? err.message : "Gagal mengubah status rekomendasi.",
+      );
+    } finally {
+      setPendingId(null);
+    }
   }
 
   async function handleDelete(item: AdminAdItem) {
@@ -195,6 +231,12 @@ export default function AdminIklanPage() {
                           <span className="rounded-badge border border-ink bg-charcoal px-2.5 py-1 text-[12px] font-bold text-white">
                             {item.kind === "produk" ? "Produk" : "Jasa"}
                           </span>
+                          {item.featured && (
+                            <span className="flex items-center gap-1 rounded-badge border border-ink bg-highlight px-2.5 py-1 text-[12px] font-bold text-charcoal">
+                              <StarIcon width={12} height={12} />
+                              Rekomendasi
+                            </span>
+                          )}
                         </div>
                         <p className="mt-2 truncate text-base font-bold text-charcoal">
                           {item.title}
@@ -217,20 +259,31 @@ export default function AdminIklanPage() {
                         )}
                       </div>
 
-                      <div className="shrink-0">
+                      <div className="flex shrink-0 gap-2">
                         {isPending ? (
                           <span className="flex h-10 items-center gap-2 px-2 text-[14px] font-bold text-muted-foreground">
                             <span className="h-4 w-4 animate-spin rounded-full border-2 border-surface border-t-cta" />
-                            Menghapus...
+                            Memproses...
                           </span>
                         ) : (
-                          <button
-                            type="button"
-                            onClick={() => handleDelete(item)}
-                            className="h-10 rounded-pill border-2 border-error bg-white px-5 text-[13px] font-bold text-error shadow-[2px_2px_0_0_rgba(20,20,20,1)] transition-transform hover:-translate-y-0.5"
-                          >
-                            Hapus Iklan
-                          </button>
+                          <>
+                            <button
+                              type="button"
+                              onClick={() => handleToggleFeatured(item)}
+                              className={`h-10 rounded-pill border-2 border-ink px-5 text-[13px] font-bold shadow-[2px_2px_0_0_rgba(20,20,20,1)] transition-transform hover:-translate-y-0.5 ${
+                                item.featured ? "bg-white text-charcoal" : "bg-highlight text-charcoal"
+                              }`}
+                            >
+                              {item.featured ? "Batalkan Rekomendasi" : "Jadikan Rekomendasi"}
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleDelete(item)}
+                              className="h-10 rounded-pill border-2 border-error bg-white px-5 text-[13px] font-bold text-error shadow-[2px_2px_0_0_rgba(20,20,20,1)] transition-transform hover:-translate-y-0.5"
+                            >
+                              Hapus Iklan
+                            </button>
+                          </>
                         )}
                       </div>
                     </div>

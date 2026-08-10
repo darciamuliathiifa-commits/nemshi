@@ -12,6 +12,7 @@ interface AdminAdRow {
   location: string;
   flag_reason: string | null;
   created_at: string;
+  featured_until: string | null;
   profiles: { name: string } | { name: string }[] | null;
 }
 
@@ -45,7 +46,7 @@ export async function GET(request: Request) {
   let query = supabase
     .from("ads")
     .select(
-      `id, title, kind, category, status, price_label, location, flag_reason, created_at, profiles!owner_id ( name )`,
+      `id, title, kind, category, status, price_label, location, flag_reason, created_at, featured_until, profiles!owner_id ( name )`,
     );
 
   if (status && status !== "Semua") {
@@ -78,6 +79,8 @@ export async function GET(request: Request) {
       flagReason: row.flag_reason,
       createdAt: row.created_at,
       submittedBy: profile?.name ?? null,
+      featured: !!row.featured_until && new Date(row.featured_until) > new Date(),
+      featuredUntil: row.featured_until,
     };
   });
 
