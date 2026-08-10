@@ -12,7 +12,9 @@ import {
   BoxIcon,
   ChevronDownIcon,
   ChevronRightIcon,
+  CompassIcon,
   GridIcon,
+  LuggageIcon,
   MapPinIcon,
   MegaphoneIcon,
   SearchIcon,
@@ -27,6 +29,8 @@ const categories: AdCategory[] = [
   "Kreatif & Digital",
   "Bantuan & Layanan Harian",
   "Barang Baru & Bekas",
+  "Perjalanan & Travel",
+  "Titipan & Bagasi",
   "Lainnya",
 ];
 
@@ -36,6 +40,8 @@ const categoryIcons: Record<AdCategory, (props: { width?: number; height?: numbe
   "Kreatif & Digital": SparklesIcon,
   "Bantuan & Layanan Harian": MegaphoneIcon,
   "Barang Baru & Bekas": BoxIcon,
+  "Perjalanan & Travel": CompassIcon,
+  "Titipan & Bagasi": LuggageIcon,
   Lainnya: TagIcon,
 };
 

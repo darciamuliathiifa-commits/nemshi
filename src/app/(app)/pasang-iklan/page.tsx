@@ -14,6 +14,8 @@ import type { AdCategory, AdCondition, AdKind } from "@/lib/types";
 import {
   BookIcon,
   BoxIcon,
+  CompassIcon,
+  LuggageIcon,
   MegaphoneIcon,
   SparklesIcon,
   TagIcon,
@@ -47,6 +49,8 @@ const categoryOptions: AdCategory[] = [
   "Kreatif & Digital",
   "Bantuan & Layanan Harian",
   "Barang Baru & Bekas",
+  "Perjalanan & Travel",
+  "Titipan & Bagasi",
   "Lainnya",
 ];
 
@@ -56,6 +60,8 @@ const categoryIcons: Record<AdCategory, (props: { width?: number; height?: numbe
   "Kreatif & Digital": SparklesIcon,
   "Bantuan & Layanan Harian": MegaphoneIcon,
   "Barang Baru & Bekas": BoxIcon,
+  "Perjalanan & Travel": CompassIcon,
+  "Titipan & Bagasi": LuggageIcon,
   Lainnya: TagIcon,
 };
 
@@ -296,12 +302,22 @@ export default function PasangIklanPage() {
                 </Link>
               </div>
 
-              <h2 className="text-xl font-bold text-charcoal">
-                Pilih Tipe & Kategori Iklan
-              </h2>
-              <p className="mt-1 text-[14px] font-normal text-muted-foreground">
-                Langkah 1 dari 3: tentukan jenis iklan dan kategorinya.
-              </p>
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <h2 className="text-xl font-bold text-charcoal">
+                    Pilih Tipe & Kategori Iklan
+                  </h2>
+                  <p className="mt-1 text-[14px] font-normal text-muted-foreground">
+                    Langkah 1 dari 3: tentukan jenis iklan dan kategorinya.
+                  </p>
+                </div>
+                <Link
+                  href="/cara-pasang-iklan"
+                  className="shrink-0 text-[13px] font-bold text-cta hover:text-highlight"
+                >
+                  Butuh panduan?
+                </Link>
+              </div>
 
               <div className="mt-6 rounded-card border border-border-subtle bg-white p-6">
                 <p className={labelClass}>Tipe Iklan</p>

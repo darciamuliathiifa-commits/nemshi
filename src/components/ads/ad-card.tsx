@@ -13,6 +13,8 @@ const categoryAccent: Record<Ad["category"], string> = {
   "Kreatif & Digital": "from-violet-100 to-violet-50",
   "Bantuan & Layanan Harian": "from-emerald-100 to-emerald-50",
   "Barang Baru & Bekas": "from-rose-100 to-rose-50",
+  "Perjalanan & Travel": "from-sky-100 to-sky-50",
+  "Titipan & Bagasi": "from-orange-100 to-orange-50",
   Lainnya: "from-zinc-100 to-zinc-50",
 };
 

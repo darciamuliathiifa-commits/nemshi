@@ -4,6 +4,8 @@ export type AdCategory =
   | "Kreatif & Digital"
   | "Bantuan & Layanan Harian"
   | "Barang Baru & Bekas"
+  | "Perjalanan & Travel"
+  | "Titipan & Bagasi"
   | "Lainnya";
 
 export const AD_CATEGORIES: AdCategory[] = [
@@ -12,6 +14,8 @@ export const AD_CATEGORIES: AdCategory[] = [
   "Kreatif & Digital",
   "Bantuan & Layanan Harian",
   "Barang Baru & Bekas",
+  "Perjalanan & Travel",
+  "Titipan & Bagasi",
   "Lainnya",
 ];
 

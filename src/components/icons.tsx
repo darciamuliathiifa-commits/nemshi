@@ -324,6 +324,16 @@ export function BellIcon(props: IconProps) {
   );
 }
 
+export function LuggageIcon(props: IconProps) {
+  return (
+    <svg {...base} {...props}>
+      <rect x="4" y="8" width="16" height="12" rx="2" />
+      <path d="M9 8V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V8" />
+      <path d="M9.5 12v4M14.5 12v4" />
+    </svg>
+  );
+}
+
 export function ShareIcon(props: IconProps) {
   return (
     <svg {...base} {...props}>
