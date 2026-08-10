@@ -31,6 +31,16 @@ export async function GET(request: Request) {
     if (supabase) {
       const { data, error } = await supabase.auth.exchangeCodeForSession(code);
 
+      // This used to fail silently, redirecting to "/" with no trace of why
+      // — the symptom users reported was "I have to log in twice," which was
+      // actually a first attempt failing outright. Logging the real reason
+      // (e.g. PKCE verifier cookie missing — often a www vs apex domain
+      // mismatch between where login started and where this callback landed)
+      // turns that into something diagnosable from Vercel's function logs.
+      if (error) {
+        console.error("[auth/callback] exchangeCodeForSession failed:", error.message);
+      }
+
       if (!error && data.user) {
         await supabase.from("profiles").upsert({
           id: data.user.id,
