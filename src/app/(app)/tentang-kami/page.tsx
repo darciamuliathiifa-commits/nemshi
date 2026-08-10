@@ -164,11 +164,19 @@ export default function TentangKamiPage() {
           </Link>
         </div>
 
-        <div className="mt-8 flex items-center justify-center gap-2 text-[12px] font-normal text-charcoal/40">
-          <CheckCircleIcon width={14} height={14} />
-          <Link href="/aturan-publikasi" className="hover:text-charcoal/70">
-            Baca juga Aturan Publikasi
-          </Link>
+        <div className="mt-8 flex flex-col items-center justify-center gap-2 text-[12px] font-normal text-charcoal/40 sm:flex-row sm:gap-4">
+          <span className="flex items-center gap-2">
+            <CheckCircleIcon width={14} height={14} />
+            <Link href="/aturan-publikasi" className="hover:text-charcoal/70">
+              Baca juga Aturan Publikasi
+            </Link>
+          </span>
+          <span className="flex items-center gap-2">
+            <CheckCircleIcon width={14} height={14} />
+            <Link href="/cara-pasang-iklan" className="hover:text-charcoal/70">
+              Cara Pasang Iklan
+            </Link>
+          </span>
         </div>
       </main>
     </>
