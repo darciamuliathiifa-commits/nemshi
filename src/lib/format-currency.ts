@@ -21,23 +21,12 @@ export function composePriceLabel(currency: CurrencyCode, amountDigits: string):
   return amountDigits ? `${prefix}${formatThousands(amountDigits)}` : "";
 }
 
-export const VARIABLE_PRICE_SUFFIX = " (harga bervariasi)";
+// A product with several price variants doesn't have one number to show —
+// the label just becomes this fixed text instead of forcing a nominal in.
+export const VARIABLE_PRICE_LABEL = "Harga bervariasi";
 
-export function hasVariablePriceNote(label: string | null | undefined): boolean {
-  return !!label?.trim().endsWith(VARIABLE_PRICE_SUFFIX.trim());
-}
-
-export function stripVariablePriceNote(label: string): string {
-  const trimmed = label.trimEnd();
-  return trimmed.endsWith(VARIABLE_PRICE_SUFFIX.trim())
-    ? trimmed.slice(0, trimmed.length - VARIABLE_PRICE_SUFFIX.trim().length).trimEnd()
-    : label;
-}
-
-export function withVariablePriceNote(label: string, enabled: boolean): string {
-  const base = stripVariablePriceNote(label);
-  if (!base) return base;
-  return enabled ? `${base}${VARIABLE_PRICE_SUFFIX}` : base;
+export function isVariablePriceLabel(label: string | null | undefined): boolean {
+  return (label ?? "").trim() === VARIABLE_PRICE_LABEL;
 }
 
 export function parsePriceLabel(

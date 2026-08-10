@@ -5,11 +5,7 @@ import { AD_CATEGORIES, type AdCategory } from "@/lib/types";
 import { CloseIcon } from "@/components/icons";
 import { PhotoUploader } from "@/components/forms/photo-uploader";
 import { FocalPointPicker } from "@/components/ads/focal-point-picker";
-import {
-  hasVariablePriceNote,
-  stripVariablePriceNote,
-  withVariablePriceNote,
-} from "@/lib/format-currency";
+import { isVariablePriceLabel, VARIABLE_PRICE_LABEL } from "@/lib/format-currency";
 import { DescriptionEditor } from "@/components/forms/description-editor";
 import { uploadPhotos, type UploadedPhoto } from "@/lib/upload";
 import type { MyAd } from "@/components/ads/my-ads-list";
@@ -81,8 +77,9 @@ export function EditAdDialog({
         setTitle(data.title ?? "");
         setDescription(data.description ?? "");
         setCategory(data.category ?? "Pendidikan");
-        setPriceLabel(stripVariablePriceNote(data.priceLabel ?? ""));
-        setVariablePrice(hasVariablePriceNote(data.priceLabel));
+        const variable = isVariablePriceLabel(data.priceLabel);
+        setPriceLabel(variable ? "" : data.priceLabel ?? "");
+        setVariablePrice(variable);
         setLocation(data.location ?? "");
         setCondition(data.condition ?? "Bekas");
         setDeliveryMethod(data.deliveryMethod ?? "");
@@ -116,6 +113,10 @@ export function EditAdDialog({
       setError("Deskripsi iklan minimal 15 karakter.");
       return;
     }
+    if (!variablePrice && priceLabel.trim() === "") {
+      setError("Label harga wajib diisi, atau centang \"Harga bervariasi\".");
+      return;
+    }
 
     setSaving(true);
     setError(null);
@@ -123,7 +124,7 @@ export function EditAdDialog({
     try {
       const newUploadedPhotoUrls = await uploadPhotos(photos);
       const allPhotoUrls = [...existingPhotos, ...newUploadedPhotoUrls];
-      const finalPriceLabel = withVariablePriceNote(priceLabel, variablePrice);
+      const finalPriceLabel = variablePrice ? VARIABLE_PRICE_LABEL : priceLabel;
 
       const res = await fetch(`/api/my-ads/${adId}`, {
         method: "PATCH",
@@ -244,16 +245,8 @@ export function EditAdDialog({
                 <label htmlFor="edit-price" className="text-[12px] font-bold text-muted-foreground">
                   Label Harga
                 </label>
-                <input
-                  id="edit-price"
-                  type="text"
-                  value={priceLabel}
-                  onChange={(e) => setPriceLabel(e.target.value)}
-                  placeholder="cth. Rp 150.000 atau Gratis"
-                  required
-                  className="mt-1 h-11 w-full rounded-input border border-border bg-white px-3 text-[14px] text-charcoal focus:border-cta focus:outline-none"
-                />
-                <label className="mt-2 flex items-center gap-2">
+
+                <label className="mt-1 flex items-center gap-2">
                   <input
                     type="checkbox"
                     checked={variablePrice}
@@ -264,6 +257,21 @@ export function EditAdDialog({
                     Harga bervariasi
                   </span>
                 </label>
+
+                {variablePrice ? (
+                  <p className="mt-2 text-[13px] font-normal text-muted-foreground">
+                    Akan ditampilkan sebagai &ldquo;Harga bervariasi&rdquo;.
+                  </p>
+                ) : (
+                  <input
+                    id="edit-price"
+                    type="text"
+                    value={priceLabel}
+                    onChange={(e) => setPriceLabel(e.target.value)}
+                    placeholder="cth. Rp 150.000 atau Gratis"
+                    className="mt-2 h-11 w-full rounded-input border border-border bg-white px-3 text-[14px] text-charcoal focus:border-cta focus:outline-none"
+                  />
+                )}
               </div>
 
               <div>

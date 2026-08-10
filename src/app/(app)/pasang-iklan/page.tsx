@@ -24,7 +24,7 @@ import {
   currencyOptions,
   formatThousands,
   onlyDigits,
-  withVariablePriceNote,
+  VARIABLE_PRICE_LABEL,
   type CurrencyCode,
 } from "@/lib/format-currency";
 
@@ -153,14 +153,16 @@ export default function PasangIklanPage() {
   const resolvedLocation =
     form.location === CUSTOM_LOCATION_VALUE ? form.customLocation.trim() : form.location;
 
+  const priceProvided = form.variablePrice || form.priceAmount.trim() !== "";
+
   const canContinueStep2 =
     form.title.trim() !== "" &&
     form.description.trim() !== "" &&
     resolvedLocation !== "" &&
     (!needsWhatsapp || whatsappNumber.trim() !== "") &&
     (selectedKind === "produk"
-      ? form.priceAmount.trim() !== "" && form.condition !== "" && form.deliveryMethod !== ""
-      : form.priceAmount.trim() !== "" && form.scope.trim() !== "" && form.estimatedDuration.trim() !== "");
+      ? priceProvided && form.condition !== "" && form.deliveryMethod !== ""
+      : priceProvided && form.scope.trim() !== "" && form.estimatedDuration.trim() !== "");
 
   const missingStep2Fields: string[] = [];
   if (form.title.trim() === "") missingStep2Fields.push("Judul Iklan");
@@ -168,7 +170,7 @@ export default function PasangIklanPage() {
   if (resolvedLocation === "") missingStep2Fields.push("Lokasi");
   if (needsWhatsapp && whatsappNumber.trim() === "")
     missingStep2Fields.push("Nomor WhatsApp");
-  if (form.priceAmount.trim() === "")
+  if (!priceProvided)
     missingStep2Fields.push(selectedKind === "produk" ? "Harga" : "Harga Awal");
   if (selectedKind === "produk") {
     if (form.condition === "") missingStep2Fields.push("Kondisi (Baru/Bekas)");
@@ -183,10 +185,9 @@ export default function PasangIklanPage() {
     setForm((prev) => ({ ...prev, [key]: value }));
   }
 
-  const priceLabel = withVariablePriceNote(
-    composePriceLabel(form.currency, form.priceAmount),
-    form.variablePrice,
-  );
+  const priceLabel = form.variablePrice
+    ? VARIABLE_PRICE_LABEL
+    : composePriceLabel(form.currency, form.priceAmount);
 
   async function handlePublish() {
     if (!selectedKind || !selectedCategory) return;
@@ -463,33 +464,8 @@ export default function PasangIklanPage() {
                   <label className={labelClass} htmlFor="price">
                     {selectedKind === "produk" ? "Harga" : "Harga Awal / Estimasi Biaya"}
                   </label>
-                  <div className="mt-1 flex gap-2">
-                    <select
-                      aria-label="Mata uang"
-                      className="h-11 w-32 shrink-0 rounded-input border border-border bg-white px-3 text-[14px] text-charcoal focus:border-cta focus:outline-none focus:ring-3 focus:ring-cta/10"
-                      value={form.currency}
-                      onChange={(event) =>
-                        updateForm("currency", event.target.value as CurrencyCode)
-                      }
-                    >
-                      {currencyOptions.map((option) => (
-                        <option key={option.value} value={option.value}>
-                          {option.label}
-                        </option>
-                      ))}
-                    </select>
-                    <input
-                      id="price"
-                      inputMode="numeric"
-                      className={inputClass}
-                      placeholder={selectedKind === "produk" ? "350.000" : "75.000"}
-                      value={formatThousands(form.priceAmount)}
-                      onChange={(event) =>
-                        updateForm("priceAmount", onlyDigits(event.target.value))
-                      }
-                    />
-                  </div>
-                  <label className="mt-2 flex items-center gap-2">
+
+                  <label className="mt-1 flex items-center gap-2">
                     <input
                       type="checkbox"
                       checked={form.variablePrice}
@@ -500,6 +476,39 @@ export default function PasangIklanPage() {
                       Harga bervariasi (ada beberapa varian/pilihan harga)
                     </span>
                   </label>
+
+                  {form.variablePrice ? (
+                    <p className="mt-2 text-[13px] font-normal text-muted-foreground">
+                      Harga akan ditampilkan sebagai <strong className="text-charcoal">&ldquo;Harga bervariasi&rdquo;</strong>, nggak perlu isi nominal.
+                    </p>
+                  ) : (
+                    <div className="mt-2 flex gap-2">
+                      <select
+                        aria-label="Mata uang"
+                        className="h-11 w-32 shrink-0 rounded-input border border-border bg-white px-3 text-[14px] text-charcoal focus:border-cta focus:outline-none focus:ring-3 focus:ring-cta/10"
+                        value={form.currency}
+                        onChange={(event) =>
+                          updateForm("currency", event.target.value as CurrencyCode)
+                        }
+                      >
+                        {currencyOptions.map((option) => (
+                          <option key={option.value} value={option.value}>
+                            {option.label}
+                          </option>
+                        ))}
+                      </select>
+                      <input
+                        id="price"
+                        inputMode="numeric"
+                        className={inputClass}
+                        placeholder={selectedKind === "produk" ? "350.000" : "75.000"}
+                        value={formatThousands(form.priceAmount)}
+                        onChange={(event) =>
+                          updateForm("priceAmount", onlyDigits(event.target.value))
+                        }
+                      />
+                    </div>
+                  )}
                 </div>
 
                 {selectedKind === "produk" ? (
