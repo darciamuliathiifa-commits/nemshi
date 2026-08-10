@@ -16,13 +16,13 @@ const scripts: ScriptTemplate[] = [
     description: "Chat personal ke pemilik warung/usaha Masisir yang belum pernah pasang iklan.",
     body: `Assalamu'alaikum sidi, afwan mengganggu waktunya. Saya [Nama Kamu].
 
-Saya lagi bangun Nemsyi — direktori khusus usaha-usaha Masisir yang terpusat dalam satu platform, biar sesama Masisir gampang nemuin produk/jasa dari kita sendiri, termasuk kuliner.
+Saya lagi bangun Nemsyi — direktori khusus usaha-usaha Masisir yang terpusat dalam satu platform, biar sesama Masisir gampang nemuin produk/jasa dari kita sendiri, termasuk di bidang [Bidang Usaha].
 
 https://nemsyi.sbs
 
-Kebetulan sekarang masih tahap awal ngisi produk-produk asli Masisir, dan iklan resto masih sedikit banget — jadi [Nama Usaha] bisa jadi salah satu yang paling awal muncul di sana, sidi. Gratis, nggak dipungut biaya sama sekali.
+Kebetulan sekarang masih tahap awal ngisi produk-produk asli Masisir, dan iklan di bidang [Bidang Usaha] masih sedikit banget — jadi [Nama Usaha] bisa jadi salah satu yang paling awal muncul di sana, sidi. Gratis, nggak dipungut biaya sama sekali.
 
-Kalau sidi berkenan, saya bisa langsung bantu buatin iklannya — tinggal kirim aja foto menu/tempat, daftar harga, sama lokasi/nomor WA yang bisa dihubungi pembeli. InsyaAllah begitu udah terisi 10-20 usaha nyata Masisir, platformnya bakal dirilis ke publik.
+Kalau sidi berkenan, saya bisa langsung bantu buatin iklannya — tinggal kirim aja foto produk/tempat, daftar harga, sama lokasi/nomor WA yang bisa dihubungi pembeli. InsyaAllah begitu udah terisi 10-20 usaha nyata Masisir, platformnya bakal dirilis ke publik.
 
 Terima kasih banyak sebelumnya sidi 🙏`,
   },
