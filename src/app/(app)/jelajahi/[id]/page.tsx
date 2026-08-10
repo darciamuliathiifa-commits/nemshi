@@ -190,18 +190,64 @@ export default async function AdDetailPage({
     `Halo, saya tertarik dengan iklan "${ad.title}" di Nemsy!`,
   )}`;
 
-  const { data: relatedRows } = await supabase
-    .from("ads")
-    .select("id, kind, title, category, price_label, location")
-    .eq("category", row.category)
-    .eq("status", "Aktif")
-    .not("owner_id", "in", `(${SEED_OWNER_IDS.join(",")})`)
-    .or(`expires_at.is.null,expires_at.gt.${new Date().toISOString()}`)
-    .neq("id", row.id)
-    .order("created_at", { ascending: false })
-    .limit(4);
+  // Same category alone is a loose match (a design-service ad and a used
+  // motorbike ad can share "Lainnya"). Try same kind + a shared title
+  // keyword first, then backfill with same kind + category by recency so
+  // the section still fills up to 4 when nothing matches closely.
+  const titleKeywords = Array.from(
+    new Set(
+      row.title
+        .toLowerCase()
+        .split(/[^a-z0-9]+/i)
+        .filter((word) => word.length >= 3),
+    ),
+  ).slice(0, 6);
 
-  const related = relatedRows ?? [];
+  const notSeed = `(${SEED_OWNER_IDS.join(",")})`;
+  const stillLive = `expires_at.is.null,expires_at.gt.${new Date().toISOString()}`;
+
+  let related: {
+    id: string;
+    kind: string;
+    title: string;
+    category: string;
+    price_label: string;
+    location: string;
+  }[] = [];
+
+  if (titleKeywords.length > 0) {
+    const { data: keywordMatches } = await supabase
+      .from("ads")
+      .select("id, kind, title, category, price_label, location")
+      .eq("kind", row.kind)
+      .eq("category", row.category)
+      .eq("status", "Aktif")
+      .not("owner_id", "in", notSeed)
+      .or(stillLive)
+      .or(titleKeywords.map((word) => `title.ilike.%${word}%`).join(","))
+      .neq("id", row.id)
+      .order("created_at", { ascending: false })
+      .limit(4);
+
+    related = keywordMatches ?? [];
+  }
+
+  if (related.length < 4) {
+    const excludeIds = `(${[row.id, ...related.map((item) => item.id)].join(",")})`;
+    const { data: fallbackMatches } = await supabase
+      .from("ads")
+      .select("id, kind, title, category, price_label, location")
+      .eq("kind", row.kind)
+      .eq("category", row.category)
+      .eq("status", "Aktif")
+      .not("owner_id", "in", notSeed)
+      .or(stillLive)
+      .not("id", "in", excludeIds)
+      .order("created_at", { ascending: false })
+      .limit(4 - related.length);
+
+    related = [...related, ...(fallbackMatches ?? [])];
+  }
 
   return (
     <>
