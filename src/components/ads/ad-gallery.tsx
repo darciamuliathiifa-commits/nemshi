@@ -41,6 +41,7 @@ export function AdGallery({
 }: AdGalleryProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [touchStartX, setTouchStartX] = useState<number | null>(null);
 
   const activePhoto = photos[activeIndex] ?? photos[0];
 
@@ -52,9 +53,25 @@ export function AdGallery({
     setActiveIndex((prev) => (prev + 1) % photos.length);
   }
 
+  const SWIPE_THRESHOLD = 40;
+
+  function handleTouchStart(event: React.TouchEvent) {
+    setTouchStartX(event.touches[0].clientX);
+  }
+
+  function handleTouchEnd(event: React.TouchEvent) {
+    if (touchStartX === null || photos.length <= 1) return;
+    const deltaX = event.changedTouches[0].clientX - touchStartX;
+    if (deltaX > SWIPE_THRESHOLD) showPrev();
+    else if (deltaX < -SWIPE_THRESHOLD) showNext();
+    setTouchStartX(null);
+  }
+
   return (
     <div
       className={`relative aspect-[4/5] w-full overflow-hidden rounded-card border-[2.5px] border-ink bg-gradient-to-br shadow-[3px_3px_0_0_rgba(20,20,20,1)] ${categoryAccent[category] ?? categoryAccent.Lainnya}`}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
     >
       {activePhoto && (
         <button
@@ -123,7 +140,11 @@ export function AdGallery({
       )}
 
       {lightboxOpen && activePhoto && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/90 p-4">
+        <div
+          className="fixed inset-0 z-[60] flex items-center justify-center bg-black/90 p-4"
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+        >
           <button
             type="button"
             aria-label="Tutup foto ukuran penuh"
