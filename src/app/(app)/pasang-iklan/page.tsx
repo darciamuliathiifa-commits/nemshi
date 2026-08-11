@@ -107,6 +107,7 @@ interface FormState {
   photos: UploadedPhoto[];
   coverFocalPoint: string;
   socialMedia: string;
+  address: string;
 }
 
 const initialForm: FormState = {
@@ -124,6 +125,7 @@ const initialForm: FormState = {
   photos: [],
   coverFocalPoint: "50% 0%",
   socialMedia: "",
+  address: "",
 };
 
 export default function PasangIklanPage() {
@@ -258,6 +260,7 @@ export default function PasangIklanPage() {
           photos: photoUrls,
           coverFocalPoint: form.photos.length > 0 ? form.coverFocalPoint : undefined,
           socialMedia: form.socialMedia.trim() || undefined,
+          address: form.address.trim() || undefined,
         }),
       });
 
@@ -464,6 +467,22 @@ export default function PasangIklanPage() {
                       onChange={(event) => updateForm("customLocation", event.target.value)}
                     />
                   )}
+                </div>
+
+                <div>
+                  <label className={labelClass} htmlFor="address">
+                    Alamat Lengkap (opsional)
+                  </label>
+                  <input
+                    id="address"
+                    className={`mt-1 ${inputClass}`}
+                    placeholder="Contoh: Jl. Thoha Dinari, Imaroh 26, dekat Masjid X"
+                    value={form.address}
+                    onChange={(event) => updateForm("address", event.target.value)}
+                  />
+                  <p className="mt-1 text-[12px] font-normal leading-4 text-muted-foreground">
+                    Buat usaha yang punya lokasi tetap (resto, toko), biar pembeli bisa langsung nemuin tempatnya.
+                  </p>
                 </div>
 
                 {needsWhatsapp && (

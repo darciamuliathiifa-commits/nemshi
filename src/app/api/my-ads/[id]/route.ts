@@ -38,7 +38,7 @@ export async function GET(
     .select(
       `id, kind, title, description, category, price_label, location, status,
        condition, delivery_method, scope, estimated_duration, whatsapp_number,
-       created_at, cover_focal_point, social_media`,
+       created_at, cover_focal_point, social_media, address`,
     )
     .eq("id", id)
     .eq("owner_id", user.id)
@@ -78,6 +78,7 @@ export async function GET(
     createdAt: ad.created_at,
     coverFocalPoint: ad.cover_focal_point ?? "50% 0%",
     socialMedia: ad.social_media ?? "",
+    address: ad.address ?? "",
     photos: (photoRows ?? []).map((p) => p.url),
   });
 }
@@ -171,6 +172,7 @@ export async function PATCH(
   const category = typeof body.category === "string" ? body.category : undefined;
   const priceLabel = typeof body.priceLabel === "string" ? body.priceLabel.trim() : undefined;
   const location = typeof body.location === "string" ? body.location.trim() : undefined;
+  const address = typeof body.address === "string" ? body.address.trim() : undefined;
   const condition = typeof body.condition === "string" ? body.condition : null;
   const deliveryMethod =
     typeof body.deliveryMethod === "string" ? body.deliveryMethod.trim() : null;
@@ -227,6 +229,7 @@ export async function PATCH(
   if (category !== undefined) updatePayload.category = category;
   if (priceLabel !== undefined) updatePayload.price_label = priceLabel;
   if (location !== undefined) updatePayload.location = location;
+  if (address !== undefined) updatePayload.address = address || null;
   if (body.condition !== undefined) updatePayload.condition = condition;
   if (body.deliveryMethod !== undefined) updatePayload.delivery_method = deliveryMethod;
   if (body.scope !== undefined) updatePayload.scope = scope;
@@ -240,7 +243,7 @@ export async function PATCH(
     .update(updatePayload)
     .eq("id", id)
     .eq("owner_id", user.id)
-    .select("id, status, title, category, price_label, location, cover_focal_point, social_media")
+    .select("id, status, title, category, price_label, location, cover_focal_point, social_media, address")
     .single();
 
   if (updateError) {
@@ -267,6 +270,7 @@ export async function PATCH(
     location: updatedAd.location,
     coverFocalPoint: updatedAd.cover_focal_point,
     socialMedia: updatedAd.social_media,
+    address: updatedAd.address,
   });
 }
 

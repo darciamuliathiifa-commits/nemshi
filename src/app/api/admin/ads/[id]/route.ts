@@ -88,7 +88,7 @@ export async function GET(
     .from("ads")
     .select(
       `id, kind, title, description, category, price_label, location, status,
-       condition, delivery_method, scope, estimated_duration, cover_focal_point, social_media`,
+       condition, delivery_method, scope, estimated_duration, cover_focal_point, social_media, address`,
     )
     .eq("id", id)
     .maybeSingle();
@@ -116,6 +116,7 @@ export async function GET(
     estimatedDuration: ad.estimated_duration,
     coverFocalPoint: ad.cover_focal_point,
     socialMedia: ad.social_media,
+    address: ad.address,
   });
 }
 
@@ -191,6 +192,7 @@ export async function PATCH(
   // Empty is valid on purpose — see the ads POST route for why.
   if (typeof body.priceLabel === "string") updatePayload.price_label = body.priceLabel.trim();
   if (typeof body.location === "string") updatePayload.location = body.location.trim();
+  if (typeof body.address === "string") updatePayload.address = body.address.trim() || null;
   if (typeof body.socialMedia === "string")
     updatePayload.social_media = body.socialMedia.trim() || null;
   if (body.condition !== undefined) {
@@ -215,7 +217,7 @@ export async function PATCH(
     .update(updatePayload)
     .eq("id", id)
     .select(
-      "id, title, category, price_label, location, cover_focal_point, condition, delivery_method, scope, estimated_duration, social_media",
+      "id, title, category, price_label, location, cover_focal_point, condition, delivery_method, scope, estimated_duration, social_media, address",
     )
     .maybeSingle();
 
@@ -239,5 +241,6 @@ export async function PATCH(
     scope: data.scope,
     estimatedDuration: data.estimated_duration,
     socialMedia: data.social_media,
+    address: data.address,
   });
 }

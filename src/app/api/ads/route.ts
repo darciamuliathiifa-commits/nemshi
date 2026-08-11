@@ -189,6 +189,7 @@ interface CreateAdBody {
   photos?: string[];
   coverFocalPoint?: string;
   socialMedia?: string;
+  address?: string;
 }
 
 export async function POST(request: Request) {
@@ -207,6 +208,7 @@ export async function POST(request: Request) {
   // show, and the UI simply omits the price line when this is "".
   const priceLabel = body.priceLabel?.trim() ?? "";
   const socialMedia = body.socialMedia?.trim() || null;
+  const address = body.address?.trim() || null;
 
   if (!kind) {
     return NextResponse.json({ error: "Tipe iklan tidak valid." }, { status: 400 });
@@ -353,6 +355,7 @@ export async function POST(request: Request) {
       expires_at: expiresAt,
       cover_focal_point: coverFocalPoint,
       social_media: socialMedia,
+      address,
     })
     .select("id, status")
     .single();

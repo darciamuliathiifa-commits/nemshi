@@ -33,6 +33,7 @@ interface AdDetail {
   photos: string[];
   coverFocalPoint?: string;
   socialMedia?: string;
+  address?: string;
 }
 
 type PriceMode = "fixed" | "variable" | "none";
@@ -54,6 +55,7 @@ export function EditAdDialog({
   const [priceLabel, setPriceLabel] = useState("");
   const [priceMode, setPriceMode] = useState<PriceMode>("fixed");
   const [location, setLocation] = useState("");
+  const [address, setAddress] = useState("");
   const [socialMedia, setSocialMedia] = useState("");
   const [condition, setCondition] = useState<"Baru" | "Bekas">("Bekas");
   const [deliveryMethod, setDeliveryMethod] = useState("");
@@ -89,6 +91,7 @@ export function EditAdDialog({
         setPriceMode(mode);
         setPriceLabel(mode === "fixed" ? data.priceLabel ?? "" : "");
         setLocation(data.location ?? "");
+        setAddress(data.address ?? "");
         setSocialMedia(data.socialMedia ?? "");
         setCondition(data.condition ?? "Bekas");
         setDeliveryMethod(data.deliveryMethod ?? "");
@@ -145,6 +148,7 @@ export function EditAdDialog({
           category,
           priceLabel: finalPriceLabel,
           location,
+          address,
           condition: detail?.kind === "produk" ? condition : undefined,
           deliveryMethod: detail?.kind === "produk" ? deliveryMethod : undefined,
           scope: detail?.kind === "jasa" ? scope : undefined,
@@ -322,6 +326,20 @@ export function EditAdDialog({
                   className="mt-1 h-11 w-full rounded-input border border-border bg-white px-3 text-[14px] text-charcoal focus:border-cta focus:outline-none"
                 />
               </div>
+            </div>
+
+            <div>
+              <label htmlFor="edit-address" className="text-[12px] font-bold text-muted-foreground">
+                Alamat Lengkap (opsional)
+              </label>
+              <input
+                id="edit-address"
+                type="text"
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+                placeholder="Contoh: Jl. Thoha Dinari, Imaroh 26, dekat Masjid X"
+                className="mt-1 h-11 w-full rounded-input border border-border bg-white px-3 text-[14px] text-charcoal focus:border-cta focus:outline-none"
+              />
             </div>
 
             <div>

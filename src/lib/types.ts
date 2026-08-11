@@ -41,6 +41,7 @@ export interface Ad {
   sellerActiveAds: number;
   whatsappNumber: string;
   socialMedia?: string;
+  address?: string;
   description: string;
   condition?: AdCondition;
   deliveryMethod?: string;

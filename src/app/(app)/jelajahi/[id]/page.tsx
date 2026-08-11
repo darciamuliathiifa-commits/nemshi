@@ -42,6 +42,7 @@ interface AdDetailRow {
   estimated_duration: string | null;
   whatsapp_number: string | null;
   social_media: string | null;
+  address: string | null;
   created_at: string;
   profiles: SellerProfileRow | SellerProfileRow[] | null;
   ad_photos: { url: string; position: number }[] | null;
@@ -52,6 +53,10 @@ function socialMediaHref(value: string): string {
   if (/^https?:\/\//i.test(trimmed)) return trimmed;
   const handle = trimmed.replace(/^@/, "");
   return `https://instagram.com/${handle}`;
+}
+
+function mapsHref(address: string): string {
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
 }
 
 async function ActiveAdsCount({ ownerId }: { ownerId: string }) {
@@ -139,7 +144,7 @@ export default async function AdDetailPage({
     .select(
       `id, owner_id, kind, title, description, category, price_label, location,
        status, condition, delivery_method, scope, estimated_duration,
-       whatsapp_number, social_media, created_at,
+       whatsapp_number, social_media, address, created_at,
        profiles!owner_id ( id, name, whatsapp_number, location, created_at ),
        ad_photos ( url, position )`,
     )
@@ -174,6 +179,7 @@ export default async function AdDetailPage({
     estimatedDuration: row.estimated_duration,
     whatsappNumber: row.whatsapp_number ?? profile?.whatsapp_number ?? "",
     socialMedia: row.social_media ?? "",
+    address: row.address ?? "",
     sellerId: row.owner_id,
     sellerName: profile?.name ?? "Pengguna Nemsy!",
     sellerJoinedYear: profile
@@ -294,6 +300,22 @@ export default async function AdDetailPage({
                 <span className="mx-1">·</span>
                 <span>Diposting {ad.postedAt}</span>
               </div>
+
+              {ad.address && (
+                <div className="mt-2 flex items-start justify-between gap-3 rounded-input border border-border-subtle bg-surface/50 px-3.5 py-2.5">
+                  <p className="text-[13px] font-normal leading-5 text-charcoal">
+                    {ad.address}
+                  </p>
+                  <a
+                    href={mapsHref(ad.address)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="shrink-0 text-[12px] font-bold text-cta hover:text-highlight"
+                  >
+                    Buka di Maps
+                  </a>
+                </div>
+              )}
 
               <div className="mt-6 grid grid-cols-1 gap-4 border-t border-border-subtle pt-6 sm:grid-cols-2">
                 {detailItems.map(
