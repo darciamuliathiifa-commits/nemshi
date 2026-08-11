@@ -97,6 +97,10 @@ export default function LandingPage() {
               Jual, cari, titip, dan minta bantuan tanpa harus tenggelam di
               grup chat yang tidak ada ujungnya.
             </p>
+            <div className="mt-4 inline-flex items-center gap-2 rounded-pill border-2 border-[#005b4f] bg-[#fffefa] px-4 py-2 text-[11px] font-black uppercase tracking-wide text-[#005b4f] sm:text-[13px]">
+              <UsersIcon width={14} height={14} />
+              Siapa aja bisa jual-beli & minta bantuan di sini
+            </div>
             <div className="mt-6 flex w-full max-w-xs flex-col items-stretch gap-3 sm:w-auto sm:max-w-none sm:flex-row sm:items-center">
               <LandingLoginButton
                 ariaLabel="Login untuk mulai menjelajahi Nemsyi"
