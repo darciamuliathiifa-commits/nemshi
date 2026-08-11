@@ -50,31 +50,26 @@ export const AdCard = memo(function AdCard({ ad }: { ad: Ad }) {
               style={{ objectPosition: ad.coverFocalPoint || "50% 0%" }}
             />
           )}
-          <div className="relative z-10 flex flex-col items-end gap-1 sm:gap-2">
-            <div className="flex items-center gap-1.5">
-              <ShareButton title={ad.title} path={`/jelajahi/${ad.id}`} compact />
-              <button
-                type="button"
-                onClick={(event) => {
-                  event.preventDefault();
-                  event.stopPropagation();
-                  toggleSaved(ad.id);
-                }}
-                aria-pressed={saved}
-                aria-label={saved ? "Hapus dari tersimpan" : "Simpan iklan"}
-                className="flex h-6 w-6 items-center justify-center rounded-full bg-white/90 text-charcoal shadow-sm transition-colors hover:bg-white sm:h-8 sm:w-8"
-              >
-                <BookmarkIcon
-                  width={13}
-                  height={13}
-                  fill={saved ? "currentColor" : "none"}
-                  className={saved ? "text-cta" : "text-charcoal"}
-                />
-              </button>
-            </div>
-            <span className="hidden rounded-badge bg-charcoal/80 px-3 py-1 text-[12px] leading-4 font-bold text-white sm:inline-block">
-              {ad.kind === "produk" ? "Produk" : "Jasa"}
-            </span>
+          <div className="relative z-10 flex items-center gap-1.5">
+            <ShareButton title={ad.title} path={`/jelajahi/${ad.id}`} compact />
+            <button
+              type="button"
+              onClick={(event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                toggleSaved(ad.id);
+              }}
+              aria-pressed={saved}
+              aria-label={saved ? "Hapus dari tersimpan" : "Simpan iklan"}
+              className="flex h-6 w-6 items-center justify-center rounded-full bg-white/90 text-charcoal shadow-sm transition-colors hover:bg-white sm:h-8 sm:w-8"
+            >
+              <BookmarkIcon
+                width={13}
+                height={13}
+                fill={saved ? "currentColor" : "none"}
+                className={saved ? "text-cta" : "text-charcoal"}
+              />
+            </button>
           </div>
         </div>
 

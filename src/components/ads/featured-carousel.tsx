@@ -69,11 +69,7 @@ export const FeaturedCarousel = memo(function FeaturedCarousel({ ads }: { ads: A
               <ShareButton title={ad.title} path={`/jelajahi/${ad.id}`} compact />
             </div>
 
-            <div className="flex h-24 items-start bg-gradient-to-br from-brand/40 to-brand/10 px-3.5 py-3 sm:h-36 sm:px-5 sm:py-4">
-              <span className="rounded-badge bg-charcoal px-2.5 py-1 text-[11px] leading-3 font-bold text-white sm:px-3.5 sm:py-1.5 sm:text-[13px] sm:leading-4">
-                {ad.category}
-              </span>
-            </div>
+            <div className="h-24 bg-gradient-to-br from-brand/40 to-brand/10 sm:h-36" />
 
             <div className="flex flex-1 flex-col gap-1.5 p-3.5 sm:gap-2 sm:p-5">
               <h3 className="line-clamp-2 text-[14px] font-bold leading-5 text-charcoal sm:text-lg sm:leading-6">
