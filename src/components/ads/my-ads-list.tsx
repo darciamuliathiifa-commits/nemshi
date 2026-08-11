@@ -286,6 +286,16 @@ export function MyAdsList({ ads: initialAds }: { ads: MyAd[] }) {
                           </button>
                         </div>
 
+                        {ad.status === "Aktif" && (
+                          <button
+                            type="button"
+                            onClick={() => handleStatusChange(ad.id, "Terjual")}
+                            className="h-9 w-full rounded-pill border-2 border-success text-[13px] font-bold text-success transition-colors hover:bg-success/10"
+                          >
+                            Tandai Sudah Terjual
+                          </button>
+                        )}
+
                         {/* Offered before expiry too, not just after — the
                             H-2 reminder sends owners here while the ad is
                             still live, and renewing is free either way. */}
@@ -302,25 +312,33 @@ export function MyAdsList({ ads: initialAds }: { ads: MyAd[] }) {
                           </button>
                         )}
 
-                        <label className="flex items-center justify-between gap-2">
-                          <span className="text-[12px] font-bold text-muted-foreground">
-                            Ubah status
-                          </span>
-                          <select
-                            value={ad.status}
-                            disabled={pendingId !== null}
-                            onChange={(event) =>
-                              handleStatusChange(ad.id, event.target.value as AdStatus)
-                            }
-                            className="h-9 flex-1 rounded-input border border-border bg-white px-3 text-[14px] text-charcoal focus:border-cta focus:outline-none focus:ring-3 focus:ring-cta/10 disabled:bg-surface"
-                          >
-                            {statusFilters.map((status) => (
-                              <option key={status} value={status}>
-                                {status}
-                              </option>
-                            ))}
-                          </select>
-                        </label>
+                        {ad.status === "Menunggu Validasi" ? (
+                          <p className="text-[12px] font-normal leading-4 text-muted-foreground">
+                            Masih menunggu validasi admin — status belum bisa diubah sendiri.
+                          </p>
+                        ) : (
+                          <label className="flex items-center justify-between gap-2">
+                            <span className="text-[12px] font-bold text-muted-foreground">
+                              Ubah status
+                            </span>
+                            <select
+                              value={ad.status}
+                              disabled={pendingId !== null}
+                              onChange={(event) =>
+                                handleStatusChange(ad.id, event.target.value as AdStatus)
+                              }
+                              className="h-9 flex-1 rounded-input border border-border bg-white px-3 text-[14px] text-charcoal focus:border-cta focus:outline-none focus:ring-3 focus:ring-cta/10 disabled:bg-surface"
+                            >
+                              {statusFilters
+                                .filter((status) => status !== "Menunggu Validasi")
+                                .map((status) => (
+                                  <option key={status} value={status}>
+                                    {status}
+                                  </option>
+                                ))}
+                            </select>
+                          </label>
+                        )}
                       </>
                     )}
                   </div>

@@ -136,6 +136,19 @@ export async function PATCH(
       );
     }
 
+    // A flagged ad sits in "Menunggu Validasi" until an admin reviews it —
+    // letting the owner self-service out of that state (e.g. straight back
+    // to "Aktif") would defeat the moderation queue entirely.
+    if (existingAd.status === "Menunggu Validasi") {
+      return NextResponse.json(
+        {
+          error:
+            "Iklan ini masih menunggu validasi admin, belum bisa diubah statusnya sendiri.",
+        },
+        { status: 403 },
+      );
+    }
+
     const { data, error } = await supabase
       .from("ads")
       .update({ status: newStatus, updated_at: new Date().toISOString() })
