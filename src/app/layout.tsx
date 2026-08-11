@@ -4,6 +4,8 @@ import localFont from "next/font/local";
 import "leaflet/dist/leaflet.css";
 import "./globals.css";
 import { DEFAULT_OG_IMAGE, getSiteUrl } from "@/lib/site-url";
+import { ServiceWorkerRegister } from "@/components/shared/service-worker-register";
+import { InstallPwaBanner } from "@/components/shared/install-pwa-banner";
 
 const sora = localFont({
   src: [
@@ -35,6 +37,7 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
+  themeColor: "#FFC72C",
 };
 
 export const metadata: Metadata = {
@@ -62,6 +65,11 @@ export const metadata: Metadata = {
     ],
     apple: "/apple-icon.png",
   },
+  appleWebApp: {
+    capable: true,
+    title: "Nemsy!",
+    statusBarStyle: "default",
+  },
 };
 
 export default function RootLayout({
@@ -74,7 +82,11 @@ export default function RootLayout({
       lang="id"
       className={`${sora.variable} ${blackHanSans.variable} ${manrope.variable} h-full antialiased`}
     >
-      <body className="min-h-full font-sans text-ink">{children}</body>
+      <body className="min-h-full font-sans text-ink">
+        {children}
+        <ServiceWorkerRegister />
+        <InstallPwaBanner />
+      </body>
     </html>
   );
 }
