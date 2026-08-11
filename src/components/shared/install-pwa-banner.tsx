@@ -27,8 +27,12 @@ export function InstallPwaBanner() {
     const ios = /iphone|ipad|ipod/i.test(navigator.userAgent);
     setIsIOS(ios);
 
+    // Mark it seen the moment it shows, not just on an explicit dismiss —
+    // otherwise closing the tab without tapping X brings it right back on
+    // the next visit, which is what made this feel like it never went away.
     if (ios) {
       setVisible(true);
+      localStorage.setItem(DISMISS_KEY, "1");
       return;
     }
 
@@ -36,6 +40,7 @@ export function InstallPwaBanner() {
       event.preventDefault();
       setDeferredPrompt(event as BeforeInstallPromptEvent);
       setVisible(true);
+      localStorage.setItem(DISMISS_KEY, "1");
     }
 
     window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
