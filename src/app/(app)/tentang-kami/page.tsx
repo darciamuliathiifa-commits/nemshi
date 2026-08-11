@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { Header } from "@/components/layout/header";
 import {
+  ChatIcon,
   CheckCircleIcon,
   CompassIcon,
   HeartIcon,
@@ -9,6 +10,10 @@ import {
   ShieldCheckIcon,
   UsersIcon,
 } from "@/components/icons";
+
+const DAR_DEV_WHATSAPP_HREF = `https://wa.me/6281311506025?text=${encodeURIComponent(
+  "Halo Dar Dev, saya mau tanya soal Nemsyi.",
+)}`;
 
 export const metadata: Metadata = {
   title: "Tentang Kami · Nemsy!",
@@ -145,6 +150,15 @@ export default function TentangKamiPage() {
           <p className="mt-4 text-[12px] font-bold text-charcoal/50">
             Dar Dev
           </p>
+          <a
+            href={DAR_DEV_WHATSAPP_HREF}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mx-auto mt-4 flex h-11 w-fit items-center justify-center gap-1.5 rounded-pill bg-success px-6 text-[14px] font-bold text-white transition-colors hover:brightness-90"
+          >
+            <ChatIcon width={16} height={16} />
+            Hubungi Dar Dev
+          </a>
         </section>
 
         <div className="mt-10 flex flex-col items-center gap-3 text-center sm:flex-row sm:justify-center">
