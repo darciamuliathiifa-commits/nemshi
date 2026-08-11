@@ -249,13 +249,13 @@ export function MyAdsList({ ads: initialAds }: { ads: MyAd[] }) {
                     <p className="text-[13px] font-normal text-muted-foreground">
                       {ad.location} · Diposting {ad.postedAt}
                     </p>
-                    {ad.status === "Aktif" && formatExpiryLabel(ad.expiresAt) && (
+                    {ad.status === "Aktif" && (
                       <p
                         className={`text-[13px] font-bold ${
                           isNearingExpiry(ad.expiresAt) ? "text-error" : "text-muted-foreground"
                         }`}
                       >
-                        {formatExpiryLabel(ad.expiresAt)}
+                        {formatExpiryLabel(ad.expiresAt) ?? "Tidak ada batas waktu tayang"}
                       </p>
                     )}
                   </div>

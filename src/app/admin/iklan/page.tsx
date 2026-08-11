@@ -5,6 +5,7 @@ import type { AdCategory, AdKind, AdStatus } from "@/lib/types";
 import { SearchIcon, StarIcon, CloseIcon } from "@/components/icons";
 import { FocalPointPicker } from "@/components/ads/focal-point-picker";
 import { AdminEditAdDialog } from "@/components/admin/admin-edit-ad-dialog";
+import { formatExpiryLabel, isNearingExpiry } from "@/lib/expiry";
 
 interface AdminAdItem {
   id: string;
@@ -17,6 +18,7 @@ interface AdminAdItem {
   submittedBy: string | null;
   flagReason: string | null;
   createdAt: string;
+  expiresAt: string | null;
   featured: boolean;
   featuredUntil: string | null;
   coverPhoto: string | null;
@@ -297,6 +299,15 @@ export default function AdminIklanPage() {
                         {item.flagReason && (
                           <p className="mt-1 text-[12px] font-bold text-error">
                             Terdeteksi: {item.flagReason}
+                          </p>
+                        )}
+                        {item.status === "Aktif" && (
+                          <p
+                            className={`mt-1 text-[12px] font-bold ${
+                              isNearingExpiry(item.expiresAt) ? "text-error" : "text-muted-foreground"
+                            }`}
+                          >
+                            {formatExpiryLabel(item.expiresAt) ?? "Tidak ada batas waktu tayang"}
                           </p>
                         )}
                       </div>

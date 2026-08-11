@@ -12,6 +12,7 @@ interface AdminAdRow {
   location: string;
   flag_reason: string | null;
   created_at: string;
+  expires_at: string | null;
   featured_until: string | null;
   cover_focal_point: string | null;
   profiles: { name: string } | { name: string }[] | null;
@@ -48,7 +49,7 @@ export async function GET(request: Request) {
   let query = supabase
     .from("ads")
     .select(
-      `id, title, kind, category, status, price_label, location, flag_reason, created_at, featured_until, cover_focal_point, profiles!owner_id ( name ), ad_photos ( url, position )`,
+      `id, title, kind, category, status, price_label, location, flag_reason, created_at, expires_at, featured_until, cover_focal_point, profiles!owner_id ( name ), ad_photos ( url, position )`,
     );
 
   if (status && status !== "Semua") {
@@ -83,6 +84,7 @@ export async function GET(request: Request) {
       location: row.location,
       flagReason: row.flag_reason,
       createdAt: row.created_at,
+      expiresAt: row.expires_at,
       submittedBy: profile?.name ?? null,
       featured: !!row.featured_until && new Date(row.featured_until) > new Date(),
       featuredUntil: row.featured_until,
