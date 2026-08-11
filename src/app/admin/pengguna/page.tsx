@@ -125,6 +125,34 @@ export default function AdminPenggunaPage() {
     }
   }
 
+  async function handleDeleteUser(targetUser: UserItem) {
+    const confirmed = window.confirm(
+      `Yakin mau hapus akun "${targetUser.name}" (${targetUser.email ?? "tanpa email"})?\n\n` +
+        "Ini menghapus akun login-nya sepenuhnya — semua iklan, sayembara, dan kuota miliknya ikut terhapus. Tindakan ini TIDAK BISA dibatalkan.",
+    );
+    if (!confirmed) return;
+
+    setPendingId(targetUser.id);
+    try {
+      const res = await fetch(`/api/admin/users/${targetUser.id}`, {
+        method: "DELETE",
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error ?? "Gagal menghapus pengguna.");
+      }
+
+      setUsers((prev) => prev.filter((u) => u.id !== targetUser.id));
+      showToast(`Akun "${targetUser.name}" berhasil dihapus.`);
+      setCustomUser(null);
+    } catch (err) {
+      showToast(err instanceof Error ? err.message : "Gagal menghapus pengguna.");
+    } finally {
+      setPendingId(null);
+    }
+  }
+
   const filteredUsers = users.filter((u) => {
     const q = search.toLowerCase().trim();
     if (!q) return true;
@@ -333,6 +361,14 @@ export default function AdminPenggunaPage() {
                               className="flex h-8 items-center justify-center rounded-pill border border-border bg-surface px-2 text-[11px] font-bold text-charcoal hover:bg-border/30"
                             >
                               Custom...
+                            </button>
+
+                            <button
+                              type="button"
+                              onClick={() => handleDeleteUser(userItem)}
+                              className="col-span-2 flex h-8 items-center justify-center rounded-pill border border-error px-2 text-[11px] font-bold text-error hover:bg-error/10"
+                            >
+                              Hapus Pengguna
                             </button>
                           </div>
                         )}
